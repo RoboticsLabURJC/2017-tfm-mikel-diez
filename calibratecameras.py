@@ -17,9 +17,7 @@ if __name__ == '__main__':
     images = glob.glob('Calibration/images/*.jpg')
 
     for fname in images:
-        print fname
         img = cv2.imread(fname)
-
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
         # Find the chess board corners
@@ -36,6 +34,16 @@ if __name__ == '__main__':
             cv2.imshow('img',img)
             cv2.waitKey(500)
 
-    #End comment
+    # Destroy windows
     cv2.destroyAllWindows()
-    print "END"
+
+    # Calibrate camera
+    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
+    
+    # Check the error of the meassure
+    tot_error = 0
+    for i in xrange(len(objpoints)):
+        imgpoints2, _ = cv2.projectPoints(objpoints[i], rvecs[i], tvecs[i], mtx, dist)
+        error = cv2.norm(imgpoints[i],imgpoints2, cv2.NORM_L2)/len(imgpoints2)
+        tot_error += error 
+    print "total error: ", tot_error/len(objpoints)
