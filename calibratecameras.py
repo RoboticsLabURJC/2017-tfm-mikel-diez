@@ -40,6 +40,8 @@ if __name__ == '__main__':
     # Calibrate camera
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
     
+    np.savez('Calibration/calibrated_camera', ret=ret, matrix=mtx, dist_coeff = dist, rotation_vecs = rvecs, traslation_vecs=tvecs)
+
     # Check the error of the meassure
     tot_error = 0
     for i in xrange(len(objpoints)):
