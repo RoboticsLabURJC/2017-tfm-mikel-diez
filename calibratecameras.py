@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import glob
+import yaml
 
 if __name__ == '__main__':
     #Stop criteria
@@ -40,7 +41,9 @@ if __name__ == '__main__':
     # Calibrate camera
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
     
-    np.savez('Calibration/calibrated_camera', ret=ret, matrix=mtx, dist_coeff = dist, rotation_vecs = rvecs, traslation_vecs=tvecs)
+    # Save the calibration matrix in a yaml file.
+    with open('calibrated_camera.yml', 'w') as outfile:
+        yaml.dump({'ret': ret, 'matrix': mtx, 'dist_coeff': dist, 'rotation_vecs': rvecs,'traslation_vecs':tvecs}, outfile, default_flow_style=False)
 
     # Check the error of the meassure
     tot_error = 0
