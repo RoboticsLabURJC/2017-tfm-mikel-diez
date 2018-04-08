@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
 	# Find matching points in both cameras
 	matcher = ClassicMatcher()
-	matcher.setImages(cv2.imread('./test/images/left.png'),cv2.imread('./test/images/left.png'))
+	matcher.setImages(cv2.imread('./test/images/left.png'),cv2.imread('./test/images/right.png'))
 	matcher.matchPoints()
 	matcher.showImages()
 	# Get the 3d space points from 2d pixel pairs
