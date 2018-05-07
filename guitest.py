@@ -1,20 +1,24 @@
 import sys
+import signal
+
 
 from PyQt5 import QtWidgets
 
-class GUI(QtWidgets.QWidget):
-	def __init__(self, parent=None):
-		QtWidgets.QWidget.__init__(self, parent)
-		self.setWindowTitle("3D Reconstruction")
-		self.resize(1000, 600)
+from Application.application import Application
+from Application.threadapplication import ThreadApplication
+
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
 	# For the widget we need to create an application object
 	application = QtWidgets.QApplication(sys.argv)
 
-	myGUI = GUI()
+	myGUI = Application()
 	myGUI.show()
 
+	t_gui = ThreadApplication(myGUI)
+	t_gui.daemon = True
+	t_gui.start()
 
 	# When user closes the Widget
 	sys.exit(application.exec_())
