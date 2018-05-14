@@ -1,4 +1,4 @@
-3DReconstructor:
+Cameraview:
   Camera:
     Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
     Proxy: "cameraA:tcp -h localhost -p 9999"
@@ -7,4 +7,4 @@
     Name: cameraA
     Fps: 30
 
-  NodeName: 3DReconstructor
+  NodeName: cameraview

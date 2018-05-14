@@ -9,21 +9,44 @@ from Application.threadapplication import ThreadApplication
 from Camera.camera import Camera
 from Camera.threadcamera import ThreadCamera
 
+import config
+import comm
+
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
     # For the widget we need to create an application object
     application = QtWidgets.QApplication(sys.argv)
 
-    camera = Camera()
+
+    # TEST YML
+    right_camera_config = config.load('config/cameraview_right.yml')
+    left_camera_config = config.load('config/cameraview_left.yml')
+
+    jdrc = comm.init(right_camera_config, 'Cameraview')
+    proxy = jdrc.getCameraClient('Cameraview.Camera')
+    camera_right = Camera(proxy)
+
+    jdrc = comm.init(left_camera_config, 'Cameraview')
+    proxy = jdrc.getCameraClient('Cameraview.Camera')
+    camera_left = Camera(proxy)
+
+    # Cameras configuration
+
+    
     myGUI = Application()
-    myGUI.setCameras(camera)
+    myGUI.setCameras([camera_left,camera_right])
     myGUI.show()
 
-    # Threading camera
-    t_cam = ThreadCamera(camera)
-    t_cam.daemon = True
-    t_cam.start()
+    # Threading camera left
+    thread_camera_left = ThreadCamera(camera_left)
+    thread_camera_left.daemon = True
+    thread_camera_left.start()
+
+    # Threading camera right
+    thread_camera_right = ThreadCamera(camera_right)
+    thread_camera_right.daemon = True
+    thread_camera_right.start()
 
     t_gui = ThreadApplication(myGUI)
     t_gui.daemon = True
