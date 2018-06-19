@@ -29,9 +29,11 @@ if __name__ == '__main__':
             right_maps = cv2.initUndistortRectifyMap(data["cameraMatrix2"], data["distCoeffs2"], R2, P2, (640, 480), cv2.CV_16SC2)
 
 
-            img_left = cv2.imread('Calibration/images/set3/left_image_5.png')
+            #img_left = cv2.imread('Calibration/images/set5/left_image_5.png')
+            img_left = cv2.imread('Images/left_image_2.png')
             gray_left = cv2.cvtColor(img_left,cv2.COLOR_BGR2GRAY)
-            img_right = cv2.imread('Calibration/images/set3/right_image_5.png')
+            #img_right = cv2.imread('Calibration/images/set5/right_image_5.png')
+            img_right = cv2.imread('Images/right_image_2.png')
             gray_right = cv2.cvtColor(img_right,cv2.COLOR_BGR2GRAY)
              
             left_img_remap = cv2.remap(gray_left, left_maps[0], left_maps[1], cv2.INTER_LANCZOS4)

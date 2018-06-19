@@ -24,8 +24,8 @@ if __name__ == '__main__':
     imgpoints_right = [] # 2d points in image plane.
     image_size = []
 
-    images_left = sorted(glob.glob('Calibration/images/set4/left*' + images_format))
-    images_right = sorted(glob.glob('Calibration/images/set4/right*' + images_format))
+    images_left = sorted(glob.glob('Calibration/images/set5/left*' + images_format))
+    images_right = sorted(glob.glob('Calibration/images/set5/right*' + images_format))
 
     print images_left
     print images_right
