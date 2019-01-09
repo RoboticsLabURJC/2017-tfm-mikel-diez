@@ -4,10 +4,10 @@ import signal
 
 from PyQt5 import QtWidgets
 
-from Application.application import Application
-from Application.threadapplication import ThreadApplication
-from Camera.camera import Camera
-from Camera.threadcamera import ThreadCamera
+from Applications.StereoViewer.GUI.application import Application
+from Applications.StereoViewer.GUI.threadapplication import ThreadApplication
+from Modules.Camera.camera import Camera
+from Modules.Camera.threadcamera import ThreadCamera
 
 import config
 import comm
@@ -20,8 +20,8 @@ if __name__ == '__main__':
 
 
     # TEST YML
-    right_camera_config = config.load('config/cameraview_right.yml')
-    left_camera_config = config.load('config/cameraview_left.yml')
+    right_camera_config = config.load('Configuration/cameraview_right.yml')
+    left_camera_config = config.load('Configuration/cameraview_left.yml')
 
     jdrc = comm.init(right_camera_config, 'Cameraview')
     proxy = jdrc.getCameraClient('Cameraview.Camera')
