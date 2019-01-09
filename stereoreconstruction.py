@@ -25,7 +25,11 @@ if __name__ == '__main__':
 		try:
 			data = yaml.load(stream)
 
-			rectify_scale = 1 # 0=full crop, 1=no crop
+			print data['F']
+			print data['T']
+			print data['F'] * data['T']
+
+			rectify_scale = 0 # 0=full crop, 1=no crop
 			R1, R2, P1, P2, Q, roi1, roi2 = cv2.stereoRectify(data["cameraMatrix1"], data["distCoeffs1"], data["cameraMatrix2"], data["distCoeffs2"], (640, 480), data["R"], data["T"], alpha = rectify_scale)
 
 			left_maps = cv2.initUndistortRectifyMap(data["cameraMatrix1"], data["distCoeffs1"], R1, P1, (640, 480), cv2.CV_16SC2)
@@ -49,7 +53,11 @@ if __name__ == '__main__':
 	# Find matching points in both cameras
 	matcher = ClassicMatcher()
 	matcher.setImages(left_img_remap,right_img_remap)
-	matcher.matchPoints()
+	matcher.setPointsOfInterest()
+	images = matcher.getPointsOfInterest()
+	imShowTwoImages(images[0],images[1])
+	cv2.waitKey(0)
+	print matcher.matchPoints()
 	matcher.showImages()
 	# Get the 3d space points from 2d pixel pairs
 
