@@ -21,7 +21,7 @@ def imShowTwoImages(image1,image2):
 # Here goes the script
 if __name__ == '__main__':
 	# Take the images from folder/camera and rectify
-	with open("calibrated_camera.yml", 'r') as stream:
+	with open("bin/CalibrationMatrix/calibrated_camera.yml", 'r') as stream:
 		try:
 			data = yaml.load(stream)
 

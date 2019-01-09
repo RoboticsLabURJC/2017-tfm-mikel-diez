@@ -24,8 +24,8 @@ if __name__ == '__main__':
     imgpoints_right = [] # 2d points in image plane.
     image_size = []
 
-    images_left = sorted(glob.glob('Calibration/images/set5/left*' + images_format))
-    images_right = sorted(glob.glob('Calibration/images/set5/right*' + images_format))
+    images_left = sorted(glob.glob('bin/CalibrationImages/set5/left*' + images_format))
+    images_right = sorted(glob.glob('bin/CalibrationImages/set5/right*' + images_format))
 
     print images_left
     print images_right
@@ -95,7 +95,7 @@ if __name__ == '__main__':
    
     
     # Save the calibration matrix in a yaml file.
-    with open('calibrated_camera.yml', 'w') as outfile:
+    with open('bin/CalibrationMatrix/calibrated_camera.yml', 'w') as outfile:
         yaml.dump({'stereocalib_retval': stereocalib_retval, 'cameraMatrix1': cameraMatrix1, 'distCoeffs1': distCoeffs1,'cameraMatrix2': cameraMatrix2, 'distCoeffs2': distCoeffs2, 'R': R,'T':T, 'E': E, 'F': F}, outfile, default_flow_style=False)
 
     # Check the error of the meassure

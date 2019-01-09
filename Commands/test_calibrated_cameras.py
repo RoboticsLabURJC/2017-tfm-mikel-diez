@@ -15,7 +15,7 @@ def imShowTwoImages(image1,image2):
     cv2.imshow("rectified images", image)
 
 if __name__ == '__main__':
-    with open("calibrated_camera.yml", 'r') as stream:
+    with open("bin/CalibrationMatrix/calibrated_camera.yml", 'r') as stream:
         try:
             data = yaml.load(stream) 
 
