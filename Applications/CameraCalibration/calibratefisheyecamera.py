@@ -68,8 +68,27 @@ if __name__ == '__main__':
 
 
     # Calibrate cameras individualy
-    ret1, cameraMatrix1, distCoeffs1, rvecs1, tvecs1 = cv2.fisheye.calibrate(objpoints, imgpoints_left, gray_left.shape[::-1],None,None)
-    ret2, cameraMatrix2, distCoeffs2, rvecs2, tvecs2 = cv2.fisheye.calibrate(objpoints, imgpoints_right, gray_right.shape[::-1],None,None)
+    N_OK = len(objpoints)
+    K = np.zeros((3, 3))
+    D = np.zeros((4, 1))
+    rvecs = [np.zeros((1, 1, 3), dtype=np.float64) for i in range(N_OK)]
+    tvecs = [np.zeros((1, 1, 3), dtype=np.float64) for i in range(N_OK)]
+    calibration_flags = cv2.fisheye.CALIB_RECOMPUTE_EXTRINSIC+cv2.fisheye.CALIB_CHECK_COND+cv2.fisheye.CALIB_FIX_SKEW
+
+    ret1, cameraMatrix1, distCoeffs1, rvecs1, tvecs1 = cv2.fisheye.calibrate(objpoints, imgpoints_left, gray_left.shape[::-1],
+        K,
+        D,
+        rvecs,
+        tvecs,
+        calibration_flags,
+        (cv2.TERM_CRITERIA_EPS+cv2.TERM_CRITERIA_MAX_ITER, 30, 1e-6))
+    ret2, cameraMatrix2, distCoeffs2, rvecs2, tvecs2 = cv2.fisheye.calibrate(objpoints, imgpoints_right, gray_right.shape[::-1],
+        K,
+        D,
+        rvecs,
+        tvecs,
+        calibration_flags,
+        (cv2.TERM_CRITERIA_EPS+cv2.TERM_CRITERIA_MAX_ITER, 30, 1e-6))
 
 
     # print cameraMatrix1 
