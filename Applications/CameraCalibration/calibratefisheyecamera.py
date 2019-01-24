@@ -93,12 +93,16 @@ if __name__ == '__main__':
         calibration_flags,
         (cv2.TERM_CRITERIA_EPS+cv2.TERM_CRITERIA_MAX_ITER, 30, 1e-6))
 
-    # Calibrate stereo camera
-    stereocalib_criteria = (cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS, 100, 1e-5)
-    # stereocalib_flags = cv2.CALIB_FIX_ASPECT_RATIO | cv2.CALIB_ZERO_TANGENT_DIST | cv2.CALIB_SAME_FOCAL_LENGTH | cv2.CALIB_RATIONAL_MODEL | cv2.CALIB_FIX_K3 | cv2.CALIB_FIX_K4 | cv2.CALIB_FIX_K5
+    print(len(imgpoints_left))
+    print(len(imgpoints_left[0]))
+    print(imgpoints_left[0][0])
+    print(len(imgpoints_right))
+    print(len(imgpoints_right[0]))
+    print(imgpoints_right[0][0])
+    print(objpoints[0][0])
 
-    stereocalib_flags = cv2.CALIB_FIX_INTRINSIC
-    stereocalib_retval, cameraMatrix1, distCoeffs1, cameraMatrix2, distCoeffs2, R, T, E, F = cv2.stereoCalibrate(objpoints,imgpoints_left,imgpoints_right,cameraMatrix1,distCoeffs1,cameraMatrix2,distCoeffs2,gray_left.shape[::-1],criteria = stereocalib_criteria, flags = stereocalib_flags)
+    # Calibrate stereo camera
+    stereocalib_retval, cameraMatrix1, distCoeffs1, cameraMatrix2, distCoeffs2, R, T, E, F = cv2.fisheye.stereoCalibrate(objpoints,imgpoints_left,imgpoints_right,cameraMatrix1,distCoeffs1,cameraMatrix2,distCoeffs2,gray_left.shape[::-1])
 
     # Save the calibration matrix in a yaml file.
     with open('bin/CalibrationMatrix/calibrated_camera.yml', 'w') as outfile:
