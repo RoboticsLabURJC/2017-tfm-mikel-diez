@@ -15,8 +15,8 @@ if __name__ == '__main__':
 
 
     # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
-    objp = np.zeros((pattern_size[1]*pattern_size[0],3), np.float32)
-    objp[:,:2] = np.mgrid[0:pattern_size[0],0:pattern_size[1]].T.reshape(-1,2)  
+    objp = np.zeros((1, pattern_size[1]*pattern_size[0], 3), np.float32)
+    objp[0,:,:2] = np.mgrid[0:pattern_size[0],0:pattern_size[1]].T.reshape(-1,2)
 
     # Arrays to store object points and image points from all the images.
     objpoints = [] # 3d point in real world space
@@ -60,11 +60,11 @@ if __name__ == '__main__':
         # Draw and display the corners
         cv2.drawChessboardCorners(img_left, pattern_size, left_corners,left_found)
         cv2.drawChessboardCorners(img_right, pattern_size, right_corners,right_found)
-        cv2.imshow('Left Image',img_left)
-        cv2.waitKey(500)
+        #cv2.imshow('Left Image',img_left)
+        #cv2.waitKey(500)
 
     # Destroy windows
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
 
 
     # Calibrate cameras individualy
@@ -74,6 +74,9 @@ if __name__ == '__main__':
     rvecs = [np.zeros((1, 1, 3), dtype=np.float64) for i in range(N_OK)]
     tvecs = [np.zeros((1, 1, 3), dtype=np.float64) for i in range(N_OK)]
     calibration_flags = cv2.fisheye.CALIB_RECOMPUTE_EXTRINSIC+cv2.fisheye.CALIB_CHECK_COND+cv2.fisheye.CALIB_FIX_SKEW
+
+    print(len(objpoints))
+    # die()
 
     ret1, cameraMatrix1, distCoeffs1, rvecs1, tvecs1 = cv2.fisheye.calibrate(objpoints, imgpoints_left, gray_left.shape[::-1],
         K,
@@ -90,19 +93,6 @@ if __name__ == '__main__':
         calibration_flags,
         (cv2.TERM_CRITERIA_EPS+cv2.TERM_CRITERIA_MAX_ITER, 30, 1e-6))
 
-
-    # print cameraMatrix1 
-    # print distCoeffs1
-    # print cameraMatrix2 
-    # print distCoeffs2
-
-    # print 'objpoints'
-    # print objpoints
-    # print 'imgpoints_left'
-    # print imgpoints_left
-    # print 'imgpoints_right'
-    # print imgpoints_right
-
     # Calibrate stereo camera
     stereocalib_criteria = (cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS, 100, 1e-5)
     # stereocalib_flags = cv2.CALIB_FIX_ASPECT_RATIO | cv2.CALIB_ZERO_TANGENT_DIST | cv2.CALIB_SAME_FOCAL_LENGTH | cv2.CALIB_RATIONAL_MODEL | cv2.CALIB_FIX_K3 | cv2.CALIB_FIX_K4 | cv2.CALIB_FIX_K5
@@ -110,9 +100,6 @@ if __name__ == '__main__':
     stereocalib_flags = cv2.CALIB_FIX_INTRINSIC
     stereocalib_retval, cameraMatrix1, distCoeffs1, cameraMatrix2, distCoeffs2, R, T, E, F = cv2.stereoCalibrate(objpoints,imgpoints_left,imgpoints_right,cameraMatrix1,distCoeffs1,cameraMatrix2,distCoeffs2,gray_left.shape[::-1],criteria = stereocalib_criteria, flags = stereocalib_flags)
 
-
-   
-    
     # Save the calibration matrix in a yaml file.
     with open('bin/CalibrationMatrix/calibrated_camera.yml', 'w') as outfile:
         yaml.dump({'stereocalib_retval': stereocalib_retval, 'cameraMatrix1': cameraMatrix1, 'distCoeffs1': distCoeffs1,'cameraMatrix2': cameraMatrix2, 'distCoeffs2': distCoeffs2, 'R': R,'T':T, 'E': E, 'F': F}, outfile, default_flow_style=False)
