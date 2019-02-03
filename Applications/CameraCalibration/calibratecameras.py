@@ -27,9 +27,8 @@ if __name__ == '__main__':
     images_left = sorted(glob.glob('bin/CalibrationImages/set5/left*' + images_format))
     images_right = sorted(glob.glob('bin/CalibrationImages/set5/right*' + images_format))
 
-    print images_left
-    print images_right
-
+    print(images_left)
+    print(images_right)
 
     for index,fname in enumerate(images_left):
 
@@ -103,13 +102,13 @@ if __name__ == '__main__':
     for i in xrange(len(objpoints)):
         imgpoints2, _ = cv2.projectPoints(objpoints[i], rvecs1[i], tvecs1[i], cameraMatrix1, distCoeffs1)
         error = cv2.norm(imgpoints_left[i],imgpoints2, cv2.NORM_L2)/len(imgpoints2)
-        tot_error += error 
-    print "total error left: ", tot_error/len(objpoints)
+        tot_error += error
+    print("total error left: ", tot_error / len(objpoints))
     for i in xrange(len(objpoints)):
         imgpoints2, _ = cv2.projectPoints(objpoints[i], rvecs2[i], tvecs2[i], cameraMatrix2, distCoeffs2)
         error = cv2.norm(imgpoints_right[i],imgpoints2, cv2.NORM_L2)/len(imgpoints2)
-        tot_error += error 
-    print "total error right: ", tot_error/len(objpoints)
-    print 'ret1; ', ret1
-    print 'ret2: ', ret2
-    print 'retval: ', stereocalib_retval
+        tot_error += error
+    print("total error right: ", tot_error / len(objpoints))
+    print('ret1; ', ret1)
+    print('ret2: ', ret2)
+    print('retval: ', stereocalib_retval)

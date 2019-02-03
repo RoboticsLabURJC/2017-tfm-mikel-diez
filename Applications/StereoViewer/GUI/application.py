@@ -4,6 +4,8 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
+import os
+
 import cv2
 
 class Application(QtWidgets.QWidget):
@@ -15,7 +17,7 @@ class Application(QtWidgets.QWidget):
     def __init__(self,parent = None):
         QtWidgets.QWidget.__init__(self, parent)
         self.setWindowTitle("3D Reconstruction")
-        self.resize(1100, 600)
+        self.resize(1150, 400)
         self.move(150, 50)
 
         self.updGUI.connect(self.update)
@@ -60,6 +62,10 @@ class Application(QtWidgets.QWidget):
         self.tb_save.triggered.connect(self.takePhoto)
         self.toolbar.addAction(self.tb_save)
 
+        self.textbox = QtWidgets.QLineEdit(self)
+        self.textbox.move(950, 150)
+        self.textbox.resize(150, 40)
+
 
     def setCameras  (self,cameras):
         self.cameras = cameras
@@ -82,16 +88,19 @@ class Application(QtWidgets.QWidget):
         self.im_right_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled)) # We get the original image and display it.
 
     def takePhoto(self):
-        self.photos_taken += 1
-        print 'Take Dual Image ' + str(self.photos_taken)
+        if not os.path.exists('bin/CalibrationImages/' + self.textbox.text()):
+            os.makedirs('bin/CalibrationImages/' + self.textbox.text())
 
-        print '::Write Left Image::'
+        self.photos_taken += 1
+        print('Take Dual Image ' + str(self.photos_taken))
+
+        print('::Write Left Image::')
         im_left = self.cameras[0].getImageHD()
         im_rgb_left = cv2.cvtColor(cv2.resize(im_left,(1920,1080)), cv2.COLOR_BGR2RGB)
-        cv2.imwrite('bin/CalibrationImages/left_image_' + str(self.photos_taken) + '.png',im_rgb_left)
+        cv2.imwrite('bin/CalibrationImages/' + self.textbox.text() + '/left_image_' + str(self.photos_taken) + '.png',im_rgb_left)
         
-        print '::Write Right Image::'
+        print('::Write Right Image::')
         im_right = self.cameras[1].getImageHD()
         im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(1920,1080)), cv2.COLOR_BGR2RGB)
-        cv2.imwrite('bin/CalibrationImages/right_image_' + str(self.photos_taken) + '.png',im_rgb_right)
+        cv2.imwrite('bin/CalibrationImages/' + self.textbox.text() + '/right_image_' + str(self.photos_taken) + '.png',im_rgb_right)
 
