@@ -4,6 +4,8 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
+import os
+
 import cv2
 
 class Application(QtWidgets.QWidget):
@@ -15,7 +17,7 @@ class Application(QtWidgets.QWidget):
     def __init__(self,parent = None):
         QtWidgets.QWidget.__init__(self, parent)
         self.setWindowTitle("3D Reconstruction")
-        self.resize(1100, 600)
+        self.resize(1150, 400)
         self.move(150, 50)
 
         self.updGUI.connect(self.update)
@@ -44,14 +46,26 @@ class Application(QtWidgets.QWidget):
 
         # Button to take a shot of both cameras one time and store it
         self.take_photo_button = QtWidgets.QPushButton('Take Photo', self)
-        self.take_photo_button.move(950, 50)
+        self.take_photo_button.move(950, 100)
+        self.take_photo_button.resize(150, 40)
         self.take_photo_button.clicked.connect(self.takePhoto)
 
         # Button to take a shot of both cameras one time and store it
         self.take_calibration_images = QtWidgets.QPushButton('Calibration Images', self)
         self.take_calibration_images.setCheckable(True)
-        self.take_calibration_images.move(950, 100)
+        self.take_calibration_images.move(950, 150)
+        self.take_calibration_images.resize(150,40)
         self.take_calibration_images.clicked.connect(self.takePhoto)
+
+        self.calibrate_button = QtWidgets.QPushButton('Calibrate Cameras', self)
+        self.calibrate_button.move(950, 200)
+        self.calibrate_button.resize(150, 40)
+        self.calibrate_button.clicked.connect(self.takePhoto)
+
+        self.reconstruction_button = QtWidgets.QPushButton('3D Reconstruction', self)
+        self.reconstruction_button.move(950, 250)
+        self.reconstruction_button.resize(150, 40)
+        self.reconstruction_button.clicked.connect(self.takePhoto)
 
         self.toolbar=QtWidgets.QToolBar()
         self.toolbar.setIconSize(QtCore.QSize(48, 48))
@@ -59,6 +73,18 @@ class Application(QtWidgets.QWidget):
         self.tb_save = QtWidgets.QAction(QtGui.QIcon("../test/icon.png"), "Save graph", self)
         self.tb_save.triggered.connect(self.takePhoto)
         self.toolbar.addAction(self.tb_save)
+
+        self.textbox = QtWidgets.QLineEdit(self)
+        self.textbox.move(950, 50)
+        self.textbox.resize(150, 40)
+
+        self.images_counter = QtWidgets.QLabel(self)
+        self.images_counter.resize(150, 40)
+        self.images_counter.move(950, 300)
+        self.images_counter.setAlignment(QtCore.Qt.AlignCenter)
+        self.images_counter.setFont(QtGui.QFont('Arial', 35))
+        self.images_counter.setNum(0)
+        self.images_counter.show()
 
 
     def setCameras  (self,cameras):
@@ -82,16 +108,20 @@ class Application(QtWidgets.QWidget):
         self.im_right_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled)) # We get the original image and display it.
 
     def takePhoto(self):
+        if not os.path.exists('bin/CalibrationImages/' + self.textbox.text()):
+            os.makedirs('bin/CalibrationImages/' + self.textbox.text())
+
         self.photos_taken += 1
-        print 'Take Dual Image ' + str(self.photos_taken)
+        print('Take Dual Image ' + str(self.photos_taken))
 
-        print '::Write Left Image::'
-        im_left = self.cameras[0].getImage()
-        im_rgb_left = cv2.cvtColor(cv2.resize(im_left,(640,480)), cv2.COLOR_BGR2RGB)
-        cv2.imwrite('bin/CalibrationImages/left_image_' + str(self.photos_taken) + '.png',im_rgb_left)
+        print('::Write Left Image::')
+        im_left = self.cameras[0].getImageHD()
+        im_rgb_left = cv2.cvtColor(cv2.resize(im_left,(1920,1080)), cv2.COLOR_BGR2RGB)
+        cv2.imwrite('bin/CalibrationImages/' + self.textbox.text() + '/left_image_' + str(self.photos_taken) + '.png',im_rgb_left)
         
-        print '::Write Right Image::'
-        im_right = self.cameras[1].getImage()
-        im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(640,480)), cv2.COLOR_BGR2RGB)
-        cv2.imwrite('bin/CalibrationImages/right_image_' + str(self.photos_taken) + '.png',im_rgb_right)
+        print('::Write Right Image::')
+        im_right = self.cameras[1].getImageHD()
+        im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(1920,1080)), cv2.COLOR_BGR2RGB)
+        cv2.imwrite('bin/CalibrationImages/' + self.textbox.text() + '/right_image_' + str(self.photos_taken) + '.png',im_rgb_right)
 
+        self.images_counter.setNum(self.photos_taken)
