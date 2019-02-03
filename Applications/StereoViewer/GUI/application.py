@@ -86,12 +86,12 @@ class Application(QtWidgets.QWidget):
         print 'Take Dual Image ' + str(self.photos_taken)
 
         print '::Write Left Image::'
-        im_left = self.cameras[0].getImage()
-        im_rgb_left = cv2.cvtColor(cv2.resize(im_left,(640,480)), cv2.COLOR_BGR2RGB)
+        im_left = self.cameras[0].getImageHD()
+        im_rgb_left = cv2.cvtColor(cv2.resize(im_left,(1920,1080)), cv2.COLOR_BGR2RGB)
         cv2.imwrite('bin/CalibrationImages/left_image_' + str(self.photos_taken) + '.png',im_rgb_left)
         
         print '::Write Right Image::'
-        im_right = self.cameras[1].getImage()
-        im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(640,480)), cv2.COLOR_BGR2RGB)
+        im_right = self.cameras[1].getImageHD()
+        im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(1920,1080)), cv2.COLOR_BGR2RGB)
         cv2.imwrite('bin/CalibrationImages/right_image_' + str(self.photos_taken) + '.png',im_rgb_right)
 

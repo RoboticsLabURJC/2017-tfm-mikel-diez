@@ -49,7 +49,13 @@ class Camera:
             im = self.transformImage(im)
             im = np.reshape(im, (540, 404, 3))
             return im
-    
+
+    def getImageHD(self):
+        if self.cam:
+            im = np.frombuffer(self.im.data, dtype=np.uint8)
+            im = np.reshape(im, (self.im_height, self.im_width, 3))
+            return im
+
     def transformImage(self, im):
         im_resized = np.reshape(im, (self.im_height, self.im_width, 3))
         im_resized = cv2.resize(im_resized, (404, 540))
