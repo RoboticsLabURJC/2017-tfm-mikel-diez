@@ -46,14 +46,26 @@ class Application(QtWidgets.QWidget):
 
         # Button to take a shot of both cameras one time and store it
         self.take_photo_button = QtWidgets.QPushButton('Take Photo', self)
-        self.take_photo_button.move(950, 50)
+        self.take_photo_button.move(950, 100)
+        self.take_photo_button.resize(150, 40)
         self.take_photo_button.clicked.connect(self.takePhoto)
 
         # Button to take a shot of both cameras one time and store it
         self.take_calibration_images = QtWidgets.QPushButton('Calibration Images', self)
         self.take_calibration_images.setCheckable(True)
-        self.take_calibration_images.move(950, 100)
+        self.take_calibration_images.move(950, 150)
+        self.take_calibration_images.resize(150,40)
         self.take_calibration_images.clicked.connect(self.takePhoto)
+
+        self.calibrate_button = QtWidgets.QPushButton('Calibrate Cameras', self)
+        self.calibrate_button.move(950, 200)
+        self.calibrate_button.resize(150, 40)
+        self.calibrate_button.clicked.connect(self.takePhoto)
+
+        self.reconstruction_button = QtWidgets.QPushButton('3D Reconstruction', self)
+        self.reconstruction_button.move(950, 250)
+        self.reconstruction_button.resize(150, 40)
+        self.reconstruction_button.clicked.connect(self.takePhoto)
 
         self.toolbar=QtWidgets.QToolBar()
         self.toolbar.setIconSize(QtCore.QSize(48, 48))
@@ -63,8 +75,16 @@ class Application(QtWidgets.QWidget):
         self.toolbar.addAction(self.tb_save)
 
         self.textbox = QtWidgets.QLineEdit(self)
-        self.textbox.move(950, 150)
+        self.textbox.move(950, 50)
         self.textbox.resize(150, 40)
+
+        self.images_counter = QtWidgets.QLabel(self)
+        self.images_counter.resize(150, 40)
+        self.images_counter.move(950, 300)
+        self.images_counter.setAlignment(QtCore.Qt.AlignCenter)
+        self.images_counter.setFont(QtGui.QFont('Arial', 35))
+        self.images_counter.setNum(0)
+        self.images_counter.show()
 
 
     def setCameras  (self,cameras):
@@ -104,3 +124,4 @@ class Application(QtWidgets.QWidget):
         im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(1920,1080)), cv2.COLOR_BGR2RGB)
         cv2.imwrite('bin/CalibrationImages/' + self.textbox.text() + '/right_image_' + str(self.photos_taken) + '.png',im_rgb_right)
 
+        self.images_counter.setNum(self.photos_taken)
