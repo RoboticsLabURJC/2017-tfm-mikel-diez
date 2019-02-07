@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     
     myGUI = Application()
-    myGUI.setCameras([camera_left,camera_right])
+    myGUI.set_cameras([camera_left, camera_right])
     myGUI.show()
 
     # Threading camera left

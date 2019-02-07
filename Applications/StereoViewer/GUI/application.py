@@ -4,6 +4,8 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
+from Modules.Calibration.StereoCalibration import StereoCalibration
+
 import os
 
 import cv2
@@ -14,26 +16,59 @@ class Application(QtWidgets.QWidget):
     photos_taken = 0
     frames = 0
 
-    def __init__(self,parent = None):
-        QtWidgets.QWidget.__init__(self, parent)
-        self.setWindowTitle("3D Reconstruction")
-        self.resize(1150, 400)
-        self.move(150, 50)
+    def __init__(self, parent=None):
+        print(sys.path)
+        self.create_main_window(parent)
 
-        self.updGUI.connect(self.update)
+        self.create_left_image()
+        self.create_right_image()
+        self.create_take_photo_button()
+        self.create_calibration_images_button()
+        self.create_calibrate_cameras_button()
+        self.create_reconstruction_button()
+        self.create_input_textbox()
+        self.create_image_counter_text()
 
-        # Original image label.
-        self.im_left_label = QtWidgets.QLabel(self)
-        self.im_left_label.resize(400, 300)
-        self.im_left_label.move(50, 50)
-        self.im_left_label.show()
-        self.im_left_txt = QtWidgets.QLabel(self)
-        self.im_left_txt.resize(200, 40)
-        self.im_left_txt.move(50, 10)
-        self.im_left_txt.setText('Left Image')
-        self.im_left_txt.show()
+    def create_image_counter_text(self):
+        self.images_counter = QtWidgets.QLabel(self)
+        self.images_counter.resize(150, 40)
+        self.images_counter.move(950, 300)
+        self.images_counter.setAlignment(QtCore.Qt.AlignCenter)
+        self.images_counter.setFont(QtGui.QFont('Arial', 35))
+        self.images_counter.setNum(0)
+        self.images_counter.show()
 
-        # Original image label.
+    def create_input_textbox(self):
+        self.textbox = QtWidgets.QLineEdit(self)
+        self.textbox.move(950, 50)
+        self.textbox.resize(150, 40)
+
+    def create_reconstruction_button(self):
+        self.reconstruction_button = QtWidgets.QPushButton('3D Reconstruction', self)
+        self.reconstruction_button.move(950, 250)
+        self.reconstruction_button.resize(150, 40)
+        self.reconstruction_button.clicked.connect(self.reconstruct_with_set)
+
+    def create_calibrate_cameras_button(self):
+        self.calibrate_button = QtWidgets.QPushButton('Calibrate Cameras', self)
+        self.calibrate_button.move(950, 200)
+        self.calibrate_button.resize(150, 40)
+        self.calibrate_button.clicked.connect(self.calibrate_set)
+
+    def create_calibration_images_button(self):
+        self.take_calibration_images = QtWidgets.QPushButton('Calibration Images', self)
+        self.take_calibration_images.setCheckable(True)
+        self.take_calibration_images.move(950, 150)
+        self.take_calibration_images.resize(150, 40)
+        self.take_calibration_images.clicked.connect(self.take_photo)
+
+    def create_take_photo_button(self):
+        self.take_photo_button = QtWidgets.QPushButton('Take Photo', self)
+        self.take_photo_button.move(950, 100)
+        self.take_photo_button.resize(150, 40)
+        self.take_photo_button.clicked.connect(self.take_photo)
+
+    def create_right_image(self):
         self.im_right_label = QtWidgets.QLabel(self)
         self.im_right_label.resize(400, 300)
         self.im_right_label.move(500, 50)
@@ -44,57 +79,32 @@ class Application(QtWidgets.QWidget):
         self.im_right_txt.setText('Right Image')
         self.im_right_txt.show()
 
-        # Button to take a shot of both cameras one time and store it
-        self.take_photo_button = QtWidgets.QPushButton('Take Photo', self)
-        self.take_photo_button.move(950, 100)
-        self.take_photo_button.resize(150, 40)
-        self.take_photo_button.clicked.connect(self.takePhoto)
+    def create_left_image(self):
+        self.im_left_label = QtWidgets.QLabel(self)
+        self.im_left_label.resize(400, 300)
+        self.im_left_label.move(50, 50)
+        self.im_left_label.show()
+        self.im_left_txt = QtWidgets.QLabel(self)
+        self.im_left_txt.resize(200, 40)
+        self.im_left_txt.move(50, 10)
+        self.im_left_txt.setText('Left Image')
+        self.im_left_txt.show()
 
-        # Button to take a shot of both cameras one time and store it
-        self.take_calibration_images = QtWidgets.QPushButton('Calibration Images', self)
-        self.take_calibration_images.setCheckable(True)
-        self.take_calibration_images.move(950, 150)
-        self.take_calibration_images.resize(150,40)
-        self.take_calibration_images.clicked.connect(self.takePhoto)
+    def create_main_window(self, parent):
+        QtWidgets.QWidget.__init__(self, parent)
+        self.setWindowTitle("3D Reconstruction")
+        self.resize(1150, 400)
+        self.move(150, 50)
+        self.updGUI.connect(self.update)
 
-        self.calibrate_button = QtWidgets.QPushButton('Calibrate Cameras', self)
-        self.calibrate_button.move(950, 200)
-        self.calibrate_button.resize(150, 40)
-        self.calibrate_button.clicked.connect(self.takePhoto)
-
-        self.reconstruction_button = QtWidgets.QPushButton('3D Reconstruction', self)
-        self.reconstruction_button.move(950, 250)
-        self.reconstruction_button.resize(150, 40)
-        self.reconstruction_button.clicked.connect(self.takePhoto)
-
-        self.toolbar=QtWidgets.QToolBar()
-        self.toolbar.setIconSize(QtCore.QSize(48, 48))
-
-        self.tb_save = QtWidgets.QAction(QtGui.QIcon("../test/icon.png"), "Save graph", self)
-        self.tb_save.triggered.connect(self.takePhoto)
-        self.toolbar.addAction(self.tb_save)
-
-        self.textbox = QtWidgets.QLineEdit(self)
-        self.textbox.move(950, 50)
-        self.textbox.resize(150, 40)
-
-        self.images_counter = QtWidgets.QLabel(self)
-        self.images_counter.resize(150, 40)
-        self.images_counter.move(950, 300)
-        self.images_counter.setAlignment(QtCore.Qt.AlignCenter)
-        self.images_counter.setFont(QtGui.QFont('Arial', 35))
-        self.images_counter.setNum(0)
-        self.images_counter.show()
-
-
-    def setCameras  (self,cameras):
+    def set_cameras(self, cameras):
         self.cameras = cameras
 
     def update(self):
         if(self.take_calibration_images.isChecked()):
             self.frames += 1
             if(self.frames == 100):
-                self.takePhoto()
+                self.take_photo()
                 self.frames = 0
 
         im_left = self.cameras[0].getImage()
@@ -107,7 +117,7 @@ class Application(QtWidgets.QWidget):
         im_scaled = im.scaled(self.im_left_label.size())
         self.im_right_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled)) # We get the original image and display it.
 
-    def takePhoto(self):
+    def take_photo(self):
         if not os.path.exists('bin/CalibrationImages/' + self.textbox.text()):
             os.makedirs('bin/CalibrationImages/' + self.textbox.text())
 
@@ -125,3 +135,10 @@ class Application(QtWidgets.QWidget):
         cv2.imwrite('bin/CalibrationImages/' + self.textbox.text() + '/right_image_' + str(self.photos_taken) + '.png',im_rgb_right)
 
         self.images_counter.setNum(self.photos_taken)
+
+    def calibrate_set(self):
+        stereo_calibrator = StereoCalibration()
+        StereoCalibration.calibrate_set(stereo_calibrator, self.textbox.text())
+
+    def reconstruct_with_set(self):
+        pass
