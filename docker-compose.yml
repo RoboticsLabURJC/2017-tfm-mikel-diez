@@ -1,0 +1,20 @@
+version: '2'
+services:
+  jderobot:
+    working_dir: /home/TFM
+    image: mikeldb/tfm:latest
+    command: tail -F anything
+    volumes:
+        - "./code/:/home/TFM/:delegated"
+        - "/tmp/.X11-unix:/tmp/.X11-unix"
+    ports:
+      - "5000:5000"
+      - "11000:11000"
+      - "9957:9957"
+    environment:
+      - DISPLAY
+    devices:
+      - "/dev/dri:/dev/dri"
+#      - "/dev/video0:/dev/video0"
+#      - "/dev/video1:/dev/video1"
+#      - "/dev/video2:/dev/video2"
