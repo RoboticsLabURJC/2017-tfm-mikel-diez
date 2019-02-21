@@ -126,12 +126,12 @@ class Application(QtWidgets.QWidget):
 
         print('::Write Left Image::')
         im_left = self.cameras[0].getImageHD()
-        im_rgb_left = cv2.cvtColor(cv2.resize(im_left,(1920,1080)), cv2.COLOR_BGR2RGB)
+        im_rgb_left = cv2.cvtColor(cv2.resize(im_left,(1280,720)), cv2.COLOR_BGR2RGB)
         cv2.imwrite('bin/CalibrationImages/' + self.textbox.text() + '/left_image_' + str(self.photos_taken) + '.png',im_rgb_left)
         
         print('::Write Right Image::')
         im_right = self.cameras[1].getImageHD()
-        im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(1920,1080)), cv2.COLOR_BGR2RGB)
+        im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(1280,720)), cv2.COLOR_BGR2RGB)
         cv2.imwrite('bin/CalibrationImages/' + self.textbox.text() + '/right_image_' + str(self.photos_taken) + '.png',im_rgb_right)
 
         self.images_counter.setNum(self.photos_taken)
