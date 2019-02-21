@@ -9,7 +9,7 @@ from Modules.GUI.Helpers import imShowTwoImages, drawlines
 
 if __name__ == '__main__':
 	# Take the images from folder/camera and rectify
-	with open("bin/CalibrationMatrix/set11/calibrated_camera.yml", 'r') as stream:
+	with open("bin/CalibrationMatrix/set12/calibrated_camera.yml", 'r') as stream:
 		try:
 			data = yaml.load(stream)
 
@@ -22,13 +22,13 @@ if __name__ == '__main__':
 			print('cameraMatrix2', data['cameraMatrix2'])
 
 			rectify_scale = 0 # 0=full crop, 1=no crop
-			R1, R2, P1, P2, Q, roi1, roi2 = cv2.stereoRectify(data["cameraMatrix1"], data["distCoeffs1"], data["cameraMatrix2"], data["distCoeffs2"], (640, 480), data["R"], data["T"], alpha = rectify_scale)
+			R1, R2, P1, P2, Q, roi1, roi2 = cv2.stereoRectify(data["cameraMatrix1"], data["distCoeffs1"], data["cameraMatrix2"], data["distCoeffs2"], (1280, 720), data["R"], data["T"], alpha = rectify_scale)
 
-			left_maps = cv2.initUndistortRectifyMap(data["cameraMatrix1"], data["distCoeffs1"], R1, P1, (1920, 1080), cv2.CV_16SC2)
-			right_maps = cv2.initUndistortRectifyMap(data["cameraMatrix2"], data["distCoeffs2"], R2, P2, (1920, 1080), cv2.CV_16SC2)
+			left_maps = cv2.initUndistortRectifyMap(data["cameraMatrix1"], data["distCoeffs1"], R1, P1, (1280, 720), cv2.CV_16SC2)
+			right_maps = cv2.initUndistortRectifyMap(data["cameraMatrix2"], data["distCoeffs2"], R2, P2, (1280, 720), cv2.CV_16SC2)
 
-			img_left = cv2.imread('bin/CalibrationImages/set11_objectReconstruction/left_image_3.png')
-			img_right = cv2.imread('bin/CalibrationImages/set11_objectReconstruction/right_image_3.png')
+			img_left = cv2.imread('bin/CalibrationImages/set12_objectReconstruction/left_image_16.png')
+			img_right = cv2.imread('bin/CalibrationImages/set12_objectReconstruction/right_image_16.png')
 
 			imShowTwoImages(img_left, img_right, 'original imgs')
 			cv2.waitKey(0)
@@ -39,15 +39,20 @@ if __name__ == '__main__':
 			left_img_remap = cv2.remap(gray_left, left_maps[0], left_maps[1], cv2.INTER_LANCZOS4)
 			right_img_remap = cv2.remap(gray_right, right_maps[0], right_maps[1], cv2.INTER_LANCZOS4)
 
-			imShowTwoImages(gray_left, gray_right, 'original grey')
-			cv2.waitKey(0)
+			# imShowTwoImages(gray_left, gray_right, 'original grey')
+			# cv2.waitKey(0)
+			#
+			# imShowTwoImages(left_img_remap,right_img_remap, 'remapped images')
+			# cv2.waitKey(0)
 
-			imShowTwoImages(left_img_remap,right_img_remap, 'remapped images')
-			cv2.waitKey(0)
+			points = np.array([[[858, 271]], [[897, 453]], [[1090, 276]], [[1123, 444]]], dtype=np.float32)
 
-			lines1 = cv2.computeCorrespondEpilines((0, 0, 0), 1, data['F'])
+			lines1 = cv2.computeCorrespondEpilines(points, 1, data['F'])
 			lines1 = lines1.reshape(-1, 3)
-			left_img_lines, right_img_lines = drawlines(left_img_remap, right_img_remap, lines1, pts1, pts2)
+			print(lines1)
+			right_img_lines, left_img_lines = drawlines(gray_right, gray_left, lines1, points, points)
 
+			imShowTwoImages(left_img_lines, right_img_lines, 'wiiii')
+			cv2.waitKey(0)
 		except yaml.YAMLError as exc:
 			print(exc)
