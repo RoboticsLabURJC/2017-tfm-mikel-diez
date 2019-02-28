@@ -51,13 +51,14 @@ if __name__ == '__main__':
 			lines1 = cv2.computeCorrespondEpilines(points, 1, data['F'])
 			lines1 = lines1.reshape(-1, 3)
 			print(lines1)
-			right_img_lines, left_img_lines = drawlines(gray_right, gray_left, lines1, points, points)
+			# right_img_lines, left_img_lines = drawlines(gray_right, gray_left, lines1, points, points)
 
-			imShowTwoImages(left_img_lines, right_img_lines, 'wiiii')
-			cv2.waitKey(0)
+			# imShowTwoImages(left_img_lines, right_img_lines, 'wiiii')
+			# cv2.waitKey(0)
 
 			points4D = cv2.triangulatePoints(P1, P2, points, points2)
 			print(points4D)
+			print(points)
 			newArray = [np.array([-0.12184567, -0.14085074, -0.23511265]) / -0.24977995, np.array([ 0.00702684, -0.08393233,  0.00313828]) / -0.07938664, np.array([-0.99220562, -0.98608309, -0.97168368]) / -0.96471202, np.array([-0.02514401, -0.02750583, -0.0233017]) / -0.02526825]
 			print(newArray)
 

@@ -5,9 +5,10 @@ from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
 from Modules.Calibration.StereoCalibration import StereoCalibration
+from Modules.Matching.imagematcher import BorderStereoMatcher
 
 import os
-
+import yaml
 import cv2
 
 class Application(QtWidgets.QWidget):
@@ -138,7 +139,18 @@ class Application(QtWidgets.QWidget):
 
     def calibrate_set(self):
         stereo_calibrator = StereoCalibration()
-        StereoCalibration.calibrate_set(stereo_calibrator, self.textbox.text())
+        stereo_calibrator.calibrate_set(self.textbox.text())
 
     def reconstruct_with_set(self):
-        pass
+        image1 = cv2.imread('bin/CalibrationImages/set12_objectReconstruction/left_image_16.png')
+        image2 = cv2.imread('bin/CalibrationImages/set12_objectReconstruction/right_image_16.png')
+        matcher = BorderStereoMatcher()
+        matcher.set_images(image1, image2)
+        with open("bin/CalibrationMatrix/set12/calibrated_camera.yml", 'r') as stream:
+            try:
+                data = yaml.load(stream)
+                matcher.set_calibration_data(data)
+            except yaml.YAMLError as exc:
+                print(exc)
+
+        matcher.get_matching_points()
