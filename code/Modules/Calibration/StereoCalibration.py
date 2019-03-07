@@ -23,10 +23,13 @@ class StereoCalibration:
         self.imgpoints_left = []  # 2d points in image plane.
         self.imgpoints_right = []  # 2d points in image plane.
         self.image_size = []
+        self.gray_images_shape = []
 
     def calibrate_set(self, image_set):
         images_left = sorted(glob.glob('bin/CalibrationImages/' + image_set + '/left*' + self.images_format))
         images_right = sorted(glob.glob('bin/CalibrationImages/' + image_set + '/right*' + self.images_format))
+
+        print('bin/CalibrationImages/' + image_set + '/right*' + self.images_format)
 
         for index, file_name in enumerate(images_left):
 
@@ -37,7 +40,7 @@ class StereoCalibration:
             gray_right = cv2.cvtColor(img_right, cv2.COLOR_BGR2GRAY)
 
             image_size = img_left.shape
-
+            self.gray_images_shape = gray_left.shape
             # Find the chess board corners in both images
             left_found, left_corners = cv2.findChessboardCorners(gray_left, self.pattern_size,
                                                                  cv2.CALIB_CB_ADAPTIVE_THRESH | cv2.CALIB_CB_NORMALIZE_IMAGE | cv2.CALIB_CB_FAST_CHECK)
@@ -66,11 +69,12 @@ class StereoCalibration:
         # Destroy windows
         cv2.destroyAllWindows()
 
+        print(self.gray_images_shape)
+
         # Calibrate cameras individualy
-        ret1, cameraMatrix1, distCoeffs1, rvecs1, tvecs1 = cv2.calibrateCamera(self.objpoints, self.imgpoints_left,
-                                                                               gray_left.shape[::-1], None, None)
+        ret1, cameraMatrix1, distCoeffs1, rvecs1, tvecs1 = cv2.calibrateCamera(self.objpoints, self.imgpoints_left, self.gray_images_shape[::-1], None, None)
         ret2, cameraMatrix2, distCoeffs2, rvecs2, tvecs2 = cv2.calibrateCamera(self.objpoints, self.imgpoints_right,
-                                                                               gray_right.shape[::-1], None, None)
+                                                                               self.gray_images_shape[::-1], None, None)
 
         # Calibrate stereo camera
         stereocalib_criteria = (cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS, 100, 1e-5)
