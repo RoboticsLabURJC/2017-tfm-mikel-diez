@@ -142,11 +142,11 @@ class Application(QtWidgets.QWidget):
         stereo_calibrator.calibrate_set(self.textbox.text())
 
     def reconstruct_with_set(self):
-        image1 = cv2.imread('bin/CalibrationImages/set12_objectReconstruction/left_image_16.png')
-        image2 = cv2.imread('bin/CalibrationImages/set12_objectReconstruction/right_image_16.png')
+        image1 = cv2.imread('bin/CalibrationImages/set17_reconstruction/left_image_14.png')
+        image2 = cv2.imread('bin/CalibrationImages/set17_reconstruction/right_image_14.png')
         matcher = BorderStereoMatcher()
         matcher.set_images(image1, image2)
-        with open("bin/CalibrationMatrix/set12/calibrated_camera.yml", 'r') as stream:
+        with open("bin/CalibrationMatrix/set17/calibrated_camera.yml", 'r') as stream:
             try:
                 data = yaml.load(stream)
                 matcher.set_calibration_data(data)
