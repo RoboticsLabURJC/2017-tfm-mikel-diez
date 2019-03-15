@@ -44,6 +44,7 @@ Matching with hsv color space taking only H and S with threshold of 25
 
 ![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/matching_hsv_hs_threshold_25.png)
 
+As can be seen in the mos of the miss-matches happen in the lower line of yellow books. I might need to try go get a more texturized images where de difference between interest points is higher. 
 
 ### 2018 - 2019
 #### 22/02/2019 - 01/03/2019
