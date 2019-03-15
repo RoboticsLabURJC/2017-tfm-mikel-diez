@@ -110,7 +110,7 @@ class BorderStereoMatcher:
 
 		# left_points, right_points, lines_right = self.__match_points_gray(points, lines1, cv2.cvtColor(self.image1, cv2.COLOR_BGR2GRAY), cv2.cvtColor(self.image2, cv2.COLOR_BGR2GRAY), border_image2)
 
-		left_points, right_points, lines_right = self.__match_points_hsv(points, lines1, self.image1, self.image2, border_image2)
+		left_points, right_points, lines_right = self.__match_points_bgr(points, lines1, self.image1, self.image2, border_image2)
 
 		self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
 		# right_img_lines, left_img_lines = drawlines(border_image2, border_image1_thresholded, lines_right, right_points, left_points)
@@ -182,7 +182,7 @@ class BorderStereoMatcher:
 
 		return points_left, points_right, lines_right
 
-	def __match_points_rgb(self, points, lines, image1, image2, image2_borders):
+	def __match_points_bgr(self, points, lines, image1, image2, image2_borders):
 		height, width, depth = image2.shape
 		points_left = None
 		points_right = None
@@ -193,13 +193,14 @@ class BorderStereoMatcher:
 			best_point = None
 			for column in range(20, width - 20):
 				row = int((-(column * line[0]) - line[2]) / line[1])
-				if image2_borders[row][column] == 255:
-					right_patch = self.__get_image_patch_gray(image2, row, column, 10)
-					if right_patch.shape == (20, 20, 3):
-						mean_square_error = (np.square(right_patch - left_patch)).mean(axis=None)
-						if mean_square_error < 50 and mean_square_error < best_mean_square_error:
-							best_mean_square_error = mean_square_error
-							best_point = np.array([[column, row]], dtype=np.float32)
+				for epiline_offset in range(-4, 4):
+					if image2_borders[row][column + epiline_offset] == 255:
+						right_patch = self.__get_image_patch_gray(image2, row, column + epiline_offset, 10)
+						if right_patch.shape == (20, 20, 3):
+							mean_square_error = (np.square(right_patch - left_patch)).mean(axis=None)
+							if mean_square_error < 50 and mean_square_error < best_mean_square_error:
+								best_mean_square_error = mean_square_error
+								best_point = np.array([[column + epiline_offset, row]], dtype=np.float32)
 			if best_point is not None:
 				if points_left is None:
 					points_left = np.array([point])
@@ -247,7 +248,7 @@ class BorderStereoMatcher:
 		return points_left, points_right, lines_right
 
 	def __get_image_patch_gray(self, image, position_x, position_y, size = 3):
-		return image[position_x-size:position_x+size, position_y-size:position_y+size]
+		return image[int(position_x)-size:int(position_x)+size, int(position_y)-size:int(position_y)+size]
 
 	def __get_image_patch_rgb(self, image, position_x, position_y, size = 3):
 		return image[position_x-size:position_x+size, position_y-size:position_y+size, :]
