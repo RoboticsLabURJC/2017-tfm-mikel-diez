@@ -139,6 +139,93 @@ One of the most critical things for me to progress in this project as the 3D rec
 
 Then for fish-eye calibration I run into [this tutorial](https://medium.com/@kennethjiang/calibrate-fisheye-lens-using-opencv-333b05afa0b0) and will be trying to use it to help me achieve my goals.
 ### 2017 - 2018
+#### Week 6
+I finally managed to create a stereo calibration. As said in previous logs I used the example of the OpenCV documentation to calibrate the single cameras, but then I needed to have the stereo pair and its relative calibration.
 
+Again OpenCV really helps with the process and has a function stereoCalibrate that pretty much do the job for you, you only need to pass the correct parameters to it and now everything is ready to rectify the images.
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/rectified_images_screenshot_01.06.2018.png)
+#### Between Weeks
+I've been like for a month without working much on the thesis (I really regret it), but now I'm back on business. I'm going to write here on the go as the new updates happen instead of waiting until the end to write everything. This way I'll be more engaged with all this (thesis and wiki and github).
+
+Well, first update. I finally got David Pascual's digitclasifier to work! Yes after several problems I got it to work with the new JdeRobot packages.
+[![Watch the video](https://img.youtube.com/vi/GjbUXDXEv_o/hqdefault.jpg)](https://youtu.be/GjbUXDXEv_o)
+
+With this new JdeRobot packages the only problem I encounter was that I didn't have the h5py package installed (is listed at [https://keras.io/#installation|Keras] installation documentation as an optional package) but then everything went smoothly.
+
+#### Week 5 (19/12/2017 - 26/12/2017): Lets begin to prepare my solution 
+So, this thesis is going to be about depth estimation in stereo images using Deep Learning (likely using convolutional neural networks) but at least in a first attempt CNN will be used to match the corresponding pixels in both images. 
+
+Lets divide the 3D reconstruction from stereo images of a scene in different steps(some of the could contain other sub-steps, but from now we'll go with this):
+* Images acquisition
+* Pixel matching
+* Distance estimation
+*3D image reconstruction
+
+The step that will be using CNN is the second. To do this, first a classic geometric solution for stereoscopic 3D reconstruction will be implemented to create a non-dense image of the scene. In the following subsections I'll explain how this first solution is going to be implemented. 
+
+##### Images acquisition
+By using the JdeRobot cameraserver I'll connect two cameras to a computer that will process the images. But in a very early stage I'll test the algorithm with a still image (just a photograph) so I'll be able to take it without worrying about other connectivity to test the solution. The rest will come in a later stage when real-time video processing will be necessary.
+
+An other critical part in the acquisition hardware is its calibration, we need to know its intrinsic and extrinsic parameters. The intrinsic parameters are specific to a camera, and once calculated they won't (likely) change, on the other hand, extrinsic parameters are the ones telling the camera position in the real world (rotation, position, tilt).
+
+For this task (calibration) I'll be using OpenCV calibration function ([here a tutorial](https://docs.opencv.org/3.1.0/dc/dbb/tutorial_py_calibration.html)) and I'll need some kind of chess-board pattern. The one in the image is a home-made one.
+
+![Multiple Epilines](http://jderobot.org/store/mikeld/uploads/images/chess_board.jpg)
+
+##### Pixel Matching
+In the future this stage will include the CNN but for now I'll proceed with a more classic approach. The objective (at first) is to create a sparse reconstruction, so I'll take only border/corner pixels. Why is that? Well, pixels with high gradient (corners,borders,rough textures) contain much more information than plain surfaces.
+
+For this I'll apply a sobel filter to both images to get the high gradient. Then I'll start taking points in the left image and trying to find them in the right one. But I'll use some restrictions:
+*Not all the pixels will be taken only the strongest in the neighbourhood
+*I'll use the epipolar restriction, so will only search for coincidences in a bunch or lines over on bellow the original one.
+*The pixel on the right image will always be more to the right than in the left image, so there is no use on searching it in the first pixels.
+*I'll take the most similar patch except if the similarity is to low or there are several high similarity patches.
+
+And for the similarity measure I'm thinking in a minimum mean square error as it's a basic similarity operator.
+
+##### Distance estimation
+Once the pixels have been matched is when the distance estimation begins. By knowing the calibration parameters and the pixels of interest this becomes a geometry problem.
+
+With two points (pixel and camera origin) we can get a line and with two lines we can find an intersection (or the point where they are the closest) and that's the point we are looking for. That's our reconstructed 3D point. I'll extend this in future updates, as this is something I'm going to implement for sure.
+
+##### 3D image reconstruction
+Once a list of 3D points is found it's time to show them on the screen. We might use them in many ways but for now lets stick to the previous parts as they are still the main parts of this.
+
+#### Week 4 (11/12/2017 - 18/12/2017): Reproduce code with JdeRobot 
+I was having some problem with my python packages version so I decided that it was better to start with a fresh Ubuntu 16.04 installation. I found that ROS had updated some packages and the dependencies where broken so I tried to install it from source code following the [Installation#From_source_code_at_GitHub|installation instructions] from this official source. I didn't have much luck doing this.
+
+There are other staff I had to do for this Mondays meeting:
+* Read the thesis of two former students of the course.
+  * [Marcos Pieras](https://gsyc.urjc.es/jmplaza/students/tfm-visualtracking-marcos_pieras-2017.pdf)
+  * David Pascual 
+* Read one paper:
+  * [Efficient Deep Learning for Stereo Matching](https://www.cs.toronto.edu/~urtasun/publications/luo_etal_cvpr16.pdf)
+
+##### Efficient Deep Learning for Stereo Matching
+They propose a new approach that speeds up the time of a Neural Network to process distances from a minute to less than a second (GPU time). They use a siamese architecture as is standard for this challenges and treat the problema as a multiclass classification. The classes are all the posible disparities.
+
+The problem of distance detection has always been high due its enormus amount of applications in the industry for automation, being the cameras the cheapest sensor compared to others such as LIDAR. This approaches for stereo camera find an interest patch in the  left image and find the probability of a patch in the right image to be the same one. In this paper they try to do this matching by using CNN (convolutional neural networks).
+
+Other approaches further process with more layers after at the exit of the siamese network but they just compute a simple cost-function to compute the iner product on the representation of both images to know the matching score.
+
+Training: For the left image they take random patches for which the ground-truth is known. They size of those patches is the same as the size of the network receptive field. For the right size however they take a bigger patch. Having a 64-dimensional output for the left size and a |yi|x64 dimensional one for the right one. (if I'm not wrong |yi| is all the possible disparities.
+
+Testing: For testing the network computes the 64 dimensional feature for every pixel in the image (only once to maintain efficiency)
+
+#### Week 3 (23/11/2017 - 29/11/2017)
+
+#### Week 2 (16/11/2017 - 22/11/2017)
+
+#### Week 1 (09/11/2017 - 15/11/2017): Starting research
+For this first week I had two task that could be differentiated:
+* Test some of the examples the JdeRobot framework.
+  * Installation: No problema at all with the installation of the framework, I did it with the .deb packages and as I use Ubuntu 16.04 everything went as planned.
+  * Cameraserver: Here I found a major hardware problem, my desktop doesn't have a camera so is kind of difficult to use this examples without it. I'll try to get one for the next week so I can try this.
+  * Turtlebot + KobukiViewer: I'm still struggling with this example. Y get the following error <nowiki>/usr/include/IceUtil/Handle.h:46: IceUtil::NullHandleException</nowiki> in the next days I'll try  to solve it.
+  * ArDrone + UAVViewer: Works perfectly out-of-the-box, I've been flying the drone over the scenario, it's a bit tricky but everything worked correctly.
+* Read the thesis of two former students of the course.
+  * [Alberto Martín](https://gsyc.urjc.es/jmplaza/students/tfm-visualslam-alberto_martin-2017.pdf)
+  * [Marcos Pieras](https://gsyc.urjc.es/jmplaza/students/tfm-visualtracking-marcos_pieras-2017.pdf)
 
 
