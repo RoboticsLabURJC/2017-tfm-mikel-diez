@@ -14,9 +14,39 @@ The scope of this project is use of neural networks in order to estimate depth o
 * [ ] Points matching in an RGB color space
 * [ ] Full fish-eye camera calibration
 #### Week Log
+As agreed I started working in a tool to see how the points in both images are matched. Unsurprisingly all the lines follow the same direction as they are all following the epiline and they all go in the same direction.
+
+Matching with gray images and MSE threshold of 80
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/matching_threshold_80.png)
+
+Matching with gray images and MSE threshold of 50
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/matching_threshold_50.png)
+
+Matching with rgb images and MSE threshold of 50
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/matching_rgb_threshold_50.png)
+
+Matching with rgb images and MSE threshold of 50 with an epiline range of +-4 pixels.
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/matching_rgb_threshold_50_epilines_4.png)
+
+Matching with hsv color space taking all the channels and without considering the circularity of H
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/matching_hsv_all_channels.png)
+
+Matching with hsv color space taking only H and S with threshold of 50
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/matching_hsv_hs_threshold_50.png)
+
+Matching with hsv color space taking only H and S with threshold of 25
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/matching_hsv_hs_threshold_25.png)
+
 
 ### 2018 - 2019
-#### 22/02/2019 - 1/03/2019
+#### 22/02/2019 - 01/03/2019
 More about epilines, now with more points
 ![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/multiple_epipolars.png)
 

@@ -107,8 +107,12 @@ class BorderStereoMatcher:
 		lines1 = cv2.computeCorrespondEpilines(points, 1, self.calibration_data['F'])
 		lines1 = lines1.reshape(-1, 3)
 
-		left_points, right_points, lines_right = self.__match_points(points, lines1, cv2.cvtColor(self.image1, cv2.COLOR_BGR2GRAY), cv2.cvtColor(self.image2, cv2.COLOR_BGR2GRAY), border_image2)
 
+		# left_points, right_points, lines_right = self.__match_points_gray(points, lines1, cv2.cvtColor(self.image1, cv2.COLOR_BGR2GRAY), cv2.cvtColor(self.image2, cv2.COLOR_BGR2GRAY), border_image2)
+
+		left_points, right_points, lines_right = self.__match_points_bgr(points, lines1, self.image1, self.image2, border_image2)
+
+		self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
 		# right_img_lines, left_img_lines = drawlines(border_image2, border_image1_thresholded, lines_right, right_points, left_points)
 
 		points4D = cv2.triangulatePoints(P1, P2, left_points, right_points)
@@ -116,7 +120,6 @@ class BorderStereoMatcher:
 		for index in range(0, right_points.shape[0] - 1):
 			final_points.append(jderobot.RGBPoint(float(points4D[0][index] / points4D[3][index]), float(points4D[1][index] / points4D[3][index]), float(points4D[2][index] / points4D[3][index])))
 
-		print(final_points)
 
 		# Save the calibration matrix in a yaml file.
 		if not os.path.exists('bin/Points/'):
@@ -147,22 +150,23 @@ class BorderStereoMatcher:
 
 		return result
 
-	def __match_points(self, points, lines, image1, image2, image2_borders):
+	def __match_points_gray(self, points, lines, image1, image2, image2_borders):
 		height, width = image2.shape
 		points_left = None
 		points_right = None
 		lines_right = None
 		for line, point in zip(lines, points):
-			left_patch = self.__get_image_patch(image1, point[0][1], point[0][0], 10)
+			left_patch = self.__get_image_patch_gray(image1, point[0][1], point[0][0], 10)
 			best_mean_square_error = 100000
 			best_point = None
 			for column in range(20, width - 20):
 				row = int((-(column * line[0]) - line[2]) / line[1])
 				if image2_borders[row][column] == 255:
-					right_patch = self.__get_image_patch(image2, row, column, 10)
+					right_patch = self.__get_image_patch_gray(image2, row, column, 10)
 					if right_patch.shape == (20,20):
 						mean_square_error = (np.square(right_patch - left_patch)).mean(axis=None)
-						if mean_square_error < 80 and mean_square_error < best_mean_square_error:
+						if mean_square_error < 50 and mean_square_error < best_mean_square_error:
+							print(mean_square_error)
 							best_mean_square_error = mean_square_error
 							best_point = np.array([[column, row]], dtype=np.float32)
 			if best_point is not None:
@@ -178,5 +182,99 @@ class BorderStereoMatcher:
 
 		return points_left, points_right, lines_right
 
-	def __get_image_patch(self,image,position_x,position_y,size = 3):
-		return image[position_x-size:position_x+size,position_y-size:position_y+size]
+	def __match_points_bgr(self, points, lines, image1, image2, image2_borders):
+		height, width, depth = image2.shape
+		points_left = None
+		points_right = None
+		lines_right = None
+		for line, point in zip(lines, points):
+			left_patch = self.__get_image_patch_gray(image1, point[0][1], point[0][0], 10)
+			best_mean_square_error = 100000
+			best_point = None
+			for column in range(20, width - 20):
+				row = int((-(column * line[0]) - line[2]) / line[1])
+				for epiline_offset in range(-4, 4):
+					if image2_borders[row][column + epiline_offset] == 255:
+						right_patch = self.__get_image_patch_gray(image2, row, column + epiline_offset, 10)
+						if right_patch.shape == (20, 20, 3):
+							mean_square_error = (np.square(right_patch - left_patch)).mean(axis=None)
+							if mean_square_error < 50 and mean_square_error < best_mean_square_error:
+								best_mean_square_error = mean_square_error
+								best_point = np.array([[column + epiline_offset, row]], dtype=np.float32)
+			if best_point is not None:
+				if points_left is None:
+					points_left = np.array([point])
+					points_right = np.array([best_point])
+					lines_right = np.array([line])
+				else:
+					points_left = np.append(points_left, [point], axis=0)
+					points_right = np.append(points_right, [best_point], axis=0)
+					lines_right = np.append(lines_right, [line], axis=0)
+
+
+		return points_left, points_right, lines_right
+
+	def __match_points_hsv(self, points, lines, image1, image2, image2_borders):
+		height, width, depth = image2.shape
+		points_left = None
+		points_right = None
+		lines_right = None
+		image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2HSV)
+		image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV)
+		for line, point in zip(lines, points):
+			left_patch = self.__get_image_patch_gray(image1, point[0][1], point[0][0], 10)
+			best_mean_square_error = 100000
+			best_point = None
+			for column in range(20, width - 20):
+				row = int((-(column * line[0]) - line[2]) / line[1])
+				if image2_borders[row][column] == 255:
+					right_patch = self.__get_image_patch_gray(image2, row, column, 10)
+					if right_patch.shape == (20, 20, 3):
+						error = self.__calculate_mean_square_error_hsv(left_patch, right_patch)
+						if error < 25 and error < best_mean_square_error:
+							best_mean_square_error = error
+							best_point = np.array([[column, row]], dtype=np.float32)
+			if best_point is not None:
+				if points_left is None:
+					points_left = np.array([point])
+					points_right = np.array([best_point])
+					lines_right = np.array([line])
+				else:
+					points_left = np.append(points_left, [point], axis=0)
+					points_right = np.append(points_right, [best_point], axis=0)
+					lines_right = np.append(lines_right, [line], axis=0)
+
+
+		return points_left, points_right, lines_right
+
+	def __get_image_patch_gray(self, image, position_x, position_y, size = 3):
+		return image[int(position_x)-size:int(position_x)+size, int(position_y)-size:int(position_y)+size]
+
+	def __get_image_patch_rgb(self, image, position_x, position_y, size = 3):
+		return image[position_x-size:position_x+size, position_y-size:position_y+size, :]
+
+	def __show_matching_points_with_lines(self, image1, image2, points1, points2):
+		image_shape = image1.shape
+		result = np.concatenate((image1, image2), 1)
+		for pt1, pt2 in zip(points1, points2):
+			color = tuple(np.random.randint(0, 255, 3).tolist())
+			result = cv2.circle(result, tuple(pt1[0]), 10, color, 3)
+			result = cv2.circle(result, (int(pt2[0][0] + 1280.), int(pt2[0][1])), 10, color, 3)
+			result = cv2.line(result, tuple(pt1[0]), (int(pt2[0][0] + 1280.), int(pt2[0][1])), color, 2)
+
+		cv2.namedWindow('Match Points', cv2.WINDOW_NORMAL)
+		cv2.resizeWindow('Match Points', 1300, 600)
+		cv2.imshow('Match Points', result)
+		cv2.waitKey(0)
+
+	def __calculate_mean_square_error_hsv(self, left_patch, right_patch):
+		height, width, depth = left_patch.shape
+		accumulated_error = 0
+		for row in range(0, height -1):
+			for column in range(0, width - 1):
+				accumulated_error += abs(self.round_difference(left_patch[row][column][0], right_patch[row][column][0]))
+				accumulated_error += abs(left_patch[row][column][1] - right_patch[row][column][1])
+		return accumulated_error / (height * width * 2)
+
+	def round_difference(self, angle1, angle2):
+		return 180 - abs(abs(angle1 - angle2) - 180)
