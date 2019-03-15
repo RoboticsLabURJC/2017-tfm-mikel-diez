@@ -14,9 +14,9 @@ The scope of this project is use of neural networks in order to estimate depth o
 * [ ] Points matching in an RGB color space
 * [ ] Full fish-eye camera calibration
 #### Week Log
-
+As agreed
 ### 2018 - 2019
-#### 22/02/2019 - 1/03/2019
+#### 22/02/2019 - 01/03/2019
 More about epilines, now with more points
 ![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/multiple_epipolars.png)
 
