@@ -3,7 +3,7 @@ The scope of this project is use of neural networks in order to estimate depth o
 
 ## Table of contents
 
-- [CameraCalibration](#cameracalibration)
+- [Other thing](#cameracalibration)
 
 <a name="vision"></a>
 ## StereoViewer
