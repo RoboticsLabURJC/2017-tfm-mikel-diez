@@ -52,7 +52,7 @@ Result of a reconstruction (video):
 
 With this matches:
 
-![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/Match Points_screenshot_21.03.2019.png)
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/Match_Points_screenshot_21.03.2019.png)
 
 As can be seen it seems that the yellow points tend to be wrongly matched, hence the reconstruction fails. The rest of the points seem to have a more interesting position but still seems to be wrong.
 
