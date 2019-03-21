@@ -46,6 +46,16 @@ Matching with hsv color space taking only H and S with threshold of 25
 
 As can be seen in the mos of the miss-matches happen in the lower line of yellow books. I might need to try go get a more texturized images where de difference between interest points is higher. 
 
+Result of a reconstruction (video):
+
+[![Watch the video](https://img.youtube.com/vi/0YSDw8JzDuk/hqdefault.jpg)](https://youtu.be/0YSDw8JzDuk)
+
+With this matches:
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/Match Points_screenshot_21.03.2019.png)
+
+As can be seen it seems that the yellow points tend to be wrongly matched, hence the reconstruction fails. The rest of the points seem to have a more interesting position but still seems to be wrong.
+
 ### 2018 - 2019
 #### 22/02/2019 - 01/03/2019
 More about epilines, now with more points

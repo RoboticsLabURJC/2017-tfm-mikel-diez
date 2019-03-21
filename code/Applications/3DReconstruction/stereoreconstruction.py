@@ -2,9 +2,7 @@
 import numpy as np
 import cv2
 import yaml
-import os
 
-from Modules.Matching.imagematcher import ClassicMatcher
 from Modules.GUI.Helpers import imShowTwoImages, drawlines
 
 if __name__ == '__main__':
