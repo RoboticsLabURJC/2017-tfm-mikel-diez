@@ -56,6 +56,14 @@ With this matches:
 
 As can be seen it seems that the yellow points tend to be wrongly matched, hence the reconstruction fails. The rest of the points seem to have a more interesting position but still seems to be wrong.
 
+What am I doing right now?
+* First find the pixel in both images (similar pixel color tend to make it fail)
+* Use the function ```cv2.triangulatePoints``` to calculate the 3D points
+* Convert the points returned by the function from quaternions to cartesian coordinates (x/w, y/w, z/w)
+* Save the reconstruction with the color
+* Show this using 3DWebViz
+
+
 ### 2018 - 2019
 #### 22/02/2019 - 01/03/2019
 More about epilines, now with more points
