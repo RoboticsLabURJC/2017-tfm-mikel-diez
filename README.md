@@ -9,11 +9,21 @@ The scope of this project is use of neural networks in order to estimate depth o
   * [2017 - 2018](#2017---2018)
 
 ## Work Log
-### Current Week
-#### Week Scope
-* [ ] Points matching in an RGB color space
+#### Current Week
+##### Week Scope
+* [ ] Improve matching with different measures
+* [ ] Improve and understand better the triangulatepoints function
 * [ ] Full fish-eye camera calibration
-#### Week Log
+
+##### Week Log
+ToDo
+
+### 2018 - 2019
+#### 01/03/2019 - 22/03/2019
+##### Week Scope
+* [x] Points matching in an RGB color space
+* [ ] Full fish-eye camera calibration
+##### Week Log
 As agreed I started working in a tool to see how the points in both images are matched. Unsurprisingly all the lines follow the same direction as they are all following the epiline and they all go in the same direction.
 
 Matching with gray images and MSE threshold of 80
@@ -63,8 +73,6 @@ What am I doing right now?
 * Save the reconstruction with the color
 * Show this using 3DWebViz
 
-
-### 2018 - 2019
 #### 22/02/2019 - 01/03/2019
 More about epilines, now with more points
 ![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/multiple_epipolars.png)
