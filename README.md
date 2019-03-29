@@ -15,6 +15,31 @@ The scope of this project is use of neural networks in order to estimate depth o
 * [ ] Improve and understand better the triangulatepoints function
 * [ ] Full fish-eye camera calibration
 
+###### Getting to know cv2.triangulatePoints
+In order to recreate the 3D scene I'm trying to use the OpenCV function cv2.triangulatePoints which in python has the following definition:
+```python
+points4D = cv2.triangulatePoints(projMatr1, projMatr2, projPoints1, projPoints2[, points4D])
+```
+The points are the ones that the matching algorithm gives me back and the projection matrix are obtained with the use of cv2.stereoRectify
+```python
+r1, r2, p1, p2, q, roi1, roi2 = cv2.stereoRectify(
+			self.calibration_data["cameraMatrix1"],
+			self.calibration_data["distCoeffs1"],
+			self.calibration_data["cameraMatrix2"],
+			self.calibration_data["distCoeffs2"],
+			(1280, 720),
+			self.calibration_data["R"],
+			self.calibration_data["T"],
+			alpha=rectify_scale
+)
+```
+
+Something seems to be out of place and I'm still investigating it.
+
+[Link to OpenCV documentation](https://docs.opencv.org/2.4.13/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#triangulatepoints)
+
+
+
 ##### Week Log
 ToDo
 
