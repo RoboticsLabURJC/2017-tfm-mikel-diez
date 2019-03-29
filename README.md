@@ -34,6 +34,21 @@ BGR with TM_SQDIFF_NORMED
 
 Even if they still have problems with the yellow books it seems that is a bit better than the MSE I used in previous weeks.
 
+I still don't know exactly how this works on the inside, but also tried to use this same matchers with hsv images. Te results aren't bad but they are not explendid either.
+
+HSV with TM_CCORR_NORMED
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/hsv_TM_CCORR_NORMED.png)
+
+HSV with TM_CCOEFF_NORMED
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/hsv_TM_CCOEFF_NORMED.png)
+
+HSV with TM_SQDIFF_NORMED
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/hsv_TM_SQDIFF_NORMED.png)
+
+
 ###### Getting to know cv2.triangulatePoints
 In order to recreate the 3D scene I'm trying to use the OpenCV function cv2.triangulatePoints which in python has the following definition:
 ```python
