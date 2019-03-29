@@ -36,6 +36,11 @@ r1, r2, p1, p2, q, roi1, roi2 = cv2.stereoRectify(
 
 Something seems to be out of place and I'm still investigating it.
 
+I've been reading that cv2.triangulatePoints takes as points undistorted points, so I'm checking that out.
+
+So finally I've managed to get what seems to be a better reconstruction, there are still points in a wrong position BUT they are yellow and yellow points seem to be matching in a wrong way. (See video):
+[![Watch the video](https://img.youtube.com/vi/zOlYptgbFQ8/hqdefault.jpg)](https://youtu.be/zOlYptgbFQ8)
+
 [Link to OpenCV documentation](https://docs.opencv.org/2.4.13/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#triangulatepoints)
 
 

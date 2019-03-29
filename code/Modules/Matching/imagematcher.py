@@ -42,6 +42,7 @@ class BorderStereoMatcher:
 
 		# left_points, right_points, lines_right = self.__match_points_gray(
 		# 	points,
+
 		# 	lines1,
 		# 	cv2.cvtColor(self.image1, cv2.COLOR_BGR2GRAY),
 		# 	cv2.cvtColor(self.image2, cv2.COLOR_BGR2GRAY),
@@ -53,7 +54,22 @@ class BorderStereoMatcher:
 		self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
 		# right_img_lines, left_img_lines = drawlines(border_image2, border_image1_thresholded, lines_right, right_points, left_points)
 
-		points4D = cv2.triangulatePoints(p1, p2, left_points, right_points)
+		undistorted_left_points = cv2.undistortPoints(
+			left_points,
+			self.calibration_data["cameraMatrix1"],
+			self.calibration_data["distCoeffs1"],
+			R=r1,
+			P=p1
+		)
+		undistorted_right_points = cv2.undistortPoints(
+			right_points,
+			self.calibration_data["cameraMatrix2"],
+			self.calibration_data["distCoeffs2"],
+			R=r2,
+			P=p2
+		)
+
+		points4D = cv2.triangulatePoints(p1, p2, undistorted_left_points, undistorted_right_points)
 		final_points = []
 		for index in range(0, right_points.shape[0] - 1):
 			red = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][2]/255.0)
