@@ -12,7 +12,7 @@ The scope of this project is use of neural networks in order to estimate depth o
 #### Current Week
 ##### Week Scope
 * [ ] Improve matching with different measures
-* [ ] Improve and understand better the triangulatepoints function
+* [x] Improve and understand better the triangulatepoints function
 * [ ] Full fish-eye camera calibration
 
 ###### Getting to know cv2.triangulatePoints
