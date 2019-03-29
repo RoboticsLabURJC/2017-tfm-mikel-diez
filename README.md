@@ -15,6 +15,25 @@ The scope of this project is use of neural networks in order to estimate depth o
 * [x] Improve and understand better the triangulatepoints function
 * [ ] Full fish-eye camera calibration
 
+##### Week Log
+###### Improve pixel matching using different measures
+I've been using custom metrics to get the similarity between patches, but now I'v tried the OpenCv function ```cv2.matchTemplate```.
+I've used only the three methods that are normalized in order to be able to create a threshold. Bellow I show the results:
+
+BGR with TM_CCORR_NORMED
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/bgr_TM_CCORR_NORMED.png)
+
+BGR with TM_CCOEFF_NORMED
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/bgr_TM_CCOEFF_NORMED.png)
+
+BGR with TM_SQDIFF_NORMED
+
+![Multiple Epilines](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/bgr_TM_SQDIFF_NORMED.png)
+
+Even if they still have problems with the yellow books it seems that is a bit better than the MSE I used in previous weeks.
+
 ###### Getting to know cv2.triangulatePoints
 In order to recreate the 3D scene I'm trying to use the OpenCV function cv2.triangulatePoints which in python has the following definition:
 ```python
@@ -42,11 +61,6 @@ So finally I've managed to get what seems to be a better reconstruction, there a
 [![Watch the video](https://img.youtube.com/vi/zOlYptgbFQ8/hqdefault.jpg)](https://youtu.be/zOlYptgbFQ8)
 
 [Link to OpenCV documentation](https://docs.opencv.org/2.4.13/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#triangulatepoints)
-
-
-
-##### Week Log
-ToDo
 
 ### 2018 - 2019
 #### 01/03/2019 - 22/03/2019

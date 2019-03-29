@@ -49,7 +49,7 @@ class BorderStereoMatcher:
 		# 	border_image2
 		# )
 
-		left_points, right_points, lines_right = self.__match_points_bgr(points, lines1, self.image1, self.image2, border_image2)
+		left_points, right_points, lines_right = self.__match_points_bgr_template(points, lines1, self.image1, self.image2, border_image2)
 
 		self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
 		# right_img_lines, left_img_lines = drawlines(border_image2, border_image1_thresholded, lines_right, right_points, left_points)
@@ -153,10 +153,49 @@ class BorderStereoMatcher:
 				for epiline_offset in range(-4, 4):
 					if image2_borders[row][column + epiline_offset] == 255:
 						right_patch = self.__get_image_patch_gray(image2, row, column + epiline_offset, 10)
+						other_image = cv2.matchTemplate(right_patch, left_patch, cv2.TM_CCOEFF)
+						print(other_image[0][0])
+						cv2.namedWindow('result', cv2.WINDOW_NORMAL)
+						cv2.resizeWindow('result', 1300, 600)
+						cv2.imshow('result', other_image)
+						cv2.waitKey(0)
 						if right_patch.shape == (20, 20, 3):
 							mean_square_error = (np.square(right_patch - left_patch)).mean(axis=None)
 							if mean_square_error < 80 and mean_square_error < best_mean_square_error:
 								best_mean_square_error = mean_square_error
+								best_point = np.array([[column + epiline_offset, row]], dtype=np.float32)
+			if best_point is not None:
+				if points_left is None:
+					points_left = np.array([point])
+					points_right = np.array([best_point])
+					lines_right = np.array([line])
+				else:
+					points_left = np.append(points_left, [point], axis=0)
+					points_right = np.append(points_right, [best_point], axis=0)
+					lines_right = np.append(lines_right, [line], axis=0)
+
+
+		return points_left, points_right, lines_right
+
+	def __match_points_bgr_template(self, points, lines, image1, image2, image2_borders):
+		height, width, depth = image2.shape
+		points_left = None
+		points_right = None
+		lines_right = None
+		for line, point in zip(lines, points):
+			left_patch = self.__get_image_patch_gray(image1, point[0][1], point[0][0], 10)
+			best_mean_square_error = 0.9
+			best_point = None
+			for column in range(20, width - 20):
+				row = int((-(column * line[0]) - line[2]) / line[1])
+				for epiline_offset in range(-4, 4):
+					if image2_borders[row][column + epiline_offset] == 255:
+						right_patch = self.__get_image_patch_gray(image2, row, column + epiline_offset, 10)
+						if right_patch.shape == (20, 20, 3):
+							similarity = cv2.matchTemplate(right_patch, left_patch, cv2.TM_SQDIFF_NORMED)
+							similarity = similarity[0][0]
+							if similarity < 0.1 and similarity < best_mean_square_error:
+								best_mean_square_error = similarity
 								best_point = np.array([[column + epiline_offset, row]], dtype=np.float32)
 			if best_point is not None:
 				if points_left is None:
