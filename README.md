@@ -11,7 +11,7 @@ The scope of this project is use of neural networks in order to estimate depth o
 ## Work Log
 #### Current Week
 ##### Week Scope
-* [ ] Improve matching with different measures
+* [x] Improve matching with different measures
 * [x] Improve and understand better the triangulatepoints function
 * [ ] Full fish-eye camera calibration
 
