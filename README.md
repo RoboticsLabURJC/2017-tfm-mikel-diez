@@ -11,6 +11,17 @@ The scope of this project is use of neural networks in order to estimate depth o
 ## Work Log
 #### Current Week
 ##### Week Scope
+* [ ] Print cameras and aprroximated plane
+* [ ] Triangulation perfect
+* [ ] Fish-eye
+* [ ] Modify to take video files
+* [ ] 3DViz comunnication live
+* [ ] OpenCV for videos
+Use 
+
+### 2018 - 2019
+#### 23/03/2019 - 01/04/2019
+##### Week Scope
 * [x] Improve matching with different measures
 * [x] Improve and understand better the triangulatepoints function
 * [ ] Full fish-eye camera calibration
@@ -77,7 +88,6 @@ So finally I've managed to get what seems to be a better reconstruction, there a
 
 [Link to OpenCV documentation](https://docs.opencv.org/2.4.13/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#triangulatepoints)
 
-### 2018 - 2019
 #### 01/03/2019 - 22/03/2019
 ##### Week Scope
 * [x] Points matching in an RGB color space
