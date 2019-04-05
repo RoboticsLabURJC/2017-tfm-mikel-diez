@@ -23,6 +23,9 @@ class BorderStereoMatcher:
 
 		border_image1_thresholded = self.__remove_points(border_image1)
 
+		origen =  np.array([np.array([1]), np.array([0]), np.array([0])])
+
+
 		rectify_scale = 0  # 0=full crop, 1=no crop
 		r1, r2, p1, p2, q, roi1, roi2 = cv2.stereoRectify(
 			self.calibration_data["cameraMatrix1"],
@@ -34,6 +37,13 @@ class BorderStereoMatcher:
 			self.calibration_data["T"],
 			alpha=rectify_scale
 		)
+
+		cameraMatrix, rotMatrix, transVect, rotMatrixX, rotMatrixY, rotMatrixZ, eulerAngles = cv2.decomposeProjectionMatrix(p2)
+
+
+		print(rotMatrix)
+		print(transVect)
+		print(transVect[0:3, :] / transVect[3, :])
 
 		points = np.array(cv2.findNonZero(border_image1_thresholded), dtype=np.float32)
 
@@ -51,7 +61,7 @@ class BorderStereoMatcher:
 
 		left_points, right_points, lines_right = self.__match_points_hsv_template(points, lines1, self.image1, self.image2, border_image2)
 
-		self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
+		# self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
 		# right_img_lines, left_img_lines = drawlines(border_image2, border_image1_thresholded, lines_right, right_points, left_points)
 
 		undistorted_left_points = cv2.undistortPoints(
@@ -69,15 +79,18 @@ class BorderStereoMatcher:
 			P=p2
 		)
 
-		points4D = cv2.triangulatePoints(p1, p2, undistorted_left_points, undistorted_right_points)
+		points4D = cv2.triangulatePoints(p2, p1, undistorted_left_points, undistorted_right_points)
 		final_points = []
-		for index in range(0, right_points.shape[0] - 1):
+		for index in range(0, right_points.shape[0] - 0):
 			red = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][2]/255.0)
 			green = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][1]/255.0)
 			blue = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][0]/255.0)
 			final_points.append(jderobot.RGBPoint(float(points4D[0][index] / points4D[3][index]), float(points4D[1][index] / points4D[3][index]), float(points4D[2][index] / points4D[3][index]), red, green, blue))
 
+		print(final_points)
 		self.persistPoints(final_points)
+
+		return final_points
 
 	def persistPoints(self, final_points):
 		if not os.path.exists('bin/Points/'):
@@ -260,7 +273,7 @@ class BorderStereoMatcher:
 					if image2_borders[row][column + epiline_offset] == 255:
 						right_patch = self.__get_image_patch_gray(image2, row, column, 10)
 						if right_patch.shape == (20, 20, 3):
-							similarity = cv2.matchTemplate(right_patch, left_patch, cv2.TM_CCOEFF_NORMED)
+							similarity = cv2.matchTemplate(right_patch, left_patch, cv2.TM_CCORR_NORMED)
 							similarity = similarity[0][0]
 							if similarity > 0.9 and similarity > best_mean_square_error:
 								best_mean_square_error = similarity

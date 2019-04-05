@@ -12,13 +12,26 @@ The scope of this project is use of neural networks in order to estimate depth o
 #### Current Week
 ##### Week Scope
 * [ ] A better triangulation finished:
-  * [ ] In 3dWebViz draw the cameras (as pyramids) and a plane at the depth the selves should be.
+  * [x] In 3dWebViz draw the cameras (as pyramids) and a plane at the depth the selves should be.
 * [ ] Improve application input/output pipeline
   * [ ] Modify to take video files
-  * [ ] 3DViz comunnication live
+  * [x] 3DViz comunnication live
   * [ ] OpenCV for videos Use
 * [ ] Fish-eye 
   * [ ] Calibrate fisheye cameras once and for all
+
+##### Week Log
+###### Draw Cameras and plane at the correct distance
+There have been some problems in this part. I have no problem drawing segments and points, but objects is a different matter. I've managed to do this with points and will be trying to create de objects. (See video)
+
+[![Watch the video](https://img.youtube.com/vi/WL5a82-POr8/hqdefault.jpg)](https://youtu.be/WL5a82-POr8)
+
+###### 3DWebViz communication live
+I managed to add to my 3D reconstruction a direct connection with 3DWebViz (live connection) here is a very simple video of this with a point moving. (See video)
+
+[![Watch the video](https://img.youtube.com/vi/NwT2NyJJEaQ/hqdefault.jpg)](https://youtu.be/NwT2NyJJEaQ)
+
+
 
 ### 2018 - 2019
 #### 23/03/2019 - 01/04/2019
