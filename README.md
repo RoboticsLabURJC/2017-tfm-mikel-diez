@@ -16,7 +16,7 @@ The scope of this project is use of neural networks in order to estimate depth o
 * [ ] Improve application input/output pipeline
   * [ ] Modify to take video files
   * [x] 3DViz comunnication live
-  * [ ] OpenCV for videos Use
+  * [x] OpenCV for videos Use
 * [ ] Fish-eye 
   * [ ] Calibrate fisheye cameras once and for all
 
@@ -26,6 +26,21 @@ There have been some problems in this part. I have no problem drawing segments a
 
 [![Watch the video](https://img.youtube.com/vi/WL5a82-POr8/hqdefault.jpg)](https://youtu.be/WL5a82-POr8)
 
+###### Modify to take video files
+I've been doing some research about this and it seems that there is a function that helps a lot at taking videos, both from cameras directly or file:
+```
+video = cv2.VideoCapture(0) # To read from camera
+
+video = cv2.VideoCapture('my_video.mpg') # To read from a video file
+```
+
+Then with the following method the program can just take frame by frame:
+```
+video = cv2.VideoCapture(0)
+video.read() # Gives the next frame
+```
+
+Then the code is pretty similar as the old one, take the frame and calculate the same things.
 ###### 3DWebViz communication live
 I managed to add to my 3D reconstruction a direct connection with 3DWebViz (live connection) here is a very simple video of this with a point moving. (See video)
 
