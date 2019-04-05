@@ -11,13 +11,14 @@ The scope of this project is use of neural networks in order to estimate depth o
 ## Work Log
 #### Current Week
 ##### Week Scope
-* [ ] Print cameras and aprroximated plane
-* [ ] Triangulation perfect
-* [ ] Fish-eye
-* [ ] Modify to take video files
-* [ ] 3DViz comunnication live
-* [ ] OpenCV for videos
-Use 
+* [ ] A better triangulation finished:
+  * [ ] In 3dWebViz draw the cameras (as pyramids) and a plane at the depth the selves should be.
+* [ ] Improve application input/output pipeline
+  * [ ] Modify to take video files
+  * [ ] 3DViz comunnication live
+  * [ ] OpenCV for videos Use
+* [ ] Fish-eye 
+  * [ ] Calibrate fisheye cameras once and for all
 
 ### 2018 - 2019
 #### 23/03/2019 - 01/04/2019
