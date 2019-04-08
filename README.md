@@ -13,8 +13,8 @@ The scope of this project is use of neural networks in order to estimate depth o
 ##### Week Scope
 * [ ] A better triangulation finished:
   * [x] In 3dWebViz draw the cameras (as pyramids) and a plane at the depth the selves should be.
-* [ ] Improve application input/output pipeline
-  * [ ] Modify to take video files
+* [x] Improve application input/output pipeline
+  * [x] Modify to take video files
   * [x] 3DViz comunnication live
   * [x] OpenCV for videos Use
 * [ ] Fish-eye 
@@ -41,12 +41,19 @@ video.read() # Gives the next frame
 ```
 
 Then the code is pretty similar as the old one, take the frame and calculate the same things.
+
+I got nice results with this after a few attempts. Reconstruction is not great but this video is not about that (I'll address that problem later)
+
+[![Watch the video](https://img.youtube.com/vi/2EVi1q56Dfk/hqdefault.jpg)](https://youtu.be/2EVi1q56Dfk)
+
+Here a video of the capture, seems that the cameras don't get a great resolution I might need to change some parameters somewhere to fix this:
+
+[![Watch the video](https://img.youtube.com/vi/W9ywijWxa64/hqdefault.jpg)](https://youtu.be/W9ywijWxa64)
+
 ###### 3DWebViz communication live
 I managed to add to my 3D reconstruction a direct connection with 3DWebViz (live connection) here is a very simple video of this with a point moving. (See video)
 
 [![Watch the video](https://img.youtube.com/vi/NwT2NyJJEaQ/hqdefault.jpg)](https://youtu.be/NwT2NyJJEaQ)
-
-
 
 ### 2018 - 2019
 #### 23/03/2019 - 01/04/2019

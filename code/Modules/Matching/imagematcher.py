@@ -40,10 +40,7 @@ class BorderStereoMatcher:
 
 		cameraMatrix, rotMatrix, transVect, rotMatrixX, rotMatrixY, rotMatrixZ, eulerAngles = cv2.decomposeProjectionMatrix(p2)
 
-
-		print(rotMatrix)
-		print(transVect)
-		print(transVect[0:3, :] / transVect[3, :])
+		second_camera = transVect[0:3, :] / transVect[3, :]
 
 		points = np.array(cv2.findNonZero(border_image1_thresholded), dtype=np.float32)
 
@@ -61,7 +58,7 @@ class BorderStereoMatcher:
 
 		left_points, right_points, lines_right = self.__match_points_hsv_template(points, lines1, self.image1, self.image2, border_image2)
 
-		self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
+		# self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
 		# right_img_lines, left_img_lines = drawlines(border_image2, border_image1_thresholded, lines_right, right_points, left_points)
 
 		undistorted_left_points = cv2.undistortPoints(
@@ -87,7 +84,6 @@ class BorderStereoMatcher:
 			blue = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][0]/255.0)
 			final_points.append(jderobot.RGBPoint(float(points4D[0][index] / points4D[3][index]), float(points4D[1][index] / points4D[3][index]), float(points4D[2][index] / points4D[3][index]), red, green, blue))
 
-		print(final_points)
 		self.persistPoints(final_points)
 
 		return final_points
