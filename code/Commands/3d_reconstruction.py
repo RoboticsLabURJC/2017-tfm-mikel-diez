@@ -7,11 +7,11 @@ import jderobot
 import time
 
 if __name__ == '__main__':
-    image1 = cv2.imread('bin/CalibrationImages/set17_reconstruction/left_image_14.png')
-    image2 = cv2.imread('bin/CalibrationImages/set17_reconstruction/right_image_14.png')
+    image1 = cv2.imread('bin/CalibrationImages/set18_rec/left_image_1.png')
+    image2 = cv2.imread('bin/CalibrationImages/set18_rec/right_image_1.png')
     matcher = BorderStereoMatcher()
     matcher.set_images(image1, image2)
-    with open("bin/CalibrationMatrix/set17/calibrated_camera.yml", 'r') as stream:
+    with open("bin/CalibrationMatrix/set18/calibrated_camera.yml", 'r') as stream:
         try:
             data = yaml.load(stream)
             matcher.set_calibration_data(data)

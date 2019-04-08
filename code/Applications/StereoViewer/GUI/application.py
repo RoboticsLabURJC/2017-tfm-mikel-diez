@@ -29,11 +29,16 @@ class Application(QtWidgets.QWidget):
         self.create_reconstruction_button()
         self.create_input_textbox()
         self.create_image_counter_text()
+        self.create_video_record_button()
+
+        self.video_recorder_1 = None
+        self.video_recorder_2 = None
+        self.should_record_video = False
 
     def create_image_counter_text(self):
         self.images_counter = QtWidgets.QLabel(self)
         self.images_counter.resize(150, 40)
-        self.images_counter.move(950, 300)
+        self.images_counter.move(950, 350)
         self.images_counter.setAlignment(QtCore.Qt.AlignCenter)
         self.images_counter.setFont(QtGui.QFont('Arial', 35))
         self.images_counter.setNum(0)
@@ -65,9 +70,16 @@ class Application(QtWidgets.QWidget):
 
     def create_take_photo_button(self):
         self.take_photo_button = QtWidgets.QPushButton('Take Photo', self)
-        self.take_photo_button.move(950, 100)
+        self.take_photo_button.move(950, 300)
         self.take_photo_button.resize(150, 40)
         self.take_photo_button.clicked.connect(self.take_photo)
+
+    def create_video_record_button(self):
+        self.record_video_button = QtWidgets.QPushButton('Record Video', self)
+        self.record_video_button.setCheckable(True)
+        self.record_video_button.move(950, 100)
+        self.record_video_button.resize(150, 40)
+        self.record_video_button.clicked.connect(self.record_video)
 
     def create_right_image(self):
         self.im_right_label = QtWidgets.QLabel(self)
@@ -108,6 +120,10 @@ class Application(QtWidgets.QWidget):
                 self.take_photo()
                 self.frames = 0
 
+        if self.should_record_video is True:
+            print('Should Record Video')
+            self.update_video_recorder()
+
         im_left = self.cameras[0].getImage()
         im = QtGui.QImage(im_left.data, im_left.shape[1], im_left.shape[0],QtGui.QImage.Format_RGB888)
         im_scaled = im.scaled(self.im_left_label.size())
@@ -117,6 +133,35 @@ class Application(QtWidgets.QWidget):
         im = QtGui.QImage(im_right.data, im_right.shape[1], im_right.shape[0],QtGui.QImage.Format_RGB888)
         im_scaled = im.scaled(self.im_left_label.size())
         self.im_right_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled)) # We get the original image and display it.
+
+    def record_video(self):
+        if not os.path.exists('bin/Videos/' + self.textbox.text() + '_video'):
+            os.makedirs('bin/Videos/' + self.textbox.text() + '_video')
+
+        if self.video_recorder_1 is None:
+            print('->Create video recorder<-')
+            self.video_recorder_1 = cv2.VideoWriter(
+                'bin/Videos/' + self.textbox.text() + '_video/video_1.avi',
+                cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
+                10,
+                (1280, 720)
+            )
+
+            self.video_recorder_2 = cv2.VideoWriter(
+                'bin/Videos/' + self.textbox.text() + '_video/video_2.avi',
+                cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
+                10,
+                (1280, 720)
+            )
+
+        if self.record_video_button.isChecked() is False:
+            self.video_recorder_1.release()
+            self.video_recorder_2.release()
+
+            self.video_recorder_1 = None
+            self.video_recorder_2 = None
+
+        self.should_record_video = self.record_video_button.isChecked()
 
     def take_photo(self):
         if not os.path.exists('bin/CalibrationImages/' + self.textbox.text()):
@@ -136,6 +181,15 @@ class Application(QtWidgets.QWidget):
         cv2.imwrite('bin/CalibrationImages/' + self.textbox.text() + '/right_image_' + str(self.photos_taken) + '.png',im_rgb_right)
 
         self.images_counter.setNum(self.photos_taken)
+
+    def update_video_recorder(self):
+        im_left = self.cameras[0].getImageHD()
+        im_rgb_left = cv2.cvtColor(cv2.resize(im_left, (1280, 720)), cv2.COLOR_BGR2RGB)
+        self.video_recorder_1.write(im_rgb_left)
+
+        im_right = self.cameras[1].getImageHD()
+        im_rgb_right = cv2.cvtColor(cv2.resize(im_right, (1280, 720)), cv2.COLOR_BGR2RGB)
+        self.video_recorder_2.write(im_rgb_right)
 
     def calibrate_set(self):
         stereo_calibrator = StereoCalibration()

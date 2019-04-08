@@ -61,7 +61,7 @@ class BorderStereoMatcher:
 
 		left_points, right_points, lines_right = self.__match_points_hsv_template(points, lines1, self.image1, self.image2, border_image2)
 
-		# self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
+		self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
 		# right_img_lines, left_img_lines = drawlines(border_image2, border_image1_thresholded, lines_right, right_points, left_points)
 
 		undistorted_left_points = cv2.undistortPoints(
