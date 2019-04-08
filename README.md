@@ -11,6 +11,15 @@ The scope of this project is use of neural networks in order to estimate depth o
 ## Work Log
 #### Current Week
 ##### Week Scope
+* [ ] Fix problem with triangulation
+* [ ] Print pixel piramid and plane grid using segments (not objects)
+
+##### Week Log
+TBD
+
+### 2018 - 2019
+#### 01/03/2019 - 08/04/2019
+##### Week Scope
 * [ ] A better triangulation finished:
   * [x] In 3dWebViz draw the cameras (as pyramids) and a plane at the depth the selves should be.
 * [x] Improve application input/output pipeline
@@ -55,7 +64,6 @@ I managed to add to my 3D reconstruction a direct connection with 3DWebViz (live
 
 [![Watch the video](https://img.youtube.com/vi/NwT2NyJJEaQ/hqdefault.jpg)](https://youtu.be/NwT2NyJJEaQ)
 
-### 2018 - 2019
 #### 23/03/2019 - 01/04/2019
 ##### Week Scope
 * [x] Improve matching with different measures
