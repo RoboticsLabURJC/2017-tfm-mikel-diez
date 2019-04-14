@@ -21,7 +21,7 @@ class BorderStereoMatcher:
 		border_image1 = self.__get_border_image(self.image1)
 		border_image2 = self.__get_border_image(self.image2)
 
-		border_image1_thresholded = self.__remove_points(border_image1)
+		border_image1_thresholded = self.__remove_points(border_image1, 5)
 
 		origen =  np.array([np.array([1]), np.array([0]), np.array([0])])
 
@@ -266,14 +266,15 @@ class BorderStereoMatcher:
 			for column in range(20, width - 20):
 				row = int((-(column * line[0]) - line[2]) / line[1])
 				for epiline_offset in range(-4, 4):
-					if image2_borders[row][column + epiline_offset] == 255:
-						right_patch = self.__get_image_patch_gray(image2, row, column, 10)
-						if right_patch.shape == (20, 20, 3):
-							similarity = cv2.matchTemplate(right_patch, left_patch, cv2.TM_CCORR_NORMED)
-							similarity = similarity[0][0]
-							if similarity > 0.9 and similarity > best_mean_square_error:
-								best_mean_square_error = similarity
-								best_point = np.array([[column + epiline_offset, row]], dtype=np.float32)
+					if (row) < 719 and (row) > 0:
+						if image2_borders[row][column + epiline_offset] == 255:
+							right_patch = self.__get_image_patch_gray(image2, row, column, 10)
+							if right_patch.shape == (20, 20, 3):
+								similarity = cv2.matchTemplate(right_patch, left_patch, cv2.TM_CCORR_NORMED)
+								similarity = similarity[0][0]
+								if similarity > 0.9 and similarity > best_mean_square_error:
+									best_mean_square_error = similarity
+									best_point = np.array([[column + epiline_offset, row]], dtype=np.float32)
 			if best_point is not None:
 				if points_left is None:
 					points_left = np.array([point])

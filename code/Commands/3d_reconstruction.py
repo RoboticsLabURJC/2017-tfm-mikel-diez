@@ -1,17 +1,17 @@
 import cv2
 import yaml
-from Modules.Matching.imagematcher import BorderStereoMatcher
-from Modules.Visualization.visualization import VisionViewer
-from Modules.Visualization.visualization_server import VisualServer
+from Vision.Components.Matching.imagematcher import BorderStereoMatcher
+from Vision.Components.Visualization.visualization import VisionViewer
+from Vision.Components.Visualization.visualization_server import VisualServer
 import jderobot
 import time
 
 if __name__ == '__main__':
-    image1 = cv2.imread('bin/CalibrationImages/set18_rec/left_image_1.png')
-    image2 = cv2.imread('bin/CalibrationImages/set18_rec/right_image_1.png')
+    image1 = cv2.imread('bin/CalibrationImages/setqwe/left_image_1.png')
+    image2 = cv2.imread('bin/CalibrationImages/setqwe/right_image_1.png')
     matcher = BorderStereoMatcher()
     matcher.set_images(image1, image2)
-    with open("bin/CalibrationMatrix/set18/calibrated_camera.yml", 'r') as stream:
+    with open("bin/CalibrationMatrix/set140419/calibrated_camera.yml", 'r') as stream:
         try:
             data = yaml.load(stream)
             matcher.set_calibration_data(data)
@@ -45,7 +45,6 @@ if __name__ == '__main__':
             vision_viewer.set_segments(segments)
             vision_server = VisualServer(vision_viewer)
             vision_server.run()
-            time.sleep(200)
             #
             # for times in range(0, 255):
             #     points = [

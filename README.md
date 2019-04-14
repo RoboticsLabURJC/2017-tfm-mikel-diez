@@ -11,11 +11,12 @@ The scope of this project is use of neural networks in order to estimate depth o
 ## Work Log
 #### Current Week
 ##### Week Scope
-* [ ] Fix problem with triangulation
-* [ ] Print pixel piramid and plane grid using segments (not objects)
+* [x] Fix problem with triangulation
+* [x] Print pixel piramid and plane grid using segments (not objects)
 
 ##### Week Log
-TBD
+As you know I've been having some problems with the triangulation from images, if I select the points manually seemed to work ok but in this case I finally managed to get a kind-off accurated reconstruction: (see video)
+[![Watch the video](https://img.youtube.com/vi/SCC5LVhMqIw/hqdefault.jpg)](https://youtu.be/SCC5LVhMqIw)
 
 ### 2018 - 2019
 #### 01/03/2019 - 08/04/2019

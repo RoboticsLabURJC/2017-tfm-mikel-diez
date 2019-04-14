@@ -1,20 +1,19 @@
 import cv2
 import yaml
-from Modules.Matching.imagematcher import BorderStereoMatcher
-from Modules.Visualization.visualization import VisionViewer
-from Modules.Visualization.visualization_server import VisualServer
+from Vision.Components.Matching.imagematcher import BorderStereoMatcher
+from Vision.Components.Visualization.visualization import VisionViewer
+from Vision.Components.Visualization.visualization_server import VisualServer
 import jderobot
-import time
 
 if __name__ == '__main__':
     matcher = BorderStereoMatcher()
 
-    with open("bin/CalibrationMatrix/set18/calibrated_camera.yml", 'r') as stream:
+    with open("bin/CalibrationMatrix/set140419/calibrated_camera.yml", 'r') as stream:
         try:
             data = yaml.load(stream)
             matcher.set_calibration_data(data)
-            video1 = cv2.VideoCapture('bin/Videos/set20_video/video_1.avi')
-            video2 = cv2.VideoCapture('bin/Videos/set20_video/video_2.avi')
+            video1 = cv2.VideoCapture('bin/Videos/set140419_video/video_1.avi')
+            video2 = cv2.VideoCapture('bin/Videos/set140419_video/video_2.avi')
             vision_viewer = VisionViewer()
             vision_server = VisualServer(vision_viewer)
             vision_server.run()

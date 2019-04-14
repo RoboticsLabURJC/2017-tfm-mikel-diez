@@ -1,11 +1,12 @@
-import sys
-
 from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
 from Vision.Components.Calibration.StereoCalibration import StereoCalibration
 from Vision.Components.Matching.imagematcher import BorderStereoMatcher
+from Vision.UseCases.reconstruction_from_video import ReconstructionFromVideo
+from Vision.UseCases.reconstruction_from_images import ReconstructionFromImages
+
 
 import os
 import yaml
@@ -26,6 +27,7 @@ class Application(QtWidgets.QWidget):
         self.create_calibration_images_button()
         self.create_calibrate_cameras_button()
         self.create_reconstruction_button()
+        self.create_reconstruction_from_video_button()
         self.create_input_textbox()
         self.create_image_counter_text()
         self.create_video_record_button()
@@ -52,7 +54,13 @@ class Application(QtWidgets.QWidget):
         self.reconstruction_button = QtWidgets.QPushButton('3D Reconstruction', self)
         self.reconstruction_button.move(950, 250)
         self.reconstruction_button.resize(150, 40)
-        self.reconstruction_button.clicked.connect(self.reconstruct_with_set)
+        self.reconstruction_button.clicked.connect(self.reconstruct_from_images)
+
+    def create_reconstruction_from_video_button(self):
+        self.reconstruction_button = QtWidgets.QPushButton('Video Reconstruction', self)
+        self.reconstruction_button.move(950, 450)
+        self.reconstruction_button.resize(150, 40)
+        self.reconstruction_button.clicked.connect(self.reconstruct_from_video)
 
     def create_calibrate_cameras_button(self):
         self.calibrate_button = QtWidgets.QPushButton('Calibrate Cameras', self)
@@ -104,7 +112,7 @@ class Application(QtWidgets.QWidget):
 
     def create_main_window(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
-        self.setWindowTitle("3D Reconstruction")
+        self.setWindowTitle("Vision")
         self.resize(1150, 650)
         self.move(150, 50)
         self.updGUI.connect(self.update)
@@ -207,3 +215,19 @@ class Application(QtWidgets.QWidget):
                 print(exc)
 
         matcher.get_matching_points()
+
+    def reconstruct_from_video(self):
+        video_reconstructor = ReconstructionFromVideo(
+            'bin/Videos/' + self.textbox.text() + '_video/video_1.avi',
+            'bin/Videos/' + self.textbox.text() + '_video/video_2.avi',
+            'bin/CalibrationMatrix/' + self.textbox.text() + '/calibrated_camera.yml'
+        )
+        video_reconstructor.run()
+
+    def reconstruct_from_images(self):
+        images_reconstructor = ReconstructionFromImages(
+            'bin/CalibrationImages/setqwe/left_image_1.png',
+            'bin/CalibrationImages/setqwe/right_image_1.png',
+            'bin/CalibrationMatrix/set140419/calibrated_camera.yml'
+        )
+        images_reconstructor.run()
