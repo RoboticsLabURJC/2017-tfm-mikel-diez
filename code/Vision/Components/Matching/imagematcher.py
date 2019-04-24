@@ -4,6 +4,9 @@ import jderobot
 import os
 import yaml
 from Vision.Components.GUI.Helpers import imShowTwoImages, drawlines
+import logging
+from datetime import datetime
+
 
 class BorderStereoMatcher:
 	def __init__(self):
@@ -23,9 +26,10 @@ class BorderStereoMatcher:
 
 		border_image1_thresholded = self.__remove_points(border_image1, 5)
 
-		origen =  np.array([np.array([1]), np.array([0]), np.array([0])])
+		origen = np.array([np.array([1]), np.array([0]), np.array([0])])
 
 
+		# This should go in the calibration procedure or at least it shouldn't be done several times
 		rectify_scale = 0  # 0=full crop, 1=no crop
 		r1, r2, p1, p2, q, roi1, roi2 = cv2.stereoRectify(
 			self.calibration_data["cameraMatrix1"],
@@ -37,30 +41,32 @@ class BorderStereoMatcher:
 			self.calibration_data["T"],
 			alpha=rectify_scale
 		)
+		#
+		# cameraMatrix, rotMatrix, transVect, rotMatrixX, rotMatrixY, rotMatrixZ, eulerAngles = cv2.decomposeProjectionMatrix(p1)
+		# cameraMatrix2, rotMatrix2, transVect2, rotMatrixX2, rotMatrixY2, rotMatrixZ2, eulerAngles2 = cv2.decomposeProjectionMatrix(p2)
+		#
+		# print(cameraMatrix)
+		# print(rotMatrix)
+		# print(transVect)
+		#
+		# print(cameraMatrix2)
+		# print(rotMatrix2)
+		# print(transVect2)
 
-		cameraMatrix, rotMatrix, transVect, rotMatrixX, rotMatrixY, rotMatrixZ, eulerAngles = cv2.decomposeProjectionMatrix(p2)
-
-		second_camera = transVect[0:3, :] / transVect[3, :]
+		# second_camera = transVect[0:3, :] / transVect[3, :]
 
 		points = np.array(cv2.findNonZero(border_image1_thresholded), dtype=np.float32)
 
 		lines1 = cv2.computeCorrespondEpilines(points, 1, self.calibration_data['F'])
 		lines1 = lines1.reshape(-1, 3)
 
-		# left_points, right_points, lines_right = self.__match_points_gray(
-		# 	points,
-
-		# 	lines1,
-		# 	cv2.cvtColor(self.image1, cv2.COLOR_BGR2GRAY),
-		# 	cv2.cvtColor(self.image2, cv2.COLOR_BGR2GRAY),
-		# 	border_image2
-		# )
-
+		logging.info('[{}] Start Match Points With Template'.format(datetime.now().time()))
 		left_points, right_points, lines_right = self.__match_points_hsv_template(points, lines1, self.image1, self.image2, border_image2)
+		logging.info('[{}] End Match Points With Template'.format(datetime.now().time()))
 
 		# self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
-		# right_img_lines, left_img_lines = drawlines(border_image2, border_image1_thresholded, lines_right, right_points, left_points)
 
+		logging.info('[{}] Start Undistort Points'.format(datetime.now().time()))
 		undistorted_left_points = cv2.undistortPoints(
 			left_points,
 			self.calibration_data["cameraMatrix1"],
@@ -76,19 +82,27 @@ class BorderStereoMatcher:
 			P=p2
 		)
 
+		logging.info('[{}] End Undistort Points'.format(datetime.now().time()))
+
+
+		logging.info('[{}] Start Triangulate Points'.format(datetime.now().time()))
 		points4D = cv2.triangulatePoints(p2, p1, undistorted_left_points, undistorted_right_points)
+		logging.info('[{}] End Triangulate Points'.format(datetime.now().time()))
 		final_points = []
+		logging.info('[{}] Convert Poinst from homogeneus coordiantes to cartesian'.format(datetime.now().time()))
 		for index in range(0, right_points.shape[0] - 0):
 			red = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][2]/255.0)
 			green = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][1]/255.0)
 			blue = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][0]/255.0)
 			final_points.append(jderobot.RGBPoint(float(points4D[0][index] / points4D[3][index]), float(points4D[1][index] / points4D[3][index]), float(points4D[2][index] / points4D[3][index]), red, green, blue))
+		logging.info('[{}] End Convert Poinst from homogeneus coordiantes to cartesian'.format(datetime.now().time()))
+		# self.persistPoints(final_points)
 
-		self.persistPoints(final_points)
-
+		logging.info('[{}] Return cartesian reconstructed points'.format(datetime.now().time()))
 		return final_points
 
 	def persistPoints(self, final_points):
+		logging.info('[{}] Persist points'.format(datetime.now().time()))
 		if not os.path.exists('bin/Points/'):
 			os.makedirs('bin/Points/')
 		with open('bin/Points/points.yml', 'w') as outfile:
@@ -265,7 +279,7 @@ class BorderStereoMatcher:
 			best_point = None
 			for column in range(20, width - 20):
 				row = int((-(column * line[0]) - line[2]) / line[1])
-				for epiline_offset in range(-4, 4):
+				for epiline_offset in range(-1, 1):
 					if (row) < 719 and (row) > 0:
 						if image2_borders[row][column + epiline_offset] == 255:
 							right_patch = self.__get_image_patch_gray(image2, row, column, 10)

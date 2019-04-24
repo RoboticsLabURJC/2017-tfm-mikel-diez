@@ -15,6 +15,6 @@ services:
       - DISPLAY
     devices:
       - "/dev/dri:/dev/dri"
-      - "/dev/video0:/dev/video0"
-      - "/dev/video1:/dev/video1"
-      - "/dev/video2:/dev/video2"
+#      - "/dev/video0:/dev/video0"
+#      - "/dev/video1:/dev/video1"
+#      - "/dev/video2:/dev/video2"

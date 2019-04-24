@@ -4,6 +4,9 @@ from Vision.Components.Matching.imagematcher import BorderStereoMatcher
 from Vision.Components.Visualization.visualization import VisionViewer
 from Vision.Components.Visualization.visualization_server import VisualServer
 import jderobot
+import logging
+from datetime import datetime
+
 
 class ReconstructionFromImages:
     def __init__(self, image01, image02, calibration):
@@ -14,11 +17,13 @@ class ReconstructionFromImages:
         self.points = []
         self.distance = 900
         self.camera_distance = 90
+        logging.getLogger().setLevel(logging.INFO)
 
     def run(self):
         with open(self.calibration, 'r') as stream:
             try:
-                print('** Load Images **')
+                initial_time = datetime.now()
+                logging.info('[{}] Load Images'.format(datetime.now().time()))
                 image1 = cv2.imread(self.image01)
                 image2 = cv2.imread(self.image02)
                 matcher = BorderStereoMatcher()
@@ -28,10 +33,12 @@ class ReconstructionFromImages:
 
                 matcher.set_images(image1, image2)
 
-                print('** Get matching points **')
+                logging.info('[{}] Start Match Points'.format(datetime.now().time()))
                 self.points = matcher.get_matching_points()
 
-                print('** matching points getted')
+                logging.info('[{}] End Match Points'.format(datetime.now().time()))
+
+                logging.info('[{}] Setting Points and Segments'.format(datetime.now().time()))
                 self.print_cameras()
                 self.print_coordinates_reference()
                 self.print_reference_plane()
@@ -40,7 +47,11 @@ class ReconstructionFromImages:
                 vision_viewer.set_points(self.points)
                 vision_viewer.set_segments(self.segments)
                 vision_server = VisualServer(vision_viewer)
+                logging.info('[{}] Run vision server'.format(datetime.now().time()))
                 vision_server.run()
+
+                end_time = datetime.now()
+                logging.info('Total time: {}'.format(end_time - initial_time))
 
             except yaml.YAMLError as exc:
                 print(exc)

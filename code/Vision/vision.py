@@ -23,30 +23,34 @@ if __name__ == '__main__':
     right_camera_config = config.load('Configuration/cameraview_right.yml')
     left_camera_config = config.load('Configuration/cameraview_left.yml')
 
-    jdrc = comm.init(right_camera_config, 'Cameraview')
-    proxy = jdrc.getCameraClient('Cameraview.Camera')
-    camera_right = Camera(proxy)
+    try:
+        jdrc = comm.init(right_camera_config, 'Cameraview')
+        proxy = jdrc.getCameraClient('Cameraview.Camera')
+        camera_right = Camera(proxy)
 
-    jdrc = comm.init(left_camera_config, 'Cameraview')
-    proxy = jdrc.getCameraClient('Cameraview.Camera')
-    camera_left = Camera(proxy)
+        jdrc = comm.init(left_camera_config, 'Cameraview')
+        proxy = jdrc.getCameraClient('Cameraview.Camera')
+        camera_left = Camera(proxy)
 
-    # Cameras configuration
+        # Cameras configuration
+        myGUI = Application()
+        myGUI.set_cameras([camera_left, camera_right])
+        myGUI.show()
 
-    
-    myGUI = Application()
-    myGUI.set_cameras([camera_left, camera_right])
-    myGUI.show()
+        # Threading camera left
+        thread_camera_left = ThreadCamera(camera_left)
+        thread_camera_left.daemon = True
+        thread_camera_left.start()
 
-    # Threading camera left
-    thread_camera_left = ThreadCamera(camera_left)
-    thread_camera_left.daemon = True
-    thread_camera_left.start()
+        # Threading camera right
+        thread_camera_right = ThreadCamera(camera_right)
+        thread_camera_right.daemon = True
+        thread_camera_right.start()
 
-    # Threading camera right
-    thread_camera_right = ThreadCamera(camera_right)
-    thread_camera_right.daemon = True
-    thread_camera_right.start()
+    except:
+        print('No cameras available')
+        myGUI = Application()
+        myGUI.show()
 
     t_gui = ThreadApplication(myGUI)
     t_gui.daemon = True

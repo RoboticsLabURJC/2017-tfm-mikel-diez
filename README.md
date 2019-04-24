@@ -11,6 +11,89 @@ The scope of this project is use of neural networks in order to estimate depth o
 ## Work Log
 #### Current Week
 ##### Week Scope
+* [x] Obtain the kRT matrices from the calibration instead of the current stereo matrix. (For each camera)
+* [ ] Add 3D cameras to the 3DwebViz using the calibration matrices
+* [x] Log times on the console in order to detect where most of the time is used on the application
+* [ ] Change some parameters in order to improve speed
+* [ ] Measure the 
+* [ ] Check some profiling tools and investigate them
+
+##### Week Log
+###### Obtain kRT matrices
+As I've been using the OpenCV functions from the beginning I've been neglecting the obtention of the kRT matrices here is the result:
+####### Camera 2
+```
+k = [[  2.37832668e+03   0.00000000e+00   7.00384617e+02]
+ [  0.00000000e+00   2.37832668e+03   3.40740051e+02]
+ [  0.00000000e+00   0.00000000e+00   1.00000000e+00]]
+R = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+T = [[ 0.]
+ [ 0.]
+ [ 0.]
+ [ 1.]]
+```
+
+####### Camera 2
+```
+k = [[  2.37832668e+03   0.00000000e+00   7.00384617e+02]
+ [  0.00000000e+00   2.37832668e+03   3.40740051e+02]
+ [  0.00000000e+00   0.00000000e+00   1.00000000e+00]]
+R = [[ 1.  0.  0.]
+ [ 0.  1.  0.]
+ [ 0.  0.  1.]]
+T = [[ -9.53577170e-01]
+ [ -7.80413327e-18]
+ [  0.00000000e+00]
+ [  3.01148768e-01]]
+```
+Both cameras are the same so it makes a lot of sense that the intrinsic parameters are equal and both cameras seem to be correctly aligned. The only difference (as expected) is the translation vector. The first camera is on the origin and the second its displaced in the "x" axis (and barely in an other axis but is to small to consider)
+
+###### Log times in order to detect bottlenecks
+I added some logs to the reconstruction (as the calibration can be done offline the times are not critical) and obtained the following:
+```
+INFO:root:[11:07:57.391277] Load Images
+INFO:root:[11:07:57.472219] Start Match Points
+INFO:root:[11:07:58.902518] Start Match Points With Template
+INFO:root:[11:09:43.375470] End Match Points With Template
+INFO:root:[11:09:43.375613] Start Undistort Points
+INFO:root:[11:09:43.376371] End Undistort Points
+INFO:root:[11:09:43.376445] Start Triangulate Points
+INFO:root:[11:09:43.382578] End Triangulate Points
+INFO:root:[11:09:43.382760] Convert Poinst from homogeneus coordiantes to cartesian
+INFO:root:[11:09:43.453446] End Convert Poinst from homogeneus coordiantes to cartesian
+INFO:root:[11:09:43.453621] Return cartesian reconstructed points
+INFO:root:[11:09:43.453776] End Match Points
+INFO:root:[11:09:43.453892] Setting Points and Segments
+INFO:root:[11:09:43.454969] Run vision server
+INFO:root:Total time: 0:01:46.063928
+```
+This is the result for a single file (images) reconstruction and it takes it around 1 minute 46 seconds which is not acceptable. But the responsible for this is clear, is the matching function and is where the efforts should be.  
+
+As talked I've tried reducing the epipolar range I'm using (+-4 pixels) to a new one (+-1 pixel) and it gives the following output:
+```
+INFO:root:[11:35:50.056661] Load Images
+INFO:root:[11:35:50.141154] Start Match Points
+INFO:root:[11:35:51.502285] Start Match Points With Template
+INFO:root:[11:36:32.935945] End Match Points With Template
+INFO:root:[11:36:32.936088] Start Undistort Points
+INFO:root:[11:36:32.936828] End Undistort Points
+INFO:root:[11:36:32.936902] Start Triangulate Points
+INFO:root:[11:36:32.942012] End Triangulate Points
+INFO:root:[11:36:32.942088] Convert Poinst from homogeneus coordiantes to cartesian
+INFO:root:[11:36:32.977115] End Convert Poinst from homogeneus coordiantes to cartesian
+INFO:root:[11:36:32.977329] Return cartesian reconstructed points
+INFO:root:[11:36:32.977482] End Match Points
+INFO:root:[11:36:32.977554] Setting Points and Segments
+INFO:root:[11:36:32.978514] Run vision server
+INFO:root:Total time: 0:00:42.922084
+```
+We earn a minute by doing this and actually the result is pretty much the same.
+
+### 2018 - 2019
+#### 09/04/2019 - 16/04/2019
+##### Week Scope
 * [x] Fix problem with triangulation
 * [x] Print pixel piramid and plane grid using segments (not objects)
 
@@ -18,7 +101,6 @@ The scope of this project is use of neural networks in order to estimate depth o
 As you know I've been having some problems with the triangulation from images, if I select the points manually seemed to work ok but in this case I finally managed to get a kind-off accurated reconstruction: (see video)
 [![Watch the video](https://img.youtube.com/vi/SCC5LVhMqIw/hqdefault.jpg)](https://youtu.be/SCC5LVhMqIw)
 
-### 2018 - 2019
 #### 01/03/2019 - 08/04/2019
 ##### Week Scope
 * [ ] A better triangulation finished:

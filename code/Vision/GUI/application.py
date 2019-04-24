@@ -19,6 +19,8 @@ class Application(QtWidgets.QWidget):
     frames = 0
 
     def __init__(self, parent=None):
+        self.cameras = None
+
         self.create_main_window(parent)
 
         self.create_left_image()
@@ -121,25 +123,26 @@ class Application(QtWidgets.QWidget):
         self.cameras = cameras
 
     def update(self):
-        if(self.take_calibration_images.isChecked()):
-            self.frames += 1
-            if(self.frames == 100):
-                self.take_photo()
-                self.frames = 0
+        if self.cameras is not None:
+            if(self.take_calibration_images.isChecked()):
+                self.frames += 1
+                if(self.frames == 100):
+                    self.take_photo()
+                    self.frames = 0
 
-        if self.should_record_video is True:
-            print('Should Record Video')
-            self.update_video_recorder()
+            if self.should_record_video is True:
+                print('Should Record Video')
+                self.update_video_recorder()
 
-        im_left = self.cameras[0].getImage()
-        im = QtGui.QImage(im_left.data, im_left.shape[1], im_left.shape[0],QtGui.QImage.Format_RGB888)
-        im_scaled = im.scaled(self.im_left_label.size())
-        self.im_left_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled)) # We get the original image and display it.
+            im_left = self.cameras[0].getImage()
+            im = QtGui.QImage(im_left.data, im_left.shape[1], im_left.shape[0],QtGui.QImage.Format_RGB888)
+            im_scaled = im.scaled(self.im_left_label.size())
+            self.im_left_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled))  # We get the original image and display it.
 
-        im_right = self.cameras[1].getImage()
-        im = QtGui.QImage(im_right.data, im_right.shape[1], im_right.shape[0],QtGui.QImage.Format_RGB888)
-        im_scaled = im.scaled(self.im_left_label.size())
-        self.im_right_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled)) # We get the original image and display it.
+            im_right = self.cameras[1].getImage()
+            im = QtGui.QImage(im_right.data, im_right.shape[1], im_right.shape[0],QtGui.QImage.Format_RGB888)
+            im_scaled = im.scaled(self.im_left_label.size())
+            self.im_right_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled)) # We get the original image and display it.
 
     def record_video(self):
         if not os.path.exists('bin/Videos/' + self.textbox.text() + '_video'):
