@@ -26,13 +26,10 @@ class StereoCalibration:
         self.gray_images_shape = []
 
     def calibrate_set(self, image_set):
-        images_left = sorted(glob.glob('bin/CalibrationImages/' + image_set + '/left*' + self.images_format))
-        images_right = sorted(glob.glob('bin/CalibrationImages/' + image_set + '/right*' + self.images_format))
-
-        print('bin/CalibrationImages/' + image_set + '/right*' + self.images_format)
+        images_left = sorted(glob.glob('bin/sets/' + image_set + '/calibration_images/left*' + self.images_format))
+        images_right = sorted(glob.glob('bin/sets/' + image_set + '/calibration_images/right*' + self.images_format))
 
         for index, file_name in enumerate(images_left):
-
             # Load images and convert to gray
             img_left = cv2.imread(file_name)
             gray_left = cv2.cvtColor(img_left, cv2.COLOR_BGR2GRAY)
@@ -86,9 +83,9 @@ class StereoCalibration:
             gray_left.shape[::-1], criteria=stereocalib_criteria, flags=stereocalib_flags)
 
         # Save the calibration matrix in a yaml file.
-        if not os.path.exists('bin/CalibrationMatrix/' + image_set):
-            os.makedirs('bin/CalibrationMatrix/' + image_set)
-        with open('bin/CalibrationMatrix/' + image_set + '/calibrated_camera.yml', 'w') as outfile:
+        if not os.path.exists('bin/sets/' + image_set):
+            os.makedirs('bin/sets/' + image_set)
+        with open('bin/sets/' + image_set + '/calibrated_camera.yml', 'w') as outfile:
             yaml.dump(
                 {'stereocalib_retval': stereocalib_retval, 'cameraMatrix1': cameraMatrix1, 'distCoeffs1': distCoeffs1,
                  'cameraMatrix2': cameraMatrix2, 'distCoeffs2': distCoeffs2, 'R': R, 'T': T, 'E': E, 'F': F}, outfile,

@@ -14,8 +14,8 @@ The scope of this project is use of neural networks in order to estimate depth o
 * [x] Obtain the kRT matrices from the calibration instead of the current stereo matrix. (For each camera)
 * [ ] Add 3D cameras to the 3DwebViz using the calibration matrices
 * [x] Log times on the console in order to detect where most of the time is used on the application
-* [ ] Change some parameters in order to improve speed
-* [ ] Measure the 
+* [x] Change some parameters in order to improve speed
+* [ ] Measure the FPS of the video processing (once is faster)
 * [ ] Check some profiling tools and investigate them
 
 ##### Week Log
@@ -89,7 +89,28 @@ INFO:root:[11:36:32.977554] Setting Points and Segments
 INFO:root:[11:36:32.978514] Run vision server
 INFO:root:Total time: 0:00:42.922084
 ```
-We earn a minute by doing this and actually the result is pretty much the same.
+We earn a minute by doing this and actually the result is pretty much the same. 
+
+After this I tried reducing the image to 640x480 pixels but had some problems with the calibration. Anyway I managed to reduce it a 25% (960x540) and got the following times:
+```
+INFO:root:[12:53:22.193265] Load Images
+INFO:root:[12:53:22.280576] Start Match Points
+INFO:root:[12:53:23.130515] Start Match Points With Template
+INFO:root:[12:53:48.033126] End Match Points With Template
+INFO:root:[12:53:48.033289] Start Undistort Points
+INFO:root:[12:53:48.033951] End Undistort Points
+INFO:root:[12:53:48.034053] Start Triangulate Points
+INFO:root:[12:53:48.038218] End Triangulate Points
+INFO:root:[12:53:48.038304] Convert Poinst from homogeneus coordiantes to cartesian
+INFO:root:[12:53:48.069251] End Convert Poinst from homogeneus coordiantes to cartesian
+INFO:root:[12:53:48.069460] Return cartesian reconstructed points
+INFO:root:[12:53:48.069602] End Match Points
+INFO:root:[12:53:48.069718] Setting Points and Segments
+Connect: default -h localhost -p 9957:ws -h localhost -p 12000
+INFO:root:[12:53:48.070760] Run vision server
+INFO:root:Total time: 0:00:25.877815
+```
+It's a big improvement but not even close to the speed we need.
 
 ### 2018 - 2019
 #### 09/04/2019 - 16/04/2019

@@ -31,8 +31,12 @@ class Application(QtWidgets.QWidget):
         self.create_reconstruction_button()
         self.create_reconstruction_from_video_button()
         self.create_input_textbox()
+        self.create_new_folder_button()
         self.create_image_counter_text()
         self.create_video_record_button()
+        self.create_combobox_selector()
+        self.create_matching_options_group()
+        self.create_options_tabs()
 
         self.video_recorder_1 = None
         self.video_recorder_2 = None
@@ -41,7 +45,7 @@ class Application(QtWidgets.QWidget):
     def create_image_counter_text(self):
         self.images_counter = QtWidgets.QLabel(self)
         self.images_counter.resize(150, 40)
-        self.images_counter.move(950, 350)
+        self.images_counter.move(950, 550)
         self.images_counter.setAlignment(QtCore.Qt.AlignCenter)
         self.images_counter.setFont(QtGui.QFont('Arial', 35))
         self.images_counter.setNum(0)
@@ -50,17 +54,26 @@ class Application(QtWidgets.QWidget):
     def create_input_textbox(self):
         self.textbox = QtWidgets.QLineEdit(self)
         self.textbox.move(950, 50)
-        self.textbox.resize(150, 40)
+        self.textbox.resize(110, 40)
+
+    def create_new_folder_button(self):
+        self.new_folder_button_icon = QtGui.QIcon.fromTheme('edit-undo', QtGui.QIcon('resources/icons/new-folder.png'))
+        self.new_folder_button = QtWidgets.QPushButton('', self)
+        self.new_folder_button.move(1060, 50)
+        self.new_folder_button.resize(40, 40)
+        self.new_folder_button.setIcon(self.new_folder_button_icon)
+        self.new_folder_button.setIconSize(QtCore.QSize(24, 24))
+        self.new_folder_button.clicked.connect(self.create_new_set)
 
     def create_reconstruction_button(self):
-        self.reconstruction_button = QtWidgets.QPushButton('3D Reconstruction', self)
-        self.reconstruction_button.move(950, 250)
+        self.reconstruction_button = QtWidgets.QPushButton('Reconst. from Image', self)
+        self.reconstruction_button.move(950, 350)
         self.reconstruction_button.resize(150, 40)
         self.reconstruction_button.clicked.connect(self.reconstruct_from_images)
 
     def create_reconstruction_from_video_button(self):
-        self.reconstruction_button = QtWidgets.QPushButton('Video Reconstruction', self)
-        self.reconstruction_button.move(950, 450)
+        self.reconstruction_button = QtWidgets.QPushButton('Reconst. from Video', self)
+        self.reconstruction_button.move(950, 400)
         self.reconstruction_button.resize(150, 40)
         self.reconstruction_button.clicked.connect(self.reconstruct_from_video)
 
@@ -71,29 +84,36 @@ class Application(QtWidgets.QWidget):
         self.calibrate_button.clicked.connect(self.calibrate_set)
 
     def create_calibration_images_button(self):
-        self.take_calibration_images = QtWidgets.QPushButton('Calibration Images', self)
+        self.take_calibration_images = QtWidgets.QPushButton('Get Calibration Set', self)
         self.take_calibration_images.setCheckable(True)
         self.take_calibration_images.move(950, 150)
         self.take_calibration_images.resize(150, 40)
-        self.take_calibration_images.clicked.connect(self.take_photo)
 
     def create_take_photo_button(self):
         self.take_photo_button = QtWidgets.QPushButton('Take Photo', self)
-        self.take_photo_button.move(950, 300)
+        self.take_photo_button.move(950, 250)
         self.take_photo_button.resize(150, 40)
         self.take_photo_button.clicked.connect(self.take_photo)
 
     def create_video_record_button(self):
         self.record_video_button = QtWidgets.QPushButton('Record Video', self)
         self.record_video_button.setCheckable(True)
-        self.record_video_button.move(950, 100)
+        self.record_video_button.move(950, 300)
         self.record_video_button.resize(150, 40)
         self.record_video_button.clicked.connect(self.record_video)
+
+    def create_combobox_selector(self):
+        output = [dI for dI in os.listdir('bin/sets') if os.path.isdir(os.path.join('bin/sets', dI))]
+        self.combobox_selector = QtWidgets.QComboBox(self)
+        self.combobox_selector.move(950, 100)
+        self.combobox_selector.resize(150, 40)
+        self.combobox_selector.addItems(output)
 
     def create_right_image(self):
         self.im_right_label = QtWidgets.QLabel(self)
         self.im_right_label.resize(400, 300)
         self.im_right_label.move(500, 50)
+        self.im_right_label.setStyleSheet('background-color: gray')
         self.im_right_label.show()
         self.im_right_txt = QtWidgets.QLabel(self)
         self.im_right_txt.resize(200, 40)
@@ -105,12 +125,59 @@ class Application(QtWidgets.QWidget):
         self.im_left_label = QtWidgets.QLabel(self)
         self.im_left_label.resize(400, 300)
         self.im_left_label.move(50, 50)
+        self.im_left_label.setStyleSheet('background-color: gray')
         self.im_left_label.show()
         self.im_left_txt = QtWidgets.QLabel(self)
         self.im_left_txt.resize(200, 40)
         self.im_left_txt.move(50, 10)
         self.im_left_txt.setText('Left Image')
         self.im_left_txt.show()
+
+    def create_matching_options_group(self):
+        self.matching_options_group = QtWidgets.QGroupBox('Matching Options', self)
+        self.matching_options_group.move(50, 375)
+        self.vertical_layout = QtWidgets.QVBoxLayout()
+        self.vertical_layout.addWidget(QtWidgets.QRadioButton('Radio test'))
+        self.vertical_layout.addWidget(QtWidgets.QRadioButton('Radio test2'))
+        self.matching_options_group.setLayout(self.vertical_layout)
+
+    def create_options_tabs(self):
+        self.options_tabs = QtWidgets.QTabWidget(self)
+        self.options_tabs.resize(800, 250)
+        self.options_tabs.move(50, 375)
+        self.matching_options_widget = QtWidgets.QWidget()
+        self.image_preprocessing_options_widget = QtWidgets.QWidget()
+        self.options_tabs.addTab(self.matching_options_widget, 'Matching Options')
+        self.options_tabs.addTab(self.image_preprocessing_options_widget, 'Pre Options')
+
+        self.matching_options_widget.layout = QtWidgets.QHBoxLayout()
+
+        self.color_spaces_group = QtWidgets.QGroupBox('Color Space')
+        self.color_spaces_vertical_layour = QtWidgets.QVBoxLayout()
+        self.bgr_color_space_radio_button = QtWidgets.QRadioButton('BGR')
+        self.hsv_color_space_radio_button = QtWidgets.QRadioButton('HSV')
+        self.grays_color_space_radio_button = QtWidgets.QRadioButton('Grays')
+        self.hsv_color_space_radio_button.setChecked(True)
+        self.color_spaces_vertical_layour.addWidget(self.bgr_color_space_radio_button)
+        self.color_spaces_vertical_layour.addWidget(self.hsv_color_space_radio_button)
+        self.color_spaces_vertical_layour.addWidget(self.grays_color_space_radio_button)
+        self.color_spaces_group.setLayout(self.color_spaces_vertical_layour)
+
+        self.image_size_group = QtWidgets.QGroupBox('Image Size')
+        self.image_size_vertical_layour = QtWidgets.QVBoxLayout()
+        self.image_size_1280_720_radio_button = QtWidgets.QRadioButton('1280x720')
+        self.image_size_960_540_radio_button = QtWidgets.QRadioButton('960x540')
+        self.image_size_640_480_radio_button = QtWidgets.QRadioButton('640x480')
+        self.image_size_960_540_radio_button.setChecked(True)
+        self.image_size_vertical_layour.addWidget(self.image_size_1280_720_radio_button)
+        self.image_size_vertical_layour.addWidget(self.image_size_960_540_radio_button)
+        self.image_size_vertical_layour.addWidget(self.image_size_640_480_radio_button)
+        self.image_size_group.setLayout(self.image_size_vertical_layour)
+
+        self.matching_options_widget.layout.addWidget(self.color_spaces_group)
+        self.matching_options_widget.layout.addWidget(self.image_size_group)
+        self.matching_options_widget.setLayout(self.matching_options_widget.layout)
+
 
     def create_main_window(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
@@ -127,7 +194,7 @@ class Application(QtWidgets.QWidget):
             if(self.take_calibration_images.isChecked()):
                 self.frames += 1
                 if(self.frames == 100):
-                    self.take_photo()
+                    self.take_calibration_images()
                     self.frames = 0
 
             if self.should_record_video is True:
@@ -174,8 +241,8 @@ class Application(QtWidgets.QWidget):
         self.should_record_video = self.record_video_button.isChecked()
 
     def take_photo(self):
-        if not os.path.exists('bin/CalibrationImages/' + self.textbox.text()):
-            os.makedirs('bin/CalibrationImages/' + self.textbox.text())
+        if not os.path.exists('bin/sets/' + self.combobox_selector.currentText()):
+            os.makedirs('bin/sets/' + self.combobox_selector.currentText())
 
         self.photos_taken += 1
         print('Take Dual Image ' + str(self.photos_taken))
@@ -192,6 +259,27 @@ class Application(QtWidgets.QWidget):
 
         self.images_counter.setNum(self.photos_taken)
 
+    def take_calibration_image(self):
+        if not os.path.exists('bin/sets/' + self.combobox_selector.currentText() + '/calibration_images'):
+            os.makedirs('bin/sets/' + self.combobox_selector.currentText() + '/calibration_images')
+
+        self.photos_taken += 1
+        print('Take Dual Image ' + str(self.photos_taken))
+
+        print('::Write Left Image::')
+        im_left = self.cameras[0].getImageHD()
+        im_rgb_left = cv2.cvtColor(cv2.resize(im_left, (1280, 720)), cv2.COLOR_BGR2RGB)
+        cv2.imwrite('bin/sets/' + self.combobox_selector.currentText() + '/calibration_images/left_image_' + str(self.photos_taken) + '.png',
+                    im_rgb_left)
+
+        print('::Write Right Image::')
+        im_right = self.cameras[1].getImageHD()
+        im_rgb_right = cv2.cvtColor(cv2.resize(im_right, (1280, 720)), cv2.COLOR_BGR2RGB)
+        cv2.imwrite('bin/sets/' + self.combobox_selector.currentText() + '/calibration_images/right_image_' + str(self.photos_taken) + '.png',
+                    im_rgb_right)
+
+        self.images_counter.setNum(self.photos_taken)
+
     def update_video_recorder(self):
         im_left = self.cameras[0].getImageHD()
         im_rgb_left = cv2.cvtColor(cv2.resize(im_left, (1280, 720)), cv2.COLOR_BGR2RGB)
@@ -203,34 +291,24 @@ class Application(QtWidgets.QWidget):
 
     def calibrate_set(self):
         stereo_calibrator = StereoCalibration()
-        stereo_calibrator.calibrate_set(self.textbox.text())
-
-    def reconstruct_with_set(self):
-        image1 = cv2.imread('bin/CalibrationImages/set17_reconstruction/left_image_14.png')
-        image2 = cv2.imread('bin/CalibrationImages/set17_reconstruction/right_image_14.png')
-        matcher = BorderStereoMatcher()
-        matcher.set_images(image1, image2)
-        with open("bin/CalibrationMatrix/set17/calibrated_camera.yml", 'r') as stream:
-            try:
-                data = yaml.load(stream)
-                matcher.set_calibration_data(data)
-            except yaml.YAMLError as exc:
-                print(exc)
-
-        matcher.get_matching_points()
+        stereo_calibrator.calibrate_set(self.combobox_selector.currentText())
 
     def reconstruct_from_video(self):
         video_reconstructor = ReconstructionFromVideo(
-            'bin/Videos/' + self.textbox.text() + '_video/video_1.avi',
-            'bin/Videos/' + self.textbox.text() + '_video/video_2.avi',
-            'bin/CalibrationMatrix/' + self.textbox.text() + '/calibrated_camera.yml'
+            'bin/sets/' + self.combobox_selector.currentText() + '/videos/video_1.avi',
+            'bin/sets/' + self.combobox_selector.currentText() + '/videos/video_2.avi',
+            'bin/sets/' + self.combobox_selector.currentText() + '/calibrated_camera.yml'
         )
         video_reconstructor.run()
 
     def reconstruct_from_images(self):
         images_reconstructor = ReconstructionFromImages(
-            'bin/CalibrationImages/setqwe/left_image_1.png',
-            'bin/CalibrationImages/setqwe/right_image_1.png',
-            'bin/CalibrationMatrix/set140419/calibrated_camera.yml'
+            'bin/sets/' + self.combobox_selector.currentText() + '/images/left_image_1.png',
+            'bin/sets/' + self.combobox_selector.currentText() + '/images/right_image_1.png',
+            'bin/sets/' + self.combobox_selector.currentText() + '/calibrated_camera.yml'
         )
         images_reconstructor.run()
+
+    def create_new_set(self):
+        if not os.path.exists('bin/sets/' + self.textbox.text()):
+            os.makedirs('bin/sets/' + self.textbox.text())

@@ -6,6 +6,7 @@ import yaml
 from Vision.Components.GUI.Helpers import imShowTwoImages, drawlines
 import logging
 from datetime import datetime
+import math
 
 
 class BorderStereoMatcher:
@@ -28,7 +29,6 @@ class BorderStereoMatcher:
 
 		origen = np.array([np.array([1]), np.array([0]), np.array([0])])
 
-
 		# This should go in the calibration procedure or at least it shouldn't be done several times
 		rectify_scale = 0  # 0=full crop, 1=no crop
 		r1, r2, p1, p2, q, roi1, roi2 = cv2.stereoRectify(
@@ -36,7 +36,7 @@ class BorderStereoMatcher:
 			self.calibration_data["distCoeffs1"],
 			self.calibration_data["cameraMatrix2"],
 			self.calibration_data["distCoeffs2"],
-			(1280, 720),
+			border_image1.shape[::-1],
 			self.calibration_data["R"],
 			self.calibration_data["T"],
 			alpha=rectify_scale
@@ -84,19 +84,28 @@ class BorderStereoMatcher:
 
 		logging.info('[{}] End Undistort Points'.format(datetime.now().time()))
 
-
 		logging.info('[{}] Start Triangulate Points'.format(datetime.now().time()))
-		points4D = cv2.triangulatePoints(p2, p1, undistorted_left_points, undistorted_right_points)
+		points4d = cv2.triangulatePoints(p2, p1, undistorted_left_points, undistorted_right_points)
 		logging.info('[{}] End Triangulate Points'.format(datetime.now().time()))
 		final_points = []
-		logging.info('[{}] Convert Poinst from homogeneus coordiantes to cartesian'.format(datetime.now().time()))
+		logging.info('[{}] Convert Poinst from homogeneus coordiantes to cartesian and JdeRobot points'.format(datetime.now().time()))
+		ourworldtransformation = np.array([
+			np.array([1., .0, .0, .0]),
+			np.array([.0, .0, 1., .0]),
+			np.array([.0, -1., .0, .0]),
+			np.array([.0, .0, .0, .1])
+		])
+
+		points4d = points4d.T.dot(ourworldtransformation).T
+
 		for index in range(0, right_points.shape[0] - 0):
 			red = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][2]/255.0)
 			green = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][1]/255.0)
 			blue = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][0]/255.0)
-			final_points.append(jderobot.RGBPoint(float(points4D[0][index] / points4D[3][index]), float(points4D[1][index] / points4D[3][index]), float(points4D[2][index] / points4D[3][index]), red, green, blue))
+			final_points.append(jderobot.RGBPoint(float(points4d[0][index] / points4d[3][index]), float(points4d[1][index] / points4d[3][index]), float(points4d[2][index] / points4d[3][index]), red, green, blue))
 		logging.info('[{}] End Convert Poinst from homogeneus coordiantes to cartesian'.format(datetime.now().time()))
 		# self.persistPoints(final_points)
+
 
 		logging.info('[{}] Return cartesian reconstructed points'.format(datetime.now().time()))
 		return final_points
@@ -280,7 +289,7 @@ class BorderStereoMatcher:
 			for column in range(20, width - 20):
 				row = int((-(column * line[0]) - line[2]) / line[1])
 				for epiline_offset in range(-1, 1):
-					if (row) < 719 and (row) > 0:
+					if (row) < image2_borders.shape[1] and (row) > 0:
 						if image2_borders[row][column + epiline_offset] == 255:
 							right_patch = self.__get_image_patch_gray(image2, row, column, 10)
 							if right_patch.shape == (20, 20, 3):
