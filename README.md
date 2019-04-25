@@ -112,6 +112,47 @@ INFO:root:Total time: 0:00:25.877815
 ```
 It's a big improvement but not even close to the speed we need.
 
+The bottleneck seems to be in the following code, the code takes around 0.012 seconds per point to analyze which is too much.
+
+```
+def __match_points_hsv_template(self, points, lines, image1, image2, image2_borders):
+    height, width, depth = image2.shape
+    points_left = None
+    points_right = None
+    lines_right = None
+    patch_size = 20
+    image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2HSV)
+    image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV)
+    for line, point in zip(lines, points):
+        left_patch = self.__get_image_patch_gray(image1, point[0][1], point[0][0], int(patch_size / 2))
+        best_mean_square_error = 0.9
+        best_point = None
+        for column in range(patch_size, width - patch_size):
+            row = int((-(column * line[0]) - line[2]) / line[1])
+            for epiline_offset in range(-1, 1):
+                if (row) < image2_borders.shape[1] and (row) > 0:
+                    if image2_borders[row][column + epiline_offset] == 255:
+                        right_patch = self.__get_image_patch_gray(image2, row, column, int(patch_size / 2))
+                        if right_patch.shape == (patch_size, patch_size, 3):
+                            similarity = cv2.matchTemplate(right_patch, left_patch, cv2.TM_CCORR_NORMED)
+                            similarity = similarity[0][0]
+                            if similarity > 0.9 and similarity > best_mean_square_error:
+                                best_mean_square_error = similarity
+                                best_point = np.array([[column + epiline_offset, row]], dtype=np.float32)
+        if best_point is not None:
+            if points_left is None:
+                points_left = np.array([point])
+                points_right = np.array([best_point])
+                lines_right = np.array([line])
+            else:
+                points_left = np.append(points_left, [point], axis=0)
+                points_right = np.append(points_right, [best_point], axis=0)
+                lines_right = np.append(lines_right, [line], axis=0)
+
+
+    return points_left, points_right, lines_right
+```
+
 ### 2018 - 2019
 #### 09/04/2019 - 16/04/2019
 ##### Week Scope

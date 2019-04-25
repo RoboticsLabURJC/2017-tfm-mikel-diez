@@ -9,7 +9,8 @@ from datetime import datetime
 
 
 class ReconstructionFromImages:
-    def __init__(self, image01, image02, calibration):
+    def __init__(self, image01, image02, calibration, gui):
+        self.gui = gui
         self.image01 = image01
         self.image02 = image02
         self.calibration = calibration
@@ -34,7 +35,7 @@ class ReconstructionFromImages:
                 matcher.set_images(image1, image2)
 
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
-                self.points = matcher.get_matching_points()
+                self.points = matcher.get_matching_points(self.gui)
 
                 logging.info('[{}] End Match Points'.format(datetime.now().time()))
 

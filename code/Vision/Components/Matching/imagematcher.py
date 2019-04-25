@@ -21,11 +21,11 @@ class BorderStereoMatcher:
 	def set_calibration_data(self, data):
 		self.calibration_data = data
 
-	def get_matching_points(self):
+	def get_matching_points(self, gui):
 		border_image1 = self.__get_border_image(self.image1)
 		border_image2 = self.__get_border_image(self.image2)
 
-		border_image1_thresholded = self.__remove_points(border_image1, 5)
+		border_image1_thresholded = self.__remove_points(border_image1, 10)
 
 		origen = np.array([np.array([1]), np.array([0]), np.array([0])])
 
@@ -61,9 +61,16 @@ class BorderStereoMatcher:
 		lines1 = lines1.reshape(-1, 3)
 
 		logging.info('[{}] Start Match Points With Template'.format(datetime.now().time()))
+		init_matching_time = datetime.now()
 		left_points, right_points, lines_right = self.__match_points_hsv_template(points, lines1, self.image1, self.image2, border_image2)
+		end_matching_time = datetime.now()
 		logging.info('[{}] End Match Points With Template'.format(datetime.now().time()))
-
+		logging.info('[{}] Points to be Matched'.format(points.shape[0]))
+		logging.info('[{}] Points Matched'.format(left_points.shape[0]))
+		gui.matching_information_points_to_match_label.setText('Points to match: %s' % points.shape[0])
+		gui.matching_information_points_matched_label.setText('Points matched: %s' % left_points.shape[0])
+		gui.matching_information_seconds_per_point_label.setText('Seconds per Point: %s' % ((end_matching_time - init_matching_time).total_seconds() / points.shape[0]))
+		gui.matching_information_total_matching_seconds_label.setText('Total time (s): %s' % (end_matching_time - init_matching_time).total_seconds())
 		# self.__show_matching_points_with_lines(self.image1, self.image2, left_points, right_points)
 
 		logging.info('[{}] Start Undistort Points'.format(datetime.now().time()))
@@ -96,7 +103,7 @@ class BorderStereoMatcher:
 			np.array([.0, .0, .0, .1])
 		])
 
-		points4d = points4d.T.dot(ourworldtransformation).T
+		# points4d = points4d.T.dot(ourworldtransformation).T
 
 		for index in range(0, right_points.shape[0] - 0):
 			red = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][2]/255.0)
@@ -280,19 +287,20 @@ class BorderStereoMatcher:
 		points_left = None
 		points_right = None
 		lines_right = None
+		patch_size = 20
 		image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2HSV)
 		image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV)
 		for line, point in zip(lines, points):
-			left_patch = self.__get_image_patch_gray(image1, point[0][1], point[0][0], 10)
+			left_patch = self.__get_image_patch_gray(image1, point[0][1], point[0][0], int(patch_size / 2))
 			best_mean_square_error = 0.9
 			best_point = None
-			for column in range(20, width - 20):
+			for column in range(patch_size, width - patch_size):
 				row = int((-(column * line[0]) - line[2]) / line[1])
 				for epiline_offset in range(-1, 1):
 					if (row) < image2_borders.shape[1] and (row) > 0:
 						if image2_borders[row][column + epiline_offset] == 255:
-							right_patch = self.__get_image_patch_gray(image2, row, column, 10)
-							if right_patch.shape == (20, 20, 3):
+							right_patch = self.__get_image_patch_gray(image2, row, column, int(patch_size / 2))
+							if right_patch.shape == (patch_size, patch_size, 3):
 								similarity = cv2.matchTemplate(right_patch, left_patch, cv2.TM_CCORR_NORMED)
 								similarity = similarity[0][0]
 								if similarity > 0.9 and similarity > best_mean_square_error:

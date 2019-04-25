@@ -37,6 +37,7 @@ class Application(QtWidgets.QWidget):
         self.create_combobox_selector()
         self.create_matching_options_group()
         self.create_options_tabs()
+        self.create_information_tabs()
 
         self.video_recorder_1 = None
         self.video_recorder_2 = None
@@ -45,7 +46,7 @@ class Application(QtWidgets.QWidget):
     def create_image_counter_text(self):
         self.images_counter = QtWidgets.QLabel(self)
         self.images_counter.resize(150, 40)
-        self.images_counter.move(950, 550)
+        self.images_counter.move(925, 250)
         self.images_counter.setAlignment(QtCore.Qt.AlignCenter)
         self.images_counter.setFont(QtGui.QFont('Arial', 35))
         self.images_counter.setNum(0)
@@ -53,13 +54,13 @@ class Application(QtWidgets.QWidget):
 
     def create_input_textbox(self):
         self.textbox = QtWidgets.QLineEdit(self)
-        self.textbox.move(950, 50)
+        self.textbox.move(925, 50)
         self.textbox.resize(110, 40)
 
     def create_new_folder_button(self):
         self.new_folder_button_icon = QtGui.QIcon.fromTheme('edit-undo', QtGui.QIcon('resources/icons/new-folder.png'))
         self.new_folder_button = QtWidgets.QPushButton('', self)
-        self.new_folder_button.move(1060, 50)
+        self.new_folder_button.move(1035, 50)
         self.new_folder_button.resize(40, 40)
         self.new_folder_button.setIcon(self.new_folder_button_icon)
         self.new_folder_button.setIconSize(QtCore.QSize(24, 24))
@@ -67,45 +68,45 @@ class Application(QtWidgets.QWidget):
 
     def create_reconstruction_button(self):
         self.reconstruction_button = QtWidgets.QPushButton('Reconst. from Image', self)
-        self.reconstruction_button.move(950, 350)
+        self.reconstruction_button.move(925, 200)
         self.reconstruction_button.resize(150, 40)
         self.reconstruction_button.clicked.connect(self.reconstruct_from_images)
 
     def create_reconstruction_from_video_button(self):
         self.reconstruction_button = QtWidgets.QPushButton('Reconst. from Video', self)
-        self.reconstruction_button.move(950, 400)
+        self.reconstruction_button.move(1090, 200)
         self.reconstruction_button.resize(150, 40)
         self.reconstruction_button.clicked.connect(self.reconstruct_from_video)
 
     def create_calibrate_cameras_button(self):
         self.calibrate_button = QtWidgets.QPushButton('Calibrate Cameras', self)
-        self.calibrate_button.move(950, 200)
+        self.calibrate_button.move(1090, 100)
         self.calibrate_button.resize(150, 40)
         self.calibrate_button.clicked.connect(self.calibrate_set)
 
     def create_calibration_images_button(self):
         self.take_calibration_images = QtWidgets.QPushButton('Get Calibration Set', self)
         self.take_calibration_images.setCheckable(True)
-        self.take_calibration_images.move(950, 150)
+        self.take_calibration_images.move(925, 100)
         self.take_calibration_images.resize(150, 40)
 
     def create_take_photo_button(self):
         self.take_photo_button = QtWidgets.QPushButton('Take Photo', self)
-        self.take_photo_button.move(950, 250)
+        self.take_photo_button.move(925, 150)
         self.take_photo_button.resize(150, 40)
         self.take_photo_button.clicked.connect(self.take_photo)
 
     def create_video_record_button(self):
         self.record_video_button = QtWidgets.QPushButton('Record Video', self)
         self.record_video_button.setCheckable(True)
-        self.record_video_button.move(950, 300)
+        self.record_video_button.move(1090, 150)
         self.record_video_button.resize(150, 40)
         self.record_video_button.clicked.connect(self.record_video)
 
     def create_combobox_selector(self):
         output = [dI for dI in os.listdir('bin/sets') if os.path.isdir(os.path.join('bin/sets', dI))]
         self.combobox_selector = QtWidgets.QComboBox(self)
-        self.combobox_selector.move(950, 100)
+        self.combobox_selector.move(1090, 50)
         self.combobox_selector.resize(150, 40)
         self.combobox_selector.addItems(output)
 
@@ -143,7 +144,7 @@ class Application(QtWidgets.QWidget):
 
     def create_options_tabs(self):
         self.options_tabs = QtWidgets.QTabWidget(self)
-        self.options_tabs.resize(800, 250)
+        self.options_tabs.resize(850, 250)
         self.options_tabs.move(50, 375)
         self.matching_options_widget = QtWidgets.QWidget()
         self.image_preprocessing_options_widget = QtWidgets.QWidget()
@@ -174,15 +175,48 @@ class Application(QtWidgets.QWidget):
         self.image_size_vertical_layour.addWidget(self.image_size_640_480_radio_button)
         self.image_size_group.setLayout(self.image_size_vertical_layour)
 
+        self.epipolar_range_group = QtWidgets.QGroupBox('Ranges')
+        self.epipolar_range_vertical_layout = QtWidgets.QVBoxLayout()
+        self.epiline_range_combobox_selector = QtWidgets.QComboBox()
+        self.epiline_range_combobox_selector.addItems(['Epiline Range', '1', '2', '3', '4', '5'])
+        self.patch_size_combobox_selector = QtWidgets.QComboBox()
+        self.patch_size_combobox_selector.addItems(['Patch Size', '5', '10', '20', '30', '40'])
+        self.epipolar_range_vertical_layout.addWidget(self.epiline_range_combobox_selector)
+        self.epipolar_range_vertical_layout.addWidget(self.patch_size_combobox_selector)
+        self.epipolar_range_group.setLayout(self.epipolar_range_vertical_layout)
+
         self.matching_options_widget.layout.addWidget(self.color_spaces_group)
         self.matching_options_widget.layout.addWidget(self.image_size_group)
+        self.matching_options_widget.layout.addWidget(self.epipolar_range_group)
         self.matching_options_widget.setLayout(self.matching_options_widget.layout)
+
+    def create_information_tabs(self):
+        self.information_tabs = QtWidgets.QTabWidget(self)
+        self.information_tabs.resize(300, 250)
+        self.information_tabs.move(925, 375)
+        self.matching_information_widget = QtWidgets.QWidget()
+        self.calibration_information_widget = QtWidgets.QWidget()
+        self.information_tabs.addTab(self.matching_information_widget, 'Matching Info')
+
+        self.matching_information_widget.layout = QtWidgets.QVBoxLayout()
+        self.matching_information_points_to_match_label = QtWidgets.QLabel('Points to match: %s' % 0)
+        self.matching_information_points_matched_label = QtWidgets.QLabel('Points matched: %s' % 0)
+        self.matching_information_seconds_per_point_label = QtWidgets.QLabel('Seconds per Point: %s' % 0)
+        self.matching_information_total_matching_seconds_label = QtWidgets.QLabel('Matching time (s): %s' % 0)
+
+
+        self.matching_information_widget.layout.addWidget(self.matching_information_points_to_match_label)
+        self.matching_information_widget.layout.addWidget(self.matching_information_points_matched_label)
+        self.matching_information_widget.layout.addWidget(self.matching_information_seconds_per_point_label)
+        self.matching_information_widget.layout.addWidget(self.matching_information_total_matching_seconds_label)
+
+        self.matching_information_widget.setLayout(self.matching_information_widget.layout)
 
 
     def create_main_window(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
         self.setWindowTitle("Vision")
-        self.resize(1150, 650)
+        self.resize(1250, 650)
         self.move(150, 50)
         self.updGUI.connect(self.update)
 
@@ -305,7 +339,8 @@ class Application(QtWidgets.QWidget):
         images_reconstructor = ReconstructionFromImages(
             'bin/sets/' + self.combobox_selector.currentText() + '/images/left_image_1.png',
             'bin/sets/' + self.combobox_selector.currentText() + '/images/right_image_1.png',
-            'bin/sets/' + self.combobox_selector.currentText() + '/calibrated_camera.yml'
+            'bin/sets/' + self.combobox_selector.currentText() + '/calibrated_camera.yml',
+            self
         )
         images_reconstructor.run()
 
