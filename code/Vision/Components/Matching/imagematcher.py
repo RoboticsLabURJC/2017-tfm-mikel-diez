@@ -8,6 +8,10 @@ import logging
 from datetime import datetime
 import math
 
+import cProfile
+import pstats
+import io
+
 
 class BorderStereoMatcher:
 	def __init__(self):
@@ -25,7 +29,7 @@ class BorderStereoMatcher:
 		border_image1 = self.__get_border_image(self.image1)
 		border_image2 = self.__get_border_image(self.image2)
 
-		border_image1_thresholded = self.__remove_points(border_image1, 10)
+		border_image1_thresholded = self.__remove_points(border_image1, 5)
 
 		origen = np.array([np.array([1]), np.array([0]), np.array([0])])
 
@@ -62,7 +66,12 @@ class BorderStereoMatcher:
 
 		logging.info('[{}] Start Match Points With Template'.format(datetime.now().time()))
 		init_matching_time = datetime.now()
+		pr = cProfile.Profile()
+		pr.enable()
 		left_points, right_points, lines_right = self.__match_points_hsv_template(points, lines1, self.image1, self.image2, border_image2)
+		pr.disable()
+		pr.print_stats()
+
 		end_matching_time = datetime.now()
 		logging.info('[{}] End Match Points With Template'.format(datetime.now().time()))
 		logging.info('[{}] Points to be Matched'.format(points.shape[0]))
@@ -97,19 +106,20 @@ class BorderStereoMatcher:
 		final_points = []
 		logging.info('[{}] Convert Poinst from homogeneus coordiantes to cartesian and JdeRobot points'.format(datetime.now().time()))
 		ourworldtransformation = np.array([
-			np.array([1., .0, .0, .0]),
-			np.array([.0, .0, 1., .0]),
-			np.array([.0, -1., .0, .0]),
-			np.array([.0, .0, .0, .1])
+			np.array([1., .0, .0]),
+			np.array([.0, .0, -1.]),
+			np.array([.0, 1., 0.])
 		])
 
 		# points4d = points4d.T.dot(ourworldtransformation).T
 
 		for index in range(0, right_points.shape[0] - 0):
+			transformed_point = np.array([float(points4d[0][index] / points4d[3][index]), float(points4d[1][index] / points4d[3][index]), float(points4d[2][index] / points4d[3][index])])
+			transformed_point = ourworldtransformation.dot(transformed_point)
 			red = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][2]/255.0)
 			green = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][1]/255.0)
 			blue = float(self.image2[int(left_points[index][0][1])][int(left_points[index][0][0])][0]/255.0)
-			final_points.append(jderobot.RGBPoint(float(points4d[0][index] / points4d[3][index]), float(points4d[1][index] / points4d[3][index]), float(points4d[2][index] / points4d[3][index]), red, green, blue))
+			final_points.append(jderobot.RGBPoint(transformed_point[0], transformed_point[1], transformed_point[2], red, green, blue))
 		logging.info('[{}] End Convert Poinst from homogeneus coordiantes to cartesian'.format(datetime.now().time()))
 		# self.persistPoints(final_points)
 

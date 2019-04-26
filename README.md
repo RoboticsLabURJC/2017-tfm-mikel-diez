@@ -12,7 +12,7 @@ The scope of this project is use of neural networks in order to estimate depth o
 #### Current Week
 ##### Week Scope
 * [x] Obtain the kRT matrices from the calibration instead of the current stereo matrix. (For each camera)
-* [ ] Add 3D cameras to the 3DwebViz using the calibration matrices
+* [x] Add 3D cameras to the 3DwebViz using the calibration matrices
 * [x] Log times on the console in order to detect where most of the time is used on the application
 * [x] Change some parameters in order to improve speed
 * [ ] Measure the FPS of the video processing (once is faster)
@@ -153,6 +153,25 @@ def __match_points_hsv_template(self, points, lines, image1, image2, image2_bord
     return points_left, points_right, lines_right
 ```
 
+Lets show a video of the new cameras and coordinates direction. Now the camera coordinates are converted to our world coordinates system.
+[![Watch the video](https://img.youtube.com/vi/_uQ6MK3uk90/hqdefault.jpg)](https://youtu.be/_uQ6MK3uk90)
+
+I've been doing some research with profiling tools (cProfile for python) and for the bottleneck and got the following:
+```
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     5727    0.006    0.000    0.044    0.000 function_base.py:4523(append)
+        1   14.209   14.209   25.265   25.265 imagematcher.py:297(__match_points_hsv_template)
+   198520    0.299    0.000    0.299    0.000 imagematcher.py:334(__get_image_patch_gray)
+     5727    0.005    0.000    0.006    0.000 numeric.py:484(asanyarray)
+        2    0.007    0.004    0.007    0.004 {cvtColor}
+   196417   10.203    0.000   10.203    0.000 {matchTemplate}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+    14159    0.032    0.000    0.032    0.000 {numpy.core.multiarray.array}
+     5727    0.032    0.000    0.032    0.000 {numpy.core.multiarray.concatenate}
+  1936863    0.471    0.000    0.471    0.000 {range}
+        1    0.001    0.001    0.001    0.001 {zip}
+```
+It seems that 14s correspond to the function itself (with its multiple loops) and the rest to the matchTemplate function from openCV which we call nearly 200.000 times. I need to see if I can do this more efficient.
 ### 2018 - 2019
 #### 09/04/2019 - 16/04/2019
 ##### Week Scope
