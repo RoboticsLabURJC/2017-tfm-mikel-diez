@@ -154,6 +154,7 @@ def __match_points_hsv_template(self, points, lines, image1, image2, image2_bord
 ```
 
 Lets show a video of the new cameras and coordinates direction. Now the camera coordinates are converted to our world coordinates system.
+
 [![Watch the video](https://img.youtube.com/vi/_uQ6MK3uk90/hqdefault.jpg)](https://youtu.be/_uQ6MK3uk90)
 
 I've been doing some research with profiling tools (cProfile for python) and for the bottleneck and got the following:
