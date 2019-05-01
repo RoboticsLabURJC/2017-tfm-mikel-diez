@@ -17,6 +17,7 @@ class StereoCalibration:
         # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
         self.objp = np.zeros((self.pattern_size[1] * self.pattern_size[0], 3), np.float32)
         self.objp[:, :2] = np.mgrid[0:self.pattern_size[0], 0:self.pattern_size[1]].T.reshape(-1, 2)
+        self.objp *= 28
 
         # Arrays to store object points and image points from all the images.
         self.objpoints = []  # 3d point in real world space
@@ -36,7 +37,6 @@ class StereoCalibration:
             img_right = cv2.imread(images_right[index])
             gray_right = cv2.cvtColor(img_right, cv2.COLOR_BGR2GRAY)
 
-            image_size = img_left.shape
             self.gray_images_shape = gray_left.shape
             # Find the chess board corners in both images
             left_found, left_corners = cv2.findChessboardCorners(gray_left, self.pattern_size,
@@ -82,13 +82,73 @@ class StereoCalibration:
             self.objpoints, self.imgpoints_left, self.imgpoints_right, cameraMatrix1, distCoeffs1, cameraMatrix2, distCoeffs2,
             gray_left.shape[::-1], criteria=stereocalib_criteria, flags=stereocalib_flags)
 
+        # This should go in the calibration procedure or at least it shouldn't be done several times
+        rectify_scale = 0  # 0=full crop, 1=no crop
+        r1, r2, p1, p2, q, roi1, roi2 = cv2.stereoRectify(
+            cameraMatrix1,
+            distCoeffs1,
+            cameraMatrix2,
+            distCoeffs2,
+            gray_left.shape[::-1],
+            R,
+            T,
+            alpha=rectify_scale
+        )
+
+        individualCameraMatrix, rotMatrix, transVect, rotMatrixX, rotMatrixY, rotMatrixZ, eulerAngles = cv2.decomposeProjectionMatrix(
+            p1)
+        individualCameraMatrix2, rotMatrix2, transVect2, rotMatrixX2, rotMatrixY2, rotMatrixZ2, eulerAngles2 = cv2.decomposeProjectionMatrix(
+            p2)
+
         # Save the calibration matrix in a yaml file.
         if not os.path.exists('bin/sets/' + image_set):
             os.makedirs('bin/sets/' + image_set)
         with open('bin/sets/' + image_set + '/calibrated_camera.yml', 'w') as outfile:
             yaml.dump(
-                {'stereocalib_retval': stereocalib_retval, 'cameraMatrix1': cameraMatrix1, 'distCoeffs1': distCoeffs1,
-                 'cameraMatrix2': cameraMatrix2, 'distCoeffs2': distCoeffs2, 'R': R, 'T': T, 'E': E, 'F': F}, outfile,
+                {
+                    'stereocalib_retval': stereocalib_retval,
+                    'cameraMatrix1': cameraMatrix1,
+                    'distCoeffs1': distCoeffs1,
+                    'cameraMatrix2': cameraMatrix2,
+                    'distCoeffs2': distCoeffs2,
+                    'R': R,
+                    'T': T,
+                    'E': E,
+                    'F': F,
+                    'r1': r1,
+                    'r2': r1,
+                    'p1': p1,
+                    'p2': p2,
+                    'q': q,
+                    'roi1': roi1,
+                    'roi2': roi2
+                }, outfile,
+                default_flow_style=False)
+
+        with open('bin/sets/' + image_set + '/camera_A_calibration.yml', 'w') as outfile:
+            yaml.dump(
+                {
+                    'cameraMatrix': individualCameraMatrix,
+                    'rotationMatrix': rotMatrix,
+                    'translationVector': transVect,
+                    'rotMatrixX': rotMatrixX,
+                    'rotMatrixY': rotMatrixY,
+                    'rotMatrixZ': rotMatrixZ,
+                    'eulerAngles': eulerAngles
+                }, outfile,
+                default_flow_style=False)
+
+        with open('bin/sets/' + image_set + '/camera_B_calibration.yml', 'w') as outfile:
+            yaml.dump(
+                {
+                    'cameraMatrix': individualCameraMatrix2,
+                    'rotationMatrix': rotMatrix2,
+                    'translationVector': transVect2,
+                    'rotMatrixX': rotMatrixX2,
+                    'rotMatrixY': rotMatrixY2,
+                    'rotMatrixZ': rotMatrixZ2,
+                    'eulerAngles': eulerAngles2
+                }, outfile,
                 default_flow_style=False)
 
         # Check the error of the meassure

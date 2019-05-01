@@ -3,17 +3,20 @@ import yaml
 from Vision.Components.Matching.imagematcher import BorderStereoMatcher
 from Vision.Components.Visualization.visualization import VisionViewer
 from Vision.Components.Visualization.visualization_server import VisualServer
+from Vision.Components.Reconstruction.Reconstructor3D import Reconstructor3D
 import jderobot
 import logging
 from datetime import datetime
 
 
 class ReconstructionFromImages:
-    def __init__(self, image01, image02, calibration, gui):
+    def __init__(self, image01, image02, stereoCalibration, cameraACalibration, cameraBCalibration, gui):
         self.gui = gui
         self.image01 = image01
         self.image02 = image02
-        self.calibration = calibration
+        self.calibration = stereoCalibration
+        self.cameraACalibration = cameraACalibration
+        self.cameraBCalibration = cameraBCalibration
         self.segments = []
         self.points = []
         self.distance = 900
@@ -21,7 +24,7 @@ class ReconstructionFromImages:
         logging.getLogger().setLevel(logging.INFO)
 
     def run(self):
-        with open(self.calibration, 'r') as stream:
+        with open(self.calibration, 'r') as stereoCalibration, open(self.cameraACalibration, 'r') as cameraACalibration, open(self.cameraBCalibration, 'r') as cameraBCalibration:
             try:
                 initial_time = datetime.now()
                 logging.info('[{}] Load Images'.format(datetime.now().time()))
@@ -29,13 +32,18 @@ class ReconstructionFromImages:
                 image2 = cv2.imread(self.image02)
                 matcher = BorderStereoMatcher()
                 matcher.set_images(image1, image2)
-                data = yaml.load(stream)
-                matcher.set_calibration_data(data)
+                stereoCalibrationData = yaml.load(stereoCalibration)
+                cameraACalibrationData = yaml.load(cameraACalibration)
+                cameraBCalibrationData = yaml.load(cameraBCalibration)
+                matcher.set_calibration_data(stereoCalibrationData, cameraACalibrationData, cameraBCalibrationData)
 
                 matcher.set_images(image1, image2)
 
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
-                self.points = matcher.get_matching_points(self.gui)
+                left_points, right_points = matcher.get_matching_points(self.gui)
+                reconstructor = Reconstructor3D(stereoCalibrationData, image1, image2)
+
+                self.points = reconstructor.execute(left_points, right_points)
 
                 logging.info('[{}] End Match Points'.format(datetime.now().time()))
 

@@ -340,6 +340,8 @@ class Application(QtWidgets.QWidget):
             'bin/sets/' + self.combobox_selector.currentText() + '/images/left_image_1.png',
             'bin/sets/' + self.combobox_selector.currentText() + '/images/right_image_1.png',
             'bin/sets/' + self.combobox_selector.currentText() + '/calibrated_camera.yml',
+            'bin/sets/' + self.combobox_selector.currentText() + '/camera_A_calibration.yml',
+            'bin/sets/' + self.combobox_selector.currentText() + '/camera_B_calibration.yml',
             self
         )
         images_reconstructor.run()
