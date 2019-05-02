@@ -11,6 +11,51 @@ The scope of this project is use of neural networks in order to estimate depth o
 ## Work Log
 #### Current Week
 ##### Week Scope
+* [x] Improve calibration to get real measures
+* [ ] Optimize matching
+    * [x] Small Optimization
+    * [ ] Bellow 1 second
+##### Week Log
+###### Improve calibration to get real measures
+In previous weeks we had a calibration that returned a reconstruction in an unknown scale. One of the objectives of this week was to correct it in order to get real measures directly.
+
+In order to do this I had to measure the pattern squares (28mm) and added it to the calibration. Now I have real distances.
+
+For representation I apply a factor of 0.1 so the 3DViz creates a better representation. 
+
+###### Optimize matching
+I'm still working on this, last week we had a speed of 25 seconds per frame and now is down to 15 seconds. It's not enough so I'm still working on this.
+
+####### Less use of cv2.matchTemplate
+One of the steps that used most of the time was the use of matchTemplate function from OpenCV (13 seconds) so I had to reduce its usage. To do this, instead of using 3 patches for the same column (we use a epiline range of +-1) y match a column and select the better point. This reduces the use a lot and has gotten it to around 5 seconds. It's still to much but it shows me the way to go.
+
+####### More efficient interest points structure (Work in progress)
+I wish I had this finished but I've been unable to do so. The idea is the following:
+```
+# Get all the non-zero (border) pixels of image B
+non_zero_pixels = np.array(cv2.findNonZero(border_image), dtype=np.float32)
+
+# Create a structure on size m (height of the image) and in each element a list of size n (the number of non-zero pixels in that row) with the value of the column where the pixel is.
+for non_zero_pixel in non_zero_pixels:
+    non_zero_pixels_structure[non_zero_pixel[0][1]].append(non_zero_pixel[0][0])
+
+# Example
+[
+    [24, 43, 65, 67],
+    [31, 12, 123],
+    ...
+    [1]
+]
+```
+
+####### Even less use of cv2.matchTempalte
+Once I get the previous point finished y plan to use this function only once for every epiline, reducing the amount of calls drastically.
+
+This will mean that each call lasts more but it will be way faster.
+
+### 2018 - 2019
+#### 16/04/2019 - 25/04/2019
+##### Week Scope
 * [x] Obtain the kRT matrices from the calibration instead of the current stereo matrix. (For each camera)
 * [x] Add 3D cameras to the 3DwebViz using the calibration matrices
 * [x] Log times on the console in order to detect where most of the time is used on the application
@@ -173,7 +218,6 @@ I've been doing some research with profiling tools (cProfile for python) and for
         1    0.001    0.001    0.001    0.001 {zip}
 ```
 It seems that 14s correspond to the function itself (with its multiple loops) and the rest to the matchTemplate function from openCV which we call nearly 200.000 times. I need to see if I can do this more efficient.
-### 2018 - 2019
 #### 09/04/2019 - 16/04/2019
 ##### Week Scope
 * [x] Fix problem with triangulation
