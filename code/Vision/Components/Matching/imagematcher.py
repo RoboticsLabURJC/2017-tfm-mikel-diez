@@ -38,7 +38,7 @@ class BorderStereoMatcher:
         init_matching_time = datetime.now()
         pr = cProfile.Profile()
         pr.enable()
-        left_points, right_points, lines_right = self.__match_points_with_epilines(points, lines1, self.image1, self.image2, border_image2)
+        left_points, right_points, lines_right = self.__match_similar_interest_points(points, points_right, lines1, self.image1, self.image2, border_image2)
         pr.disable()
         pr.print_stats()
 
@@ -54,8 +54,13 @@ class BorderStereoMatcher:
 
         return left_points, right_points
 
-    def getRightPointsStructure(self, border_image2):
-        return np.array(cv2.findNonZero(border_image2), dtype=np.float32)
+    def getRightPointsStructure(self, border_image):
+        non_zero_pixels_structure = np.empty((border_image.shape[0],), dtype=object)
+        non_zero_pixels_structure[...] = [[] for _ in range(border_image.shape[0])]
+        non_zero_pixels = np.array(cv2.findNonZero(border_image), dtype=np.float32)
+        for non_zero_pixel in non_zero_pixels:
+            non_zero_pixels_structure[non_zero_pixel[0][1]].append(non_zero_pixel[0][0])
+        return non_zero_pixels_structure
 
     def persistPoints(self, final_points):
         logging.info('[{}] Persist points'.format(datetime.now().time()))
@@ -292,9 +297,9 @@ class BorderStereoMatcher:
 
     def __match_points_with_epilines(self, points, lines, image1, image2, image2_borders):
         height, width, depth = image2.shape
-        points_left = None
-        points_right = None
-        lines_right = None
+        points_left = []
+        points_right = []
+        lines_right = []
         patch_size = 20
         image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2HSV)
         image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV)
@@ -318,13 +323,91 @@ class BorderStereoMatcher:
                                     best_mean_square_error = similarity
                                     best_point = np.array([[column + epiline_offset, row]], dtype=np.float32)
             if best_point is not None:
-                if points_left is None:
-                    points_left = np.array([point])
-                    points_right = np.array([best_point])
-                    lines_right = np.array([line])
-                else:
-                    points_left = np.append(points_left, [point], axis=0)
-                    points_right = np.append(points_right, [best_point], axis=0)
-                    lines_right = np.append(lines_right, [line], axis=0)
+                points_left.append(point)
+                points_right.append(best_point)
+                lines_right.append(line)
 
-        return points_left, points_right, lines_right
+        return np.array(points_left), np.array(points_right), np.array(lines_right)
+
+    def __match_similar_interest_points(self, points, points2, lines, image1, image2, image2_borders):
+        height, width, depth = image2.shape
+        points_left = []
+        points_right = []
+        lines_right = []
+        patch_size = 20
+        image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2HSV)
+        image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV)
+
+        for line, point in zip(lines, points):
+            left_patch = self.__get_image_patch(image1, point[0][1], point[0][0], int(patch_size / 2), int(patch_size / 2))
+            best_point = self.__match_points_in_epiline_fast(line, width, left_patch, image2, image2_borders, points2)
+
+            if best_point is not None:
+                points_left.append(point)
+                points_right.append(best_point)
+                lines_right.append(line)
+
+        return np.array(points_left), np.array(points_right), np.array(lines_right)
+
+
+    def __match_points_in_epiline(self, line, width, left_patch, image_b, border_image_b, points2):
+        patch_size = 20
+        column_range = range(patch_size, width - patch_size)
+        epiline_offset = 1
+        similarity_threshold = 0.9
+        best_similarity = 0.9
+        best_point = None
+
+        limit1 = int((-(0 * line[0]) - line[2]) / line[1])
+        limit2 = int((-(points2.shape[0] * line[0]) - line[2]) / line[1])
+
+        for column in column_range:
+            row = int((-(column * line[0]) - line[2]) / line[1])
+            if 0 < row < width:
+                if border_image_b[row][column] == 255:
+                    right_patch = self.__get_image_patch(image_b, row, column, int(patch_size / 2), int((patch_size / 2) + (epiline_offset)))
+                    if right_patch.shape == (patch_size + 2, patch_size, 3):
+                        max_value, max_location = self.__match_column_patch(left_patch, right_patch)
+                        if max_value > similarity_threshold and max_value > best_similarity:
+                            best_similarity = max_value
+                            best_point = np.array([[column + (max_location[1] - 1), row]], dtype=np.float32)
+        return best_point
+
+    def __match_points_in_epiline_fast(self, line, width, left_patch, image_b, border_image_b, points2):
+        patch_size = 20
+        column_range = range(patch_size, width - patch_size)
+        epiline_offset = 1
+        similarity_threshold = 0.9
+        best_similarity = 0.9
+        best_point = None
+
+        limits = [
+            int((-(0 * line[0]) - line[2]) / line[1]),
+            int((-(points2.shape[0] * line[0]) - line[2]) / line[1])
+        ]
+        limits.sort()
+
+        relevant_points = points2[limits[0]:limits[1]]
+
+        print(limits[0], limits[1])
+        for columns, row_number in zip(relevant_points, range(limits[0], limits[1])):
+            print(row_number)
+            for column in columns:
+                if 0 == int((row_number * line[0]) + column * line[1] + line[2]):
+                    if 0 < row_number < width:
+                        right_patch = self.__get_image_patch(image_b, row_number, column, int(patch_size / 2),
+                                                             int((patch_size / 2) + (epiline_offset)))
+                        if right_patch.shape == (patch_size + 2, patch_size, 3):
+                            max_value, max_location = self.__match_column_patch(left_patch, right_patch)
+                            if max_value > similarity_threshold and max_value > best_similarity:
+                                best_similarity = max_value
+                                best_point = np.array([[column + (max_location[1] - 1), row_number]], dtype=np.float32)
+        return best_point
+
+    def __match_column_patch(self, needle, haystack):
+        similarities = cv2.matchTemplate(haystack, needle, cv2.TM_CCORR_NORMED)
+        __, maxVal, __, maxLoc = cv2.minMaxLoc(similarities)
+        return maxVal, maxLoc
+
+    def __get_image_patch(self, image, position_x, position_y, height, width, depth = 1):
+        return image[position_x-width:position_x+width, position_y-height:position_y+height, :]
