@@ -53,6 +53,8 @@ Once I get the previous point finished y plan to use this function only once for
 
 This will mean that each call lasts more but it will be way faster.
 
+Edit (03/05/2019) : I've been thinking that rectifying the images could be a great solution for eficiency.
+
 ### 2018 - 2019
 #### 16/04/2019 - 25/04/2019
 ##### Week Scope
