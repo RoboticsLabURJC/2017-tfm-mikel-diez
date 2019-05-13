@@ -38,7 +38,7 @@ class BorderStereoMatcher:
         init_matching_time = datetime.now()
         pr = cProfile.Profile()
         pr.enable()
-        left_points, right_points, lines_right = self.__match_similar_interest_points(points, points_right, lines1, self.image1, self.image2, border_image2)
+        left_points, right_points, lines_right = self.__match_points_with_epilines(points, lines1, self.image1, self.image2, border_image2)
         pr.disable()
         pr.print_stats()
 

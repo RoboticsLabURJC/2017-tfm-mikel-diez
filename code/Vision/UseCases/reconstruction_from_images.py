@@ -4,6 +4,7 @@ from Vision.Components.Matching.imagematcher import BorderStereoMatcher
 from Vision.Components.Visualization.visualization import VisionViewer
 from Vision.Components.Visualization.visualization_server import VisualServer
 from Vision.Components.Reconstruction.Reconstructor3D import Reconstructor3D
+from Vision.Services.GetMatchedInterestPointsFromImagesByPointsListService import GetMatchedInterestPointsFromImagesService as GetMatchedPointsService
 import jderobot
 import logging
 from datetime import datetime
@@ -30,17 +31,18 @@ class ReconstructionFromImages:
                 logging.info('[{}] Load Images'.format(datetime.now().time()))
                 image1 = cv2.imread(self.image01)
                 image2 = cv2.imread(self.image02)
-                matcher = BorderStereoMatcher()
-                matcher.set_images(image1, image2)
                 stereoCalibrationData = yaml.load(stereoCalibration)
                 cameraACalibrationData = yaml.load(cameraACalibration)
                 cameraBCalibrationData = yaml.load(cameraBCalibration)
-                matcher.set_calibration_data(stereoCalibrationData, cameraACalibrationData, cameraBCalibrationData)
 
-                matcher.set_images(image1, image2)
+                get_matched_interest_points_from_images_service = GetMatchedPointsService(
+                    stereoCalibrationData,
+                    cameraACalibrationData,
+                    cameraBCalibrationData
+                )
 
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
-                left_points, right_points = matcher.get_matching_points(self.gui)
+                left_points, right_points = get_matched_interest_points_from_images_service.execute(image1, image2)
                 reconstructor = Reconstructor3D(stereoCalibrationData, image1, image2)
 
                 self.points = reconstructor.execute(left_points, right_points)
