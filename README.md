@@ -11,6 +11,27 @@ The scope of this project is use of neural networks in order to estimate depth o
 ## Work Log
 #### Current Week
 ##### Week Scope
+* [x] Improve efficiency of matcher
+* [ ] Test angles with cameras
+##### Week Log
+###### Improve efficiency of matcher
+So this has been a big failure of a week to be honest. I've invested large amounts of hours investigating different ways to make the algorithm more efficient and faster.
+
+Las week we had the algorithm running at 15s per image this time it's working at 9s per image at a resolution of 960x540. It's not enough. My next step has been to try lower resolutions (480x270) and I get a speed of 3s but I need to fix some parameters and the reconstruction is jet to be completed.
+
+I've also tried by taking less points of interest from image A and of course get way better results in time (2s per image) but the reconstruction is way less dense.
+
+See the video to view an example (keep in mind that I changed some staff in the reconstruction but din't have time to fix a problem with the plane position. It's a known bug and will fix it soon.)
+[![Watch the video](https://img.youtube.com/vi/ERAKDAYIZ0E/hqdefault.jpg)](https://youtu.be/ERAKDAYIZ0E)
+
+Also I've incremented the threshold for the points to be considered correct and the results are now way better.
+###### Test angles with cameras
+Didn't have time for this part.
+
+
+### 2018 - 2019
+#### 25/04/2019 - 03/04/2019
+##### Week Scope
 * [x] Improve calibration to get real measures
 * [ ] Optimize matching
     * [x] Small Optimization
@@ -55,7 +76,6 @@ This will mean that each call lasts more but it will be way faster.
 
 Edit (03/05/2019) : I've been thinking that rectifying the images could be a great solution for eficiency.
 
-### 2018 - 2019
 #### 16/04/2019 - 25/04/2019
 ##### Week Scope
 * [x] Obtain the kRT matrices from the calibration instead of the current stereo matrix. (For each camera)
