@@ -11,6 +11,27 @@ The scope of this project is use of neural networks in order to estimate depth o
 ## Work Log
 #### Current Week
 ##### Week Scope
+* [x] Test angles with cameras
+* [ ] Draw cameras with the angles
+##### Week Log
+###### Test different rotations of the cameras
+![No Rotation](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/camera_no_rotation.jpg)
+```
+euler_angles = [0.002667008916093765, 0.02449494160296928, -0.08205145388299641]
+```
+
+![Rotation Left](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/camera_rotation_left.jpg)
+```
+euler_angles = [0.017367707615372836, 0.026282819353049974, 0.5364164674416368]
+```
+![Rotation Right](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/camera_rotation_right.jpg)
+```
+euler_angles = [-0.01249720507311161, 0.11237875935343324, -0.43610179440262115]
+```
+
+### 2018 - 2019
+#### 04/05/2019 - 12/05/2019
+##### Week Scope
 * [x] Improve efficiency of matcher
 * [ ] Test angles with cameras
 ##### Week Log
@@ -28,8 +49,6 @@ Also I've incremented the threshold for the points to be considered correct and 
 ###### Test angles with cameras
 Didn't have time for this part.
 
-
-### 2018 - 2019
 #### 25/04/2019 - 03/04/2019
 ##### Week Scope
 * [x] Improve calibration to get real measures

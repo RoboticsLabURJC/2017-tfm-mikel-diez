@@ -15,7 +15,7 @@ class GetMatchedInterestPointsFromImagesService:
         image_a_borders = self.__get_border_image(image_a)
         image_b_borders = self.__get_border_image(image_b)
 
-        image_a_borders_sampled = self.__remove_points(image_a_borders, 5)
+        image_a_borders_sampled = self.__remove_points(image_a_borders, 20)
 
         interest_points_a = np.array(cv2.findNonZero(image_a_borders_sampled), dtype=np.float32)
         interest_points_b, interest_points_b_by_row, interest_points_b_index = self.get_right_points_structure(image_b_borders)
@@ -29,7 +29,6 @@ class GetMatchedInterestPointsFromImagesService:
         left_points, right_points = self.__get_matched_points_with_image_b_map(
             interest_points_a,
             interest_points_b,
-            interest_points_b_by_row,
             interest_points_b_index,
             epilines_a,
             image_a,
@@ -68,13 +67,11 @@ class GetMatchedInterestPointsFromImagesService:
         non_zero_pixels_index = np.cumsum(non_zero_pixels_by_row)
         return non_zero_pixels, non_zero_pixels_by_row, non_zero_pixels_index
 
-    def __get_matched_points_with_image_b_map(self, points_a, points_b, points_b_by_row, points_b_index, lines, image_a, image_b):
+    def __get_matched_points_with_image_b_map(self, points_a, points_b, points_b_index, lines, image_a, image_b):
         height, width, depth = image_a.shape
         result_points_a = []
         result_points_b = []
         patch_size = 20
-        #image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2HSV)
-        #image_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2HSV)
 
         for line, point in zip(lines, points_a):
             left_patch = self.__get_image_patch(
@@ -84,18 +81,14 @@ class GetMatchedInterestPointsFromImagesService:
                 int(patch_size / 2),
                 int(patch_size / 2)
             )
-            best_result_value = 0.9
-            second_result_value = 0
-            best_result_point = None
 
             limits = [
                 int((-(0 * line[0]) - line[2]) / line[1]),
                 int((-(width * line[0]) - line[2]) / line[1])
             ]
             limits.sort()
+            limits[1] = limits[1] if limits[1] < image_a.shape[0] - 1 else image_a.shape[0] - 1
             interest_points_in_range = points_b[points_b_index[limits[0] - 1]:points_b_index[limits[1]]]
-
-            points_array = []
 
             line_function = np.array([
                 [-line[0] / line[1]],
@@ -104,37 +97,28 @@ class GetMatchedInterestPointsFromImagesService:
 
             new_array = np.dot(interest_points_in_range, line_function) - (line[2] / line[1])
             new_array = new_array.astype(int)
-            interest_points_in_line = np.unique(interest_points_in_range[np.where(new_array == 0)[0]], axis=0)
-            interest_patch_array = np.zeros((20 * interest_points_in_line.shape[0], 20, 3))
-            for index, interest_point in enumerate(interest_points_in_line):
-                right_patch = self.__get_image_patch(
-                    image_b,
-                    interest_point[0][1],
-                    interest_point[0][0],
-                    int(patch_size / 2),
-                    int(patch_size / 2)
-                )
-                if right_patch.shape == (patch_size, patch_size, 3):
-                    interest_patch_array[20 * index:20 * (index + 1), 0:20, :] = right_patch
-                    # similarity = cv2.matchTemplate(right_patch, left_patch, cv2.TM_CCORR_NORMED)
-                    # similarity = similarity[0][0]
-                    # if similarity > 0.9 and similarity > best_result_value:
-                    #     second_result_value = best_result_value
-                    #     best_result_value = similarity
-                    #     best_result_point = np.array([[interest_point[0][0], interest_point[0][1]]], dtype=np.float32)
+            if np.where(new_array == 0)[0].size is not 0:
+                interest_points_in_line = np.unique(interest_points_in_range[np.where(new_array == 0)[0]], axis=0)
+                interest_patch_array = np.zeros((20 * interest_points_in_line.shape[0], 20, 3))
+                for index, interest_point in enumerate(interest_points_in_line):
+                    right_patch = self.__get_image_patch(
+                        image_b,
+                        interest_point[0][1],
+                        interest_point[0][0],
+                        int(patch_size / 2),
+                        int(patch_size / 2)
+                    )
+                    if right_patch.shape == (patch_size, patch_size, 3):
+                        interest_patch_array[20 * index:20 * (index + 1), 0:20, :] = right_patch
 
-            line_match = cv2.matchTemplate(interest_patch_array.astype('uint8'), left_patch, cv2.TM_CCORR_NORMED)
-            interest_values = np.arange(0, interest_points_in_line.shape[0]) * 20
+                line_match = cv2.matchTemplate(interest_patch_array.astype('uint8'), left_patch, cv2.TM_CCORR_NORMED)
+                interest_values = np.arange(0, interest_points_in_line.shape[0]) * 20
 
-            minVal, maxVal, minPos, maxPos = cv2.minMaxLoc(line_match[interest_values])
+                minVal, maxVal, minPos, maxPos = cv2.minMaxLoc(line_match[interest_values])
 
-            if maxVal > 0.9:
-                result_points_a.append(point)
-                result_points_b.append(interest_points_in_line[interest_values[maxPos[1]] / 20])
-
-            # if (best_result_point is not None) and (best_result_value - second_result_value > 0.005):
-            #     result_points_a.append(point)
-            #     result_points_b.append(best_result_point)
+                if maxVal > 0.99:
+                    result_points_a.append(point)
+                    result_points_b.append(interest_points_in_line[interest_values[maxPos[1]] / 20])
 
         return np.array(result_points_a), np.array(result_points_b)
 

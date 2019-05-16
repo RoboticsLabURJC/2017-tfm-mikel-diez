@@ -3,8 +3,7 @@ import numpy as np
 import cv2
 import glob
 import yaml
-import sys
-
+import math
 
 class StereoCalibration:
 
@@ -56,12 +55,12 @@ class StereoCalibration:
                 self.imgpoints_right.append(right_corners)
 
             # Draw and display the corners
-            cv2.drawChessboardCorners(img_left, self.pattern_size, left_corners, left_found)
-            cv2.drawChessboardCorners(img_right, self.pattern_size, right_corners, right_found)
-            cv2.namedWindow('Left Image', cv2.WINDOW_NORMAL)
-            cv2.resizeWindow('Left Image', 700, 400)
-            cv2.imshow('Left Image', img_left)
-            cv2.waitKey(500)
+            # cv2.drawChessboardCorners(img_left, self.pattern_size, left_corners, left_found)
+            # cv2.drawChessboardCorners(img_right, self.pattern_size, right_corners, right_found)
+            # cv2.namedWindow('Left Image', cv2.WINDOW_NORMAL)
+            # cv2.resizeWindow('Left Image', 700, 400)
+            # cv2.imshow('Left Image', img_left)
+            # cv2.waitKey(500)
 
         # Destroy windows
         cv2.destroyAllWindows()
@@ -96,9 +95,32 @@ class StereoCalibration:
         )
 
         individualCameraMatrix, rotMatrix, transVect, rotMatrixX, rotMatrixY, rotMatrixZ, eulerAngles = cv2.decomposeProjectionMatrix(
-            p1)
+            p1,
+            cameraMatrix1
+        )
         individualCameraMatrix2, rotMatrix2, transVect2, rotMatrixX2, rotMatrixY2, rotMatrixZ2, eulerAngles2 = cv2.decomposeProjectionMatrix(
-            p2)
+            p2,
+            cameraMatrix2
+        )
+
+        sy = math.sqrt(R[0,0] * R[0,0] + R[1,0] * R[1,0])
+
+        singular = sy < 1e-6
+
+        if not singular:
+            x = math.atan2(R[2,1], R[2,2])
+            y = math.atan2(-R[2,0], sy)
+            z = math.atan2(R[1,0], R[0,0])
+        else:
+            x = math.atan2(-R[1, 2], R[1, 1])
+            y = math.atan2(-R[2, 0], sy)
+            z = 0
+
+        print([x,y,z])
+
+        print('Rotation matrix')
+        print(R)
+        print(T)
 
         # Save the calibration matrix in a yaml file.
         if not os.path.exists('bin/sets/' + image_set):

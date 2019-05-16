@@ -24,9 +24,14 @@ if __name__ == '__main__':
     left_camera_config = config.load('Configuration/cameraview_left.yml')
 
     try:
+        print('2222')
+        print(right_camera_config)
+        print(left_camera_config)
         jdrc = comm.init(right_camera_config, 'Cameraview')
         proxy = jdrc.getCameraClient('Cameraview.Camera')
         camera_right = Camera(proxy)
+
+        print('oli')
 
         jdrc = comm.init(left_camera_config, 'Cameraview')
         proxy = jdrc.getCameraClient('Cameraview.Camera')

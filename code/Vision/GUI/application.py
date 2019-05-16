@@ -225,10 +225,10 @@ class Application(QtWidgets.QWidget):
 
     def update(self):
         if self.cameras is not None:
-            if(self.take_calibration_images.isChecked()):
+            if self.take_calibration_images.isChecked():
                 self.frames += 1
-                if(self.frames == 100):
-                    self.take_calibration_images()
+                if self.frames == 100:
+                    self.take_calibration_image()
                     self.frames = 0
 
             if self.should_record_video is True:
