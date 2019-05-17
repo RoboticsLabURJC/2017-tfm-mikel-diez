@@ -121,6 +121,7 @@ class StereoCalibration:
         print('Rotation matrix')
         print(R)
         print(T)
+        print(transVect2[0:3] / transVect2[3])
 
         # Save the calibration matrix in a yaml file.
         if not os.path.exists('bin/sets/' + image_set):

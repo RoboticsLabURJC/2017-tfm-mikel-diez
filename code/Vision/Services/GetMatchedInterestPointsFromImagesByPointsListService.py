@@ -98,6 +98,7 @@ class GetMatchedInterestPointsFromImagesService:
             new_array = np.dot(interest_points_in_range, line_function) - (line[2] / line[1])
             new_array = new_array.astype(int)
             if np.where(new_array == 0)[0].size is not 0:
+                print(interest_points_in_range[np.where(new_array == 0)[0]])
                 interest_points_in_line = np.unique(interest_points_in_range[np.where(new_array == 0)[0]], axis=0)
                 interest_patch_array = np.zeros((20 * interest_points_in_line.shape[0], 20, 3))
                 for index, interest_point in enumerate(interest_points_in_line):
@@ -116,7 +117,7 @@ class GetMatchedInterestPointsFromImagesService:
 
                 minVal, maxVal, minPos, maxPos = cv2.minMaxLoc(line_match[interest_values])
 
-                if maxVal > 0.99:
+                if maxVal > 0.9:
                     result_points_a.append(point)
                     result_points_b.append(interest_points_in_line[interest_values[maxPos[1]] / 20])
 
