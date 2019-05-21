@@ -16,7 +16,7 @@ The scope of this project is use of neural networks in order to estimate depth o
 ###### Images with cameras in the same angle
 Image A             |  Image B
 :-------------------------:|:-------------------------:
-![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chessboard_plane_a.png)  |  ![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chessboard_plane_b.png)
+![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chesboard_plane_a.png)  |  ![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chesboard_plane_b.png)
 
 ```
 euler_angles = [0.018462264472724192, -0.004943072062613791, 0.02942619084545588]
@@ -26,7 +26,7 @@ translation_vector = [9.49622799e+01, -4.87026222e-15, -0.00000000e+00]
 ###### Images with cameras with rotation in the Z angle
 Image A             |  Image B
 :-------------------------:|:-------------------------:
-![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chessboard_plane_a_rotation_z.png)  |  ![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chessboard_plane_b_rotation_z.png)
+![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chesboard_plane_a_rotation_z.png)  |  ![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chesboard_plane_b_rotation_z.png)
 
 ```
 euler_angles = [0.022930599394765803, 0.006603138159345876, -0.6403221824270738]
@@ -35,7 +35,7 @@ translation_vector = [8.74872087e+001, -1.60908569e-014, 4.29837112e-322]
 ###### Images with cameras with a very slight rotation in the X axis
 Image A             |  Image B
 :-------------------------:|:-------------------------:
-![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chessboard_plane_a_rotation_x.png)  |  ![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chessboard_plane_b_rotation_x.png)
+![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chesboard_plane_a_rotation_x.png)  |  ![](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/chesboard_plane_b_rotation_x.png)
 
 ```
 euler_angles = [0.08092445737732676, -0.07023280153640832, -0.009926486033918892]
