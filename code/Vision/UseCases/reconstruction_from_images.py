@@ -31,10 +31,9 @@ class ReconstructionFromImages:
                 logging.info('[{}] Load Images'.format(datetime.now().time()))
                 image1 = cv2.imread(self.image01)
                 image2 = cv2.imread(self.image02)
-                stereoCalibrationData = yaml.load(stereoCalibration)
-                cameraACalibrationData = yaml.load(cameraACalibration)
-                cameraBCalibrationData = yaml.load(cameraBCalibration)
-
+                stereoCalibrationData = yaml.load(stereoCalibration, Loader=yaml.UnsafeLoader)
+                cameraACalibrationData = yaml.load(cameraACalibration, Loader=yaml.UnsafeLoader)
+                cameraBCalibrationData = yaml.load(cameraBCalibration, Loader=yaml.UnsafeLoader)
                 get_matched_interest_points_from_images_service = GetMatchedPointsService(
                     stereoCalibrationData,
                     cameraACalibrationData,

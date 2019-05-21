@@ -2,14 +2,11 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
-from Vision.Components.Calibration.StereoCalibration import StereoCalibration
-from Vision.Components.Matching.imagematcher import BorderStereoMatcher
 from Vision.UseCases.reconstruction_from_video import ReconstructionFromVideo
 from Vision.UseCases.reconstruction_from_images import ReconstructionFromImages
-
+from Vision.UseCases.stereo_calibration_from_chessboard import StereoCalibrationFromChessboard
 
 import os
-import yaml
 import cv2
 
 class Application(QtWidgets.QWidget):
@@ -119,7 +116,7 @@ class Application(QtWidgets.QWidget):
         self.im_right_txt = QtWidgets.QLabel(self)
         self.im_right_txt.resize(200, 40)
         self.im_right_txt.move(500, 10)
-        self.im_right_txt.setText('Right Image')
+        self.im_right_txt.setText('Image B')
         self.im_right_txt.show()
 
     def create_left_image(self):
@@ -131,7 +128,7 @@ class Application(QtWidgets.QWidget):
         self.im_left_txt = QtWidgets.QLabel(self)
         self.im_left_txt.resize(200, 40)
         self.im_left_txt.move(50, 10)
-        self.im_left_txt.setText('Left Image')
+        self.im_left_txt.setText('Image A')
         self.im_left_txt.show()
 
     def create_matching_options_group(self):
@@ -324,8 +321,8 @@ class Application(QtWidgets.QWidget):
         self.video_recorder_2.write(im_rgb_right)
 
     def calibrate_set(self):
-        stereo_calibrator = StereoCalibration()
-        stereo_calibrator.calibrate_set(self.combobox_selector.currentText())
+        stereo_calibrator = StereoCalibrationFromChessboard()
+        stereo_calibrator.execute(self.combobox_selector.currentText())
 
     def reconstruct_from_video(self):
         video_reconstructor = ReconstructionFromVideo(

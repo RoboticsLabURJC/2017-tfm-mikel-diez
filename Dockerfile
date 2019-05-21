@@ -37,4 +37,13 @@ RUN apt -y install nodejs
 
 RUN apt -y install libnss3 libgconf2-4 libcanberra-gtk-module libcanberra-gtk0
 
+RUN pip install --upgrade pip
+
+RUN pip install --upgrade numpy
+
+RUN  rm -rf /usr/lib/python2.7/dist-packages/yaml; \
+     rm -rf /usr/lib/python2.7/dist-packages/PyYAML-*
+
+RUN pip install --upgrade pyyaml
+
 CMD ["bash"]

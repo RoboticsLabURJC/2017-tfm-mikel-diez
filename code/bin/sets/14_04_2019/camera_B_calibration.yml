@@ -9,7 +9,7 @@ cameraMatrix: !!python/object/apply:numpy.core.multiarray._reconstruct
   - !!python/tuple
     - 3
     - 3
-  - !!python/object/apply:numpy.dtype
+  - &id002 !!python/object/apply:numpy.dtype
     args:
     - f8
     - 0
@@ -25,7 +25,7 @@ cameraMatrix: !!python/object/apply:numpy.core.multiarray._reconstruct
     - 0
   - false
   - !!binary |
-    80zzfrJjmkAAAAAAAAAAAAAAAJw5Mn5AAAAAAAAAAADzTPN+smOaQAAAAJI5F3BAAAAAAAAAAAAA
+    49uDYYdWikAAAAAAAAAAAAAAAJw5Mn5AAAAAAAAAAADj24Nhh1aKQAAAAJI5F3BAAAAAAAAAAAAA
     AAAAAAAAAAAAAAAAAPA/
 eulerAngles: !!python/object/apply:numpy.core.multiarray._reconstruct
   args:
@@ -38,20 +38,7 @@ eulerAngles: !!python/object/apply:numpy.core.multiarray._reconstruct
   - !!python/tuple
     - 3
     - 1
-  - !!python/object/apply:numpy.dtype
-    args:
-    - f8
-    - 0
-    - 1
-    state: !!python/tuple
-    - 3
-    - <
-    - null
-    - null
-    - null
-    - -1
-    - -1
-    - 0
+  - *id002
   - false
   - "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
 rotMatrixX: !!python/object/apply:numpy.core.multiarray._reconstruct
@@ -65,20 +52,7 @@ rotMatrixX: !!python/object/apply:numpy.core.multiarray._reconstruct
   - !!python/tuple
     - 3
     - 3
-  - !!python/object/apply:numpy.dtype
-    args:
-    - f8
-    - 0
-    - 1
-    state: !!python/tuple
-    - 3
-    - <
-    - null
-    - null
-    - null
-    - -1
-    - -1
-    - 0
+  - *id002
   - false
   - !!binary |
     AAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAAAAAA
@@ -94,20 +68,7 @@ rotMatrixY: !!python/object/apply:numpy.core.multiarray._reconstruct
   - !!python/tuple
     - 3
     - 3
-  - !!python/object/apply:numpy.dtype
-    args:
-    - f8
-    - 0
-    - 1
-    state: !!python/tuple
-    - 3
-    - <
-    - null
-    - null
-    - null
-    - -1
-    - -1
-    - 0
+  - *id002
   - false
   - !!binary |
     AAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAAAIAA
@@ -123,20 +84,7 @@ rotMatrixZ: !!python/object/apply:numpy.core.multiarray._reconstruct
   - !!python/tuple
     - 3
     - 3
-  - !!python/object/apply:numpy.dtype
-    args:
-    - f8
-    - 0
-    - 1
-    state: !!python/tuple
-    - 3
-    - <
-    - null
-    - null
-    - null
-    - -1
-    - -1
-    - 0
+  - *id002
   - false
   - !!binary |
     AAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAADwPwAAAAAAAAAAAAAAAAAAAAAA
@@ -152,20 +100,7 @@ rotationMatrix: !!python/object/apply:numpy.core.multiarray._reconstruct
   - !!python/tuple
     - 3
     - 3
-  - !!python/object/apply:numpy.dtype
-    args:
-    - f8
-    - 0
-    - 1
-    state: !!python/tuple
-    - 3
-    - <
-    - null
-    - null
-    - null
-    - -1
-    - -1
-    - 0
+  - *id002
   - false
   - !!binary |
     AAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAAAAAA
@@ -181,20 +116,7 @@ translationVector: !!python/object/apply:numpy.core.multiarray._reconstruct
   - !!python/tuple
     - 4
     - 1
-  - !!python/object/apply:numpy.dtype
-    args:
-    - f8
-    - 0
-    - 1
-    state: !!python/tuple
-    - 3
-    - <
-    - null
-    - null
-    - null
-    - -1
-    - -1
-    - 0
+  - *id002
   - false
   - !!binary |
-    IdqC8nr/778qedbtBLtfPAAAAAAAAAAAPEbKdb8Rhz8=
+    INqC8nr/77+3Q29Fs4hxPAAAAAAAAAAAPUbKdb8Rhz8=

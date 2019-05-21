@@ -41,6 +41,7 @@ Image A             |  Image B
 euler_angles = [0.08092445737732676, -0.07023280153640832, -0.009926486033918892]
 translation_vector = [ 9.09670595e+0, 5.46578292e-15, -0.00000000e+00]
 ```
+[![Watch the video](https://img.youtube.com/vi/ALHTG5pDn4g/hqdefault.jpg)](https://youtu.be/ALHTG5pDn4g)
 
 ### 2018 - 2019
 #### 13/05/2019 - 20/05/2019

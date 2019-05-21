@@ -15,7 +15,7 @@ class GetMatchedInterestPointsFromImagesService:
         image_a_borders = self.__get_border_image(image_a)
         image_b_borders = self.__get_border_image(image_b)
 
-        image_a_borders_sampled = self.__remove_points(image_a_borders, 20)
+        image_a_borders_sampled = self.__remove_points(image_a_borders, 5)
 
         interest_points_a = np.array(cv2.findNonZero(image_a_borders_sampled), dtype=np.float32)
         interest_points_b, interest_points_b_by_row, interest_points_b_index = self.get_right_points_structure(image_b_borders)
@@ -98,7 +98,7 @@ class GetMatchedInterestPointsFromImagesService:
             new_array = np.dot(interest_points_in_range, line_function) - (line[2] / line[1])
             new_array = new_array.astype(int)
             if np.where(new_array == 0)[0].size is not 0:
-                print(interest_points_in_range[np.where(new_array == 0)[0]])
+                # print(interest_points_in_range[np.where(new_array == 0)[0]])
                 interest_points_in_line = np.unique(interest_points_in_range[np.where(new_array == 0)[0]], axis=0)
                 interest_patch_array = np.zeros((20 * interest_points_in_line.shape[0], 20, 3))
                 for index, interest_point in enumerate(interest_points_in_line):

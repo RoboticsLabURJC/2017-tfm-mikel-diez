@@ -1,0 +1,123 @@
+cameraMatrix: !!python/object/apply:numpy.core.multiarray._reconstruct
+  args:
+  - &id001 !!python/name:numpy.ndarray ''
+  - !!python/tuple
+    - 0
+  - b
+  state: !!python/tuple
+  - 1
+  - !!python/tuple
+    - 3
+    - 3
+  - &id002 !!python/object/apply:numpy.dtype
+    args:
+    - f8
+    - 0
+    - 1
+    state: !!python/tuple
+    - 3
+    - <
+    - null
+    - null
+    - null
+    - -1
+    - -1
+    - 0
+  - false
+  - !!binary |
+    M84g9KWej0AAAAAAAAAAAAAAAK1lX4tAAAAAAAAAAAAzziD0pZ6PQAAAADxEEG9AAAAAAAAAAAAA
+    AAAAAAAAAAAAAAAAAPA/
+eulerAngles: !!python/object/apply:numpy.core.multiarray._reconstruct
+  args:
+  - *id001
+  - !!python/tuple
+    - 0
+  - b
+  state: !!python/tuple
+  - 1
+  - !!python/tuple
+    - 3
+    - 1
+  - *id002
+  - false
+  - !!binary |
+    AAAAAAAAAAAAAAAAAAAAAPjBYxrcpaw+
+rotMatrixX: !!python/object/apply:numpy.core.multiarray._reconstruct
+  args:
+  - *id001
+  - !!python/tuple
+    - 0
+  - b
+  state: !!python/tuple
+  - 1
+  - !!python/tuple
+    - 3
+    - 3
+  - *id002
+  - false
+  - !!binary |
+    AAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAAAAAA
+    AAAAAAAAgAAAAAAAAPA/
+rotMatrixY: !!python/object/apply:numpy.core.multiarray._reconstruct
+  args:
+  - *id001
+  - !!python/tuple
+    - 0
+  - b
+  state: !!python/tuple
+  - 1
+  - !!python/tuple
+    - 3
+    - 3
+  - *id002
+  - false
+  - !!binary |
+    AAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAAAIAA
+    AAAAAAAAAAAAAAAAAPA/
+rotMatrixZ: !!python/object/apply:numpy.core.multiarray._reconstruct
+  args:
+  - *id001
+  - !!python/tuple
+    - 0
+  - b
+  state: !!python/tuple
+  - 1
+  - !!python/tuple
+    - 3
+    - 3
+  - *id002
+  - false
+  - !!binary |
+    ////////7z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID////////vPwAAAAAAAAAAAAAAAAAAAAAA
+    AAAAAAAAAAAAAAAAAPA/
+rotationMatrix: !!python/object/apply:numpy.core.multiarray._reconstruct
+  args:
+  - *id001
+  - !!python/tuple
+    - 0
+  - b
+  state: !!python/tuple
+  - 1
+  - !!python/tuple
+    - 3
+    - 3
+  - *id002
+  - false
+  - !!binary |
+    ////////7z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////vPwAAAAAAAAAAAAAAAAAAAAAA
+    AAAAAAAAAAAAAAAAAPA/
+translationVector: !!python/object/apply:numpy.core.multiarray._reconstruct
+  args:
+  - *id001
+  - !!python/tuple
+    - 0
+  - b
+  state: !!python/tuple
+  - 1
+  - !!python/tuple
+    - 4
+    - 1
+  - *id002
+  - false
+  - !!binary |
+    0g1Nu4v/77970LKDGZCNPAAAAAAAAAAAlh6IBLWQhb8=
