@@ -36,6 +36,10 @@ class ReconstructionFromImages:
                 stereoCalibrationData = yaml.load(stereoCalibration, Loader=yaml.UnsafeLoader)
                 cameraACalibrationData = yaml.load(cameraACalibration, Loader=yaml.UnsafeLoader)
                 cameraBCalibrationData = yaml.load(cameraBCalibration, Loader=yaml.UnsafeLoader)
+
+                print(cameraBCalibrationData['rotationMatrix'])
+                print(stereoCalibrationData['T'])
+
                 get_matched_interest_points_from_images_service = GetMatchedPointsService(
                     stereoCalibrationData,
                     cameraACalibrationData,
@@ -55,7 +59,7 @@ class ReconstructionFromImages:
                 camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
                 self.segments += camera_generator.execute(
                     np.array(stereoCalibrationData['R']),
-                    np.array(stereoCalibrationData['T'])
+                    np.array(stereoCalibrationData['T']),
                 )
                 camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
                 self.segments += camera_generator.execute(

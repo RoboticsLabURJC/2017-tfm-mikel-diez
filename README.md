@@ -18,6 +18,9 @@ I saw that the images I was taking where in the wrong size and that made them to
 [![Watch the video](https://img.youtube.com/vi/jFKIQnlIcYA/hqdefault.jpg)](https://youtu.be/jFKIQnlIcYA)
 
 Anyway the cameras position seems wrong. I'm taking a look at that right now.
+
+[![Watch the video](https://img.youtube.com/vi/ROyjfm3EUNk/hqdefault.jpg)](https://youtu.be/ROyjfm3EUNk)
+
 ### 2018 - 2019
 #### 21/05/2019 - 25/05/2019
 ##### Week Scope
