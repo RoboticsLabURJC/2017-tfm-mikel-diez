@@ -11,7 +11,17 @@ The scope of this project is use of neural networks in order to estimate depth o
 ## Work Log
 #### Current Week
 ##### Week Scope
-* [ ] Improve calibration robustnes
+* [ ] Improve calibration robustness
+##### Week Log
+I saw that the images I was taking where in the wrong size and that made them to be of worst quality so I've change to opencv images from video and the result is quite better.
+
+[![Watch the video](https://img.youtube.com/vi/jFKIQnlIcYA/hqdefault.jpg)](https://youtu.be/jFKIQnlIcYA)
+
+Anyway the cameras position seems wrong. I'm taking a look at that right now.
+### 2018 - 2019
+#### 21/05/2019 - 25/05/2019
+##### Week Scope
+* [ ] Improve calibration robustness
 ##### Week Log
 ###### Images with cameras in the same angle
 Image A             |  Image B
@@ -43,7 +53,6 @@ translation_vector = [ 9.09670595e+0, 5.46578292e-15, -0.00000000e+00]
 ```
 [![Watch the video](https://img.youtube.com/vi/ALHTG5pDn4g/hqdefault.jpg)](https://youtu.be/ALHTG5pDn4g)
 
-### 2018 - 2019
 #### 13/05/2019 - 20/05/2019
 ##### Week Scope
 * [x] Test angles with cameras

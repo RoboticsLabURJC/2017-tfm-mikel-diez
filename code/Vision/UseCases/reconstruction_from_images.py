@@ -5,9 +5,11 @@ from Vision.Components.Visualization.visualization import VisionViewer
 from Vision.Components.Visualization.visualization_server import VisualServer
 from Vision.Components.Reconstruction.Reconstructor3D import Reconstructor3D
 from Vision.Services.GetMatchedInterestPointsFromImagesByPointsListService import GetMatchedInterestPointsFromImagesService as GetMatchedPointsService
+from Vision.Services.GetCameraRepresentationWithRotationAndTranslationService import GetCameraRepresentationWithRotationAndTranslationService
 import jderobot
 import logging
 from datetime import datetime
+import numpy as np
 
 
 class ReconstructionFromImages:
@@ -49,7 +51,17 @@ class ReconstructionFromImages:
                 logging.info('[{}] End Match Points'.format(datetime.now().time()))
 
                 logging.info('[{}] Setting Points and Segments'.format(datetime.now().time()))
-                self.print_cameras()
+                # self.print_cameras()
+                camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
+                self.segments += camera_generator.execute(
+                    np.array(stereoCalibrationData['R']),
+                    np.array(stereoCalibrationData['T'])
+                )
+                camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
+                self.segments += camera_generator.execute(
+                    np.identity(3),
+                    np.array([.0, .0, .0])
+                )
                 self.print_coordinates_reference()
                 self.print_reference_plane()
 
@@ -186,15 +198,15 @@ class ReconstructionFromImages:
         self.segments.append(jderobot.RGBSegment(
             jderobot.Segment(jderobot.Point(0.0, 1.22125194e-17, 0.0),
                              jderobot.Point(- 0.75, 1.5, 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
+            jderobot.Color(1.0, 0.0, 0.0)))
         self.segments.append(jderobot.RGBSegment(
             jderobot.Segment(jderobot.Point(0.0, 1.22125194e-17, 0.0),
                              jderobot.Point(0.75, 1.5, 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
+            jderobot.Color(0.0, 1.0, 0.0)))
         self.segments.append(jderobot.RGBSegment(
             jderobot.Segment(jderobot.Point(0.0, 1.22125194e-17, 0.0),
                              jderobot.Point(- 0.75, 1.5, -0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
+            jderobot.Color(0.0, 0.0, 1.0)))
         self.segments.append(jderobot.RGBSegment(
             jderobot.Segment(jderobot.Point(0.0, 1.22125194e-17, 0.0),
                              jderobot.Point(0.75, 1.5, -0.75)),

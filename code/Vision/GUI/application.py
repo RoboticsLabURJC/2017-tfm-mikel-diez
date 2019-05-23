@@ -9,11 +9,14 @@ from Vision.UseCases.stereo_calibration_from_chessboard import StereoCalibration
 import os
 import cv2
 
+import numpy as np
+
 class Application(QtWidgets.QWidget):
     
     updGUI = QtCore.pyqtSignal()
     photos_taken = 0
     frames = 0
+    counter = 0
 
     def __init__(self, parent=None):
         self.cameras = None
@@ -39,6 +42,9 @@ class Application(QtWidgets.QWidget):
         self.video_recorder_1 = None
         self.video_recorder_2 = None
         self.should_record_video = False
+
+        self.video_capture1 = cv2.VideoCapture(1)
+        self.video_capture2 = cv2.VideoCapture(2)
 
     def create_image_counter_text(self):
         self.images_counter = QtWidgets.QLabel(self)
@@ -229,18 +235,21 @@ class Application(QtWidgets.QWidget):
                     self.frames = 0
 
             if self.should_record_video is True:
-                print('Should Record Video')
                 self.update_video_recorder()
 
             im_left = self.cameras[0].getImage()
-            im = QtGui.QImage(im_left.data, im_left.shape[1], im_left.shape[0],QtGui.QImage.Format_RGB888)
-            im_scaled = im.scaled(self.im_left_label.size())
-            self.im_left_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled))  # We get the original image and display it.
+            if im_left is not None:
+                im_left = cv2.cvtColor(im_left, cv2.COLOR_BGR2RGB)
+                im = QtGui.QImage(im_left.data, im_left.shape[1], im_left.shape[0],QtGui.QImage.Format_RGB888)
+                im_scaled = im.scaled(self.im_left_label.size())
+                self.im_left_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled))  # We get the original image and display it.
 
             im_right = self.cameras[1].getImage()
-            im = QtGui.QImage(im_right.data, im_right.shape[1], im_right.shape[0],QtGui.QImage.Format_RGB888)
-            im_scaled = im.scaled(self.im_left_label.size())
-            self.im_right_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled)) # We get the original image and display it.
+            if im_right is not None:
+                im_right = cv2.cvtColor(im_right, cv2.COLOR_BGR2RGB)
+                im = QtGui.QImage(im_right.data, im_right.shape[1], im_right.shape[0],QtGui.QImage.Format_RGB888)
+                im_scaled = im.scaled(self.im_left_label.size())
+                self.im_right_label.setPixmap(QtGui.QPixmap.fromImage(im_scaled)) # We get the original image and display it.
 
     def record_video(self):
         if not os.path.exists('bin/Videos/' + self.textbox.text() + '_video'):
@@ -279,14 +288,14 @@ class Application(QtWidgets.QWidget):
         print('Take Dual Image ' + str(self.photos_taken))
 
         print('::Write Left Image::')
-        im_left = self.cameras[0].getImageHD()
-        im_rgb_left = cv2.cvtColor(cv2.resize(im_left,(1280,720)), cv2.COLOR_BGR2RGB)
-        cv2.imwrite('bin/sets/' + self.combobox_selector.currentText() + '/images/left_image_' + str(self.photos_taken) + '.png',im_rgb_left)
+        im_left = self.cameras[0].get_image_hd()
+        #im_rgb_left = cv2.cvtColor(cv2.resize(im_left,(1280,720)), cv2.COLOR_BGR2RGB)
+        cv2.imwrite('bin/sets/' + self.combobox_selector.currentText() + '/images/left_image_' + str(self.photos_taken) + '.png',im_left)
         
         print('::Write Right Image::')
-        im_right = self.cameras[1].getImageHD()
-        im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(1280,720)), cv2.COLOR_BGR2RGB)
-        cv2.imwrite('bin/sets/' + self.combobox_selector.currentText() + '/images/right_image_' + str(self.photos_taken) + '.png',im_rgb_right)
+        im_right = self.cameras[1].get_image_hd()
+        #im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(1280,720)), cv2.COLOR_BGR2RGB)
+        cv2.imwrite('bin/sets/' + self.combobox_selector.currentText() + '/images/right_image_' + str(self.photos_taken) + '.png',im_right)
 
         self.images_counter.setNum(self.photos_taken)
 
@@ -298,16 +307,16 @@ class Application(QtWidgets.QWidget):
         print('Take Dual Image ' + str(self.photos_taken))
 
         print('::Write Left Image::')
-        im_left = self.cameras[0].getImageHD()
-        im_rgb_left = cv2.cvtColor(cv2.resize(im_left, (1280, 720)), cv2.COLOR_BGR2RGB)
+        im_left = self.cameras[0].get_image_hd()
+        #im_rgb_left = cv2.cvtColor(cv2.resize(im_left, (1280, 720)), cv2.COLOR_BGR2RGB)
         cv2.imwrite('bin/sets/' + self.combobox_selector.currentText() + '/calibration_images/left_image_' + str(self.photos_taken) + '.png',
-                    im_rgb_left)
+                    im_left)
 
         print('::Write Right Image::')
-        im_right = self.cameras[1].getImageHD()
-        im_rgb_right = cv2.cvtColor(cv2.resize(im_right, (1280, 720)), cv2.COLOR_BGR2RGB)
+        im_right = self.cameras[1].get_image_hd()
+        #im_rgb_right = cv2.cvtColor(cv2.resize(im_right, (1280, 720)), cv2.COLOR_BGR2RGB)
         cv2.imwrite('bin/sets/' + self.combobox_selector.currentText() + '/calibration_images/right_image_' + str(self.photos_taken) + '.png',
-                    im_rgb_right)
+                    im_right)
 
         self.images_counter.setNum(self.photos_taken)
 
