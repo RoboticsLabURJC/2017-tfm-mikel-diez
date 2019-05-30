@@ -36,11 +36,14 @@ class StereoCalibrationFromChessboard:
 
         self.extract_chessboard_points(images_left, images_right)
 
-        cv2.imshow('Cornered Images Left', self.images_with_corners_left)
-        cv2.imshow('Cornered Images Right', self.images_with_corners_right)
-        cv2.waitKey(0)
+        #cv2.imshow('Cornered Images Left', self.images_with_corners_left)
+        #cv2.imshow('Cornered Images Right', self.images_with_corners_right)
+        #cv2.waitKey(0)
 
         E, F, R, T, cameraMatrix1, cameraMatrix2, distCoeffs1, distCoeffs2, ret1, ret2, rvecs1, rvecs2, stereocalib_retval, tvecs1, tvecs2 = self.stereo_calibration()
+
+        print(R)
+        print(T)
 
         rectify_scale = 1  # 0=full crop, 1=no crop
         r1, r2, p1, p2, q, roi1, roi2 = cv2.stereoRectify(
@@ -66,9 +69,6 @@ class StereoCalibrationFromChessboard:
         euler_x, euler_y, euler_z = self.calculate_euler_angles_from_rotation_matrix(R)
 
         print(euler_x, euler_y, euler_z)
-        print(T)
-        print(transVect)
-        print(transVect2[0:3] / transVect2[3])
 
         # Save the calibration matrix in a yaml file.
         if not os.path.exists('bin/sets/' + image_set):
@@ -210,3 +210,11 @@ class StereoCalibrationFromChessboard:
             euler_z = 0
 
         return euler_x, euler_y, euler_z
+
+    def calculateCameraPointsFromMatrix(self, cameraMatrix1, depth=10):
+        top_left = [((0 - cameraMatrix1[0, 2]) * depth) / cameraMatrix1[0, 0], ((0 - cameraMatrix1[1, 2]) * 10) / cameraMatrix1[1, 1], depth]
+        top_right = [((1280 - cameraMatrix1[0, 2]) * depth) / cameraMatrix1[0, 0], ((720 - cameraMatrix1[1, 2]) * 10) / cameraMatrix1[1, 1], depth]
+        bottom_right = [((1280 - cameraMatrix1[0, 2]) * depth) / cameraMatrix1[0, 0], ((0 - cameraMatrix1[1, 2]) * 10) / cameraMatrix1[1, 1], depth]
+        bottom_left = [((0 - cameraMatrix1[0, 2]) * depth) / cameraMatrix1[0, 0], ((720 - cameraMatrix1[1, 2]) * 10) / cameraMatrix1[1, 1], depth]
+
+        return top_left, top_right, bottom_left, bottom_right

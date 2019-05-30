@@ -284,6 +284,9 @@ class Application(QtWidgets.QWidget):
         if not os.path.exists('bin/sets/' + self.combobox_selector.currentText()):
             os.makedirs('bin/sets/' + self.combobox_selector.currentText())
 
+        if not os.path.exists('bin/sets/' + self.combobox_selector.currentText() + '/images'):
+            os.makedirs('bin/sets/' + self.combobox_selector.currentText() + '/images')
+
         self.photos_taken += 1
         print('Take Dual Image ' + str(self.photos_taken))
 

@@ -10,6 +10,33 @@ The scope of this project is use of neural networks in order to estimate depth o
 
 ## Work Log
 #### Current Week
+
+##### Different movements of the camera
+Canonical position
+
+[![Watch the video](https://img.youtube.com/vi/wi00NeI1uTE/hqdefault.jpg)](https://youtu.be/wi00NeI1uTE)
+
+Roll to the left
+
+[![Watch the video](https://img.youtube.com/vi/cXrbIyCINVI/hqdefault.jpg)](https://youtu.be/cXrbIyCINVI)
+
+Roll to the right
+
+[![Watch the video](https://img.youtube.com/vi/TUYFuqqKbgw/hqdefault.jpg)](https://youtu.be/TUYFuqqKbgw)
+
+Pitch Down
+
+[![Watch the video](https://img.youtube.com/vi/o2GsYQtrxvQ/hqdefault.jpg)](https://youtu.be/o2GsYQtrxvQ)
+
+Pitch Up
+
+[![Watch the video](https://img.youtube.com/vi/5B1MzJfiYkw/hqdefault.jpg)](https://youtu.be/5B1MzJfiYkw)
+
+Yaw to the center
+
+[![Watch the video](https://img.youtube.com/vi/CcCm3cneuiI/hqdefault.jpg)](https://youtu.be/CcCm3cneuiI)
+
+
 ##### Week Scope
 * [ ] Improve calibration robustness
 ##### Week Log
