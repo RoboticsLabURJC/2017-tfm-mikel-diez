@@ -10,7 +10,19 @@ The scope of this project is use of neural networks in order to estimate depth o
 
 ## Work Log
 #### Current Week
+##### Wrong epilines theory proves wrong
+We had the theory that the calibration was off in some aspects and that it was leading to wrong epilines in our system. To test this hypothesis I tested several of the different calibrations I had previously make to check if it wass the case.
 
+![canonical](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/04_06_2019/canonical_epilines_work.png)
+
+![right_roll](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/04_06_2019/right_roll_epilines_work.png)
+
+![center_yaw](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/04_06_2019/center_yaw_epilines_work.png)
+
+This images show how our hypothesis was wrong, calibration seems to be just right and the epilines prove it so the problem has to be in a different place.
+
+### 2018 - 2019
+#### 25/05/2019 - 29/05/2019
 ##### Different movements of the camera
 Canonical position
 
