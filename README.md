@@ -60,6 +60,11 @@ Right now my guess with what is broken is the following:
 * When I match patches, if they are rotated they won't match, hence the problem when cameras are not canonical.
 * I think the problem with calibration is that I only use images that are visible in both images. This is necessary for stereo calibration but for the single camera I could use more images and cover both full images. This might be the reason for the poor results.
 
+Finally I managed to draw correctly the images.
+
+![cameras_well_displayed](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/04_06_2019/cameras_well_displayed.png)
+
+
 ### 2018 - 2019
 #### 25/05/2019 - 29/05/2019
 ##### Different movements of the camera

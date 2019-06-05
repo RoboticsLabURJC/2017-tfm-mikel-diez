@@ -4,6 +4,7 @@ import cv2
 import glob
 import yaml
 import math
+import copy
 
 
 class StereoCalibrationFromChessboard:
@@ -31,19 +32,17 @@ class StereoCalibrationFromChessboard:
 
         self.matrix_width = math.ceil(math.sqrt(len(images_left)))
         self.matrix_height = math.ceil(len(images_left) / self.matrix_width)
-        print(self.matrix_width)
-        print(self.matrix_height)
 
         self.extract_chessboard_points(images_left, images_right)
 
-        #cv2.imshow('Cornered Images Left', self.images_with_corners_left)
-        #cv2.imshow('Cornered Images Right', self.images_with_corners_right)
-        #cv2.waitKey(0)
-
         E, F, R, T, cameraMatrix1, cameraMatrix2, distCoeffs1, distCoeffs2, ret1, ret2, rvecs1, rvecs2, stereocalib_retval, tvecs1, tvecs2 = self.stereo_calibration()
 
-        print(R)
-        print(T)
+
+        print(cameraMatrix1)
+        print(cameraMatrix2)
+
+        original_cameraMatrix1 = copy.copy(cameraMatrix1)
+        original_cameraMatrix2 = copy.copy(cameraMatrix2)
 
         rectify_scale = 1  # 0=full crop, 1=no crop
         r1, r2, p1, p2, q, roi1, roi2 = cv2.stereoRectify(
@@ -68,8 +67,6 @@ class StereoCalibrationFromChessboard:
 
         euler_x, euler_y, euler_z = self.calculate_euler_angles_from_rotation_matrix(R)
 
-        print(euler_x, euler_y, euler_z)
-
         # Save the calibration matrix in a yaml file.
         if not os.path.exists('bin/sets/' + image_set):
             os.makedirs('bin/sets/' + image_set)
@@ -78,9 +75,9 @@ class StereoCalibrationFromChessboard:
             yaml.dump(
                 {
                     'stereocalib_retval': stereocalib_retval,
-                    'cameraMatrix1': cameraMatrix1,
+                    'cameraMatrix1': original_cameraMatrix1,
                     'distCoeffs1': distCoeffs1,
-                    'cameraMatrix2': cameraMatrix2,
+                    'cameraMatrix2': original_cameraMatrix2,
                     'distCoeffs2': distCoeffs2,
                     'R': R,
                     'T': T,
@@ -145,6 +142,9 @@ class StereoCalibrationFromChessboard:
                                                                                self.gray_images_shape[::-1], None, None)
         ret2, cameraMatrix2, distCoeffs2, rvecs2, tvecs2 = cv2.calibrateCamera(self.objpoints, self.imgpoints_right,
                                                                                self.gray_images_shape[::-1], None, None)
+
+        print(cameraMatrix1)
+        print(cameraMatrix2)
         # Calibrate stereo camera
         stereocalib_criteria = (cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS, 100, 1e-5)
         # stereocalib_flags = cv2.CALIB_FIX_ASPECT_RATIO | cv2.CALIB_ZERO_TANGENT_DIST | cv2.CALIB_SAME_FOCAL_LENGTH | cv2.CALIB_RATIONAL_MODEL | cv2.CALIB_FIX_K3 | cv2.CALIB_FIX_K4 | cv2.CALIB_FIX_K5
@@ -153,6 +153,7 @@ class StereoCalibrationFromChessboard:
             self.objpoints, self.imgpoints_left, self.imgpoints_right, cameraMatrix1, distCoeffs1, cameraMatrix2,
             distCoeffs2,
             self.gray_images_shape[::-1], criteria=stereocalib_criteria, flags=stereocalib_flags)
+
         return E, F, R, T, cameraMatrix1, cameraMatrix2, distCoeffs1, distCoeffs2, ret1, ret2, rvecs1, rvecs2, stereocalib_retval, tvecs1, tvecs2
 
     def extract_chessboard_points(self, images_left, images_right):
@@ -185,10 +186,7 @@ class StereoCalibrationFromChessboard:
             # Draw and display the corners
             cv2.drawChessboardCorners(img_left, self.pattern_size, left_corners, left_found)
             cv2.drawChessboardCorners(img_right, self.pattern_size, right_corners, right_found)
-            # cv2.namedWindow('Left Image', cv2.WINDOW_NORMAL)
-            # cv2.resizeWindow('Left Image', 700, 400)
-            # cv2.imshow('Left Image', img_left)
-            # cv2.waitKey(500)
+
             x = int(math.floor(index / self.matrix_width))
             y = int(index - (self.matrix_width * x))
 

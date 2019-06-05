@@ -19,11 +19,9 @@ if __name__ == '__main__':
             segments = []
             points = []
 
-            print(cameraACalibrationData['cameraMatrix'])
-
             camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
             segments += camera_generator.execute(
-                np.array(cameraACalibrationData['cameraMatrix']),
+                np.array(stereoCalibrationData['cameraMatrix2']),
                 np.array(stereoCalibrationData['distCoeffs2']),
                 np.array(stereoCalibrationData['r2']),
                 np.array(stereoCalibrationData['p2']),
@@ -32,7 +30,7 @@ if __name__ == '__main__':
             )
             camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
             segments += camera_generator.execute(
-                np.array(cameraACalibrationData['cameraMatrix']),
+                np.array(stereoCalibrationData['cameraMatrix1']),
                 np.array(stereoCalibrationData['distCoeffs1']),
                 np.array(stereoCalibrationData['r1']),
                 np.array(stereoCalibrationData['p1']),
