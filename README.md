@@ -21,6 +21,45 @@ We had the theory that the calibration was off in some aspects and that it was l
 
 This images show how our hypothesis was wrong, calibration seems to be just right and the epilines prove it so the problem has to be in a different place.
 
+##### Cameras with a bias in their left side
+I've observed that there is a problem when representing the cameras, the left side seems to be a bit smaller than the right one. 
+
+Having the following camera matrix:
+```
+[[473.84607711   0.         428.59054565]
+ [  0.         473.84607711 302.68935657]
+ [  0.           0.           1.        ]]
+```
+The resolution is 1280x720 so it seems odd that the principal point is that displaced to the left that much but I don't really now if that's normal.
+
+Nevermind I think I found a problem:
+```
+[[7.68018389e+02 0.00000000e+00 1.11667735e+03]
+ [0.00000000e+00 7.68018389e+02 2.76146118e+02]
+ [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
+ 
+[[928.22191407   0.         304.207201  ]
+ [  0.         928.22191407 313.74538326]
+ [  0.           0.           1.        ]]
+```
+
+But it seems that the problem increases when the cameras are in non canonical positions. For example when they are "canonical" (they never are really canonical) the camera matrix is like the following ones:
+```
+[[928.22191407   0.         304.207201  ]
+ [  0.         928.22191407 313.74538326]
+ [  0.           0.           1.        ]]
+
+[[970.66091468   0.         480.58301926]
+ [  0.         970.66091468 312.04958344]
+ [  0.           0.           1.        ]]
+
+```
+They are similar but not the same.
+
+Right now my guess with what is broken is the following:
+* When I match patches, if they are rotated they won't match, hence the problem when cameras are not canonical.
+* I think the problem with calibration is that I only use images that are visible in both images. This is necessary for stereo calibration but for the single camera I could use more images and cover both full images. This might be the reason for the poor results.
+
 ### 2018 - 2019
 #### 25/05/2019 - 29/05/2019
 ##### Different movements of the camera

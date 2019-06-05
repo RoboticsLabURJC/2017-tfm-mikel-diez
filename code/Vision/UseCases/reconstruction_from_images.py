@@ -58,13 +58,19 @@ class ReconstructionFromImages:
                 # self.print_cameras()
                 camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
                 self.segments += camera_generator.execute(
-                    np.array(stereoCalibrationData['cameraMatrix2']),
+                    np.array(cameraACalibrationData['cameraMatrix']),
+                    np.array(stereoCalibrationData['distCoeffs2']),
+                    np.array(stereoCalibrationData['r2']),
+                    np.array(stereoCalibrationData['p2']),
                     np.array(stereoCalibrationData['R']),
                     np.array(stereoCalibrationData['T'])
                 )
                 camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
                 self.segments += camera_generator.execute(
-                    np.array(stereoCalibrationData['cameraMatrix1']),
+                    np.array(cameraACalibrationData['cameraMatrix']),
+                    np.array(stereoCalibrationData['distCoeffs1']),
+                    np.array(stereoCalibrationData['r1']),
+                    np.array(stereoCalibrationData['p1']),
                     np.identity(3),
                     np.array([.0, .0, .0])
                 )

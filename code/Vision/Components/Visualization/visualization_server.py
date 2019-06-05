@@ -13,6 +13,7 @@ class VisualServer:
         try:
             self.adapter.add(self.visualizer, self.ic.stringToIdentity("3DViz"))
             self.adapter.activate()
+            self.ic.waitForShutdown()
         except KeyboardInterrupt:
             del self.ic
             sys.exit()
