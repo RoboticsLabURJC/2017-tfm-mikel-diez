@@ -2,11 +2,82 @@
 The scope of this project is use of neural networks in order to estimate depth on fish-eye images to enhance the perception capabilities of an autonomous boat. 
 
 ## Table of contents
-
+- [How to use](#how-to-use)
 - [Work Log](#work-log)
   * [Current Week](#current-week)
   * [2018 - 2019](#2018---2019)
   * [2017 - 2018](#2017---2018)
+
+## How to use
+Last week I had a problem with my computer, it basically died after five years of usage (not that bad actually) it was kind of a horrible experience as deadlines are approaching and there is a lot of things to be done before that.
+
+Luckily at the beginning of this project I started using Docker so setting up my environment has not been painful at all. I'm going to explain how to set everything to work.
+
+### 1. Install Docker 
+Follow the installation process in here:
+[https://docs.docker.com/install/linux/docker-ce/ubuntu/](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+
+### 2. Install Docker Compose
+Follow the installation process:
+[https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
+
+### 3. Clone the repository
+```
+git clone git@github.com:RoboticsURJC-students/2017-tfm-mikel-diez.git
+
+or
+
+git clone https://github.com/RoboticsURJC-students/2017-tfm-mikel-diez.git
+```
+
+### 4. Clone the 3DWebViz Repository
+Inside the External folder clone the viz repository (there might be already a viz folder, remove it)
+```
+cd 2017-tfm-mikel-diez/code/Externals
+rm -rf viz
+git clone git@github.com:JdeRobot/viz.git
+```
+
+### 5. Modify configuration file in 3DWebViz
+By default 3DWebViz listens to the port 11000 but I'm using the 12000 (this is done because I used cameraserver and they where in conflict). The file under Externals/viz/3DVizWeb/public/config.yml should look like the following:
+```
+Server: "localhost"
+Port: "12000"
+updatePoints: 10000 #miliseconds
+updateSegments: 1000 #miliseconds
+linewidth: 2 #width of the line
+pointsize: 8 #size of the point
+camera: #camera position
+  x: 50
+  y: 20
+  z: 100
+```
+
+### 6. Launch Docker Compose
+This will launch the container. Both out applications use the XServer so first we will need to allow docker to access it.
+```
+xhost +local:docker
+sudo docker-compose up
+```
+
+### 7. Enter the docker container and launch
+There are two different things to launch the Vision application and the 3DViz. Open two different tabs.
+
+Vision application:
+```
+sudo docker exec -it 2017-tfm-mikel-diez_jderobot_1 /bin/bash
+python Vision/vision.py
+```
+
+3DVizWeb:
+```
+sudo docker exec -it 2017-tfm-mikel-diez_jderobot_1 /bin/bash
+cd Externals/viz/3DVizWeb
+npm install
+npm start
+```
+
+Now everything should be ready.
 
 ## Work Log
 #### Current Week
