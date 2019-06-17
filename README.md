@@ -81,6 +81,21 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+Image of the features in an epiline
+![canonical](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/features_epiline.png)
+
+Image of the matching of one point (wrong)
+![right_roll](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/feature_matching.png)
+
+Image of the matching of one point (correct)
+![center_yaw](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/feature_matching_2.png)
+
+Video of wrong reconstruction (cameras right)
+[![Watch the video](https://img.youtube.com/vi/xC2IFNYhP6A/hqdefault.jpg)](https://youtu.be/xC2IFNYhP6A)
+Seems to be something with shape in the wrong zone.
+
+### 2018 - 2019
+#### 29/05/2019 - 17/06/2019
 ##### Wrong epilines theory proves wrong
 We had the theory that the calibration was off in some aspects and that it was leading to wrong epilines in our system. To test this hypothesis I tested several of the different calibrations I had previously make to check if it wass the case.
 

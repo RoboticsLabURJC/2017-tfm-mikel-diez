@@ -1,15 +1,16 @@
-import cv2
-import yaml
-from Vision.Components.Matching.imagematcher import BorderStereoMatcher
-from Vision.Components.Visualization.visualization import VisionViewer
-from Vision.Components.Visualization.visualization_server import VisualServer
-from Vision.Components.Reconstruction.Reconstructor3D import Reconstructor3D
-from Vision.Services.GetMatchedInterestPointsFromImagesByPointsListService import GetMatchedInterestPointsFromImagesService as GetMatchedPointsService
-from Vision.Services.GetCameraRepresentationWithRotationAndTranslationService import GetCameraRepresentationWithRotationAndTranslationService
-import jderobot
 import logging
 from datetime import datetime
+
+import cv2
+import jderobot
 import numpy as np
+import yaml
+from Vision.Components.Reconstruction.Reconstructor3D import Reconstructor3D
+from Vision.Components.Visualization.visualization import VisionViewer
+from Vision.Components.Visualization.visualization_server import VisualServer
+from Vision.Services.GetCameraRepresentationWithRotationAndTranslationService import \
+    GetCameraRepresentationWithRotationAndTranslationService
+from Vision.Services.Matching.MatchInterestPointsWithOrb import MatchInterestPointsWithOrb as GetMatchedPointsService
 
 
 class ReconstructionFromImages:
@@ -41,14 +42,15 @@ class ReconstructionFromImages:
                 print(stereoCalibrationData['T'])
 
                 get_matched_interest_points_from_images_service = GetMatchedPointsService(
-                    stereoCalibrationData,
-                    cameraACalibrationData,
-                    cameraBCalibrationData
+                    stereoCalibrationData
                 )
 
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
                 left_points, right_points = get_matched_interest_points_from_images_service.execute(image1, image2)
+                print(left_points)
                 reconstructor = Reconstructor3D(stereoCalibrationData, image1, image2)
+
+
 
                 self.points = reconstructor.execute(left_points, right_points)
 
@@ -58,7 +60,7 @@ class ReconstructionFromImages:
                 # self.print_cameras()
                 camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
                 self.segments += camera_generator.execute(
-                    np.array(cameraACalibrationData['cameraMatrix']),
+                    np.array(stereoCalibrationData['cameraMatrix2']),
                     np.array(stereoCalibrationData['distCoeffs2']),
                     np.array(stereoCalibrationData['r2']),
                     np.array(stereoCalibrationData['p2']),
@@ -67,7 +69,7 @@ class ReconstructionFromImages:
                 )
                 camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
                 self.segments += camera_generator.execute(
-                    np.array(cameraACalibrationData['cameraMatrix']),
+                    np.array(stereoCalibrationData['cameraMatrix1']),
                     np.array(stereoCalibrationData['distCoeffs1']),
                     np.array(stereoCalibrationData['r1']),
                     np.array(stereoCalibrationData['p1']),

@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-class MatchKeyPointsByBruteForceInEpilineService:
+class MatchInterestPointsByBruteForceInEpilineService:
     def __init__(self, height, width, interest_points_b, interest_points_b_index):
         self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
         self.height = height
