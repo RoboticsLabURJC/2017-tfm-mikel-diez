@@ -19,7 +19,8 @@ class GetCameraRepresentationWithRotationAndTranslationService:
         self.segments = []
 
     def execute(self, camera_matrix, dist_coeffs, r, p, rotation_matrix, translation_vector, scale=10):
-        print(camera_matrix)
+        euler_angles, _, _, Qx, Qy, Qz = cv2.RQDecomp3x3(rotation_matrix)
+        print(euler_angles)
         self.top_left_corner, self.top_right_corner, self.bottom_left_corner, self.bottom_right_corner = self.calculate_camera_points_from_matrix(camera_matrix, dist_coeffs, r, p)
 
         self.rotate_points(rotation_matrix)

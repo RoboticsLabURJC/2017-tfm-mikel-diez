@@ -81,6 +81,57 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+##### Week Scope
+* [x] Refine different descriptors usage and reconstruction
+* [ ] Quantitative analysis of the degrees change toleration
+* [ ] Fish-eye introduction
+
+Extra Points:
+* [x] Faster sampling algorithm
+##### Week Log
+###### Faster algorithm
+It was outside the scope of this weeks but I managed to make the algorithm 1.8s faster by optimizing the function that samples the points of the image A.
+
+Old algorithm
+![old_algorithm](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/27_06_2019/test_points_old.png)
+
+New algorithm
+![new_algorithm](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/27_06_2019/test_points_new_2.png)
+
+The points are not exactly the same but they are quite similar and from 1.95 seconds we got down to 0.15s. That's quite an improve.
+
+###### Reconstruction with ORB
+It seems that I've domesticated the feature detector of opencv at least with ORB. I get way more points and unfortunatelly way more missmatches. I'm working in a threshold.
+
+Canonical
+[![Watch the video](https://img.youtube.com/vi/_4_BuQHPmUQ/hqdefault.jpg)](https://youtu.be/_4_BuQHPmUQ)
+Euler Angles = (-3.3713558063735305, -3.13934643228478, -5.5404691855671775)
+[![Watch the video](https://img.youtube.com/vi/mKCX-p1Tklc/hqdefault.jpg)](https://youtu.be/mKCX-p1Tklc)
+Euler Angles = (-3.173178259185197, 2.151335716097801, 18.784725635994242)
+[![Watch the video](https://img.youtube.com/vi/pkLVhs9eZ2k/hqdefault.jpg)](https://youtu.be/pkLVhs9eZ2k)
+
+I added a threshold and it seems that the first two stand correctly (way better than the version with the color matching) but 18º seem to be to much for this descriptor.
+Canonical
+[![Watch the video](https://img.youtube.com/vi/J76MUfbMOKk/hqdefault.jpg)](https://youtu.be/J76MUfbMOKk)
+Euler Angles = (-3.3713558063735305, -3.13934643228478, -5.5404691855671775)
+[![Watch the video](https://img.youtube.com/vi/XmezZ8NAtww/hqdefault.jpg)](https://youtu.be/XmezZ8NAtww)
+Euler Angles = (-3.173178259185197, 2.151335716097801, 18.784725635994242)
+[![Watch the video](https://img.youtube.com/vi/r89RQXW0Cw0/hqdefault.jpg)](https://youtu.be/r89RQXW0Cw0)
+
+I did some test with other descriptors
+Canonical (SURF)
+[![Watch the video](https://img.youtube.com/vi/_AFvKcaLGrk/hqdefault.jpg)](https://youtu.be/_AFvKcaLGrk)
+Canonical (BRISK) 
+[![Watch the video](https://img.youtube.com/vi/lfF5l-vjTQU/hqdefault.jpg)](https://youtu.be/lfF5l-vjTQU)
+(BRISK) Euler Angles = (-3.173178259185197, 2.151335716097801, 18.784725635994242) !!!WORKS!!!
+[![Watch the video](https://img.youtube.com/vi/wKF-N4e6lzg/hqdefault.jpg)](https://youtu.be/wKF-N4e6lzg)
+
+
+####### To Review
+FLANN based Matcher is regarded as faster than brute force for "large data-sets" It might apply here.
+
+### 2018 - 2019
+#### 29/05/2019 - 17/06/2019
 Image of the features in an epiline
 ![canonical](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/features_epiline.png)
 
@@ -94,7 +145,6 @@ Video of wrong reconstruction (cameras right)
 [![Watch the video](https://img.youtube.com/vi/xC2IFNYhP6A/hqdefault.jpg)](https://youtu.be/xC2IFNYhP6A)
 Seems to be something with shape in the wrong zone.
 
-### 2018 - 2019
 #### 29/05/2019 - 17/06/2019
 ##### Wrong epilines theory proves wrong
 We had the theory that the calibration was off in some aspects and that it was leading to wrong epilines in our system. To test this hypothesis I tested several of the different calibrations I had previously make to check if it wass the case.
@@ -150,8 +200,6 @@ Finally I managed to draw correctly the images.
 
 ![cameras_well_displayed](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/04_06_2019/cameras_well_displayed.png)
 
-
-### 2018 - 2019
 #### 25/05/2019 - 29/05/2019
 ##### Different movements of the camera
 Canonical position

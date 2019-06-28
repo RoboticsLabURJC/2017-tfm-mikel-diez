@@ -88,7 +88,7 @@ cameraMatrix1: !!python/object/apply:numpy.core.multiarray._reconstruct
   - *id002
   - false
   - !!binary |
-    kyEmiImdfUAAAAAAAAAAAAAAAOByyXpAAAAAAAAAAACTISaIiZ19QAAAwJoH63JAAAAAAAAAAAAA
+    B3n9nah1lkAAAAAAAAAAAE9Eop9ga4VAAAAAAAAAAAAj/QZbVHmWQO4o1mTT+m5AAAAAAAAAAAAA
     AAAAAAAAAAAAAAAAAPA/
 cameraMatrix2: !!python/object/apply:numpy.core.multiarray._reconstruct
   args:
@@ -104,7 +104,7 @@ cameraMatrix2: !!python/object/apply:numpy.core.multiarray._reconstruct
   - *id002
   - false
   - !!binary |
-    kyEmiImdfUAAAAAAAAAAAAAAAOByyXpAAAAAAAAAAACTISaIiZ19QAAAwJoH63JAAAAAAAAAAAAA
+    N6Vvc/B+lkAAAAAAAAAAAKzFHufhM4NAAAAAAAAAAAB7qijBc4OWQMJXL34a+HNAAAAAAAAAAAAA
     AAAAAAAAAAAAAAAAAPA/
 distCoeffs1: !!python/object/apply:numpy.core.multiarray._reconstruct
   args:

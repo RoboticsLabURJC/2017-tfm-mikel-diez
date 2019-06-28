@@ -5,10 +5,10 @@ import cProfile
 from Vision.ValueObjects.InterestPointsValueObject import InterestPointsValueObject
 
 
-class MatchInterestPointsWithOrb:
+class MatchInterestPointsWithBRIEF:
     def __init__(self, stereo_calibration):
         self.stereo_calibration = stereo_calibration
-        self.orb_detector = cv2.ORB_create()
+        self.feature_detector = cv2.BRIEF_create()
 
     def execute(self, image_a, image_b):
         image_a_points_of_interest = InterestPointsValueObject(image_a, 10)
@@ -45,8 +45,8 @@ class MatchInterestPointsWithOrb:
                 key_point_1 = [cv2.KeyPoint(x[0][0], x[0][1], 1) for x in np.array([[[point[0][0], point[0][1]]]], dtype=np.float32)]
                 key_points_in_line = [cv2.KeyPoint(x[0][0], x[0][1], 1) for x in interest_points_in_line]
 
-                key_points_1, descriptors_1 = self.orb_detector.compute(image_a, np.array(key_point_1))
-                key_points_2, descriptors_2 = self.orb_detector.compute(image_b, key_points_in_line)
+                key_points_1, descriptors_1 = self.feature_detector.compute(image_a, np.array(key_point_1))
+                key_points_2, descriptors_2 = self.feature_detector.compute(image_b, key_points_in_line)
 
                 # Brute Force Matching
                 if descriptors_1 is not None and descriptors_2 is not None:
@@ -54,7 +54,7 @@ class MatchInterestPointsWithOrb:
                     matches = bf.match(descriptors_1, descriptors_2)
                     matches = sorted(matches, key=lambda x: x.distance)
 
-                    if matches[0].distance < 40.0:
+                    if matches[0].distance < 800.0:
                         points_left.append(np.array([[key_point_1[0].pt[0], key_point_1[0].pt[1]]]))
                         points_right.append(np.array([[key_points_2[matches[0].trainIdx].pt[0], key_points_2[matches[0].trainIdx].pt[1]]]))
 

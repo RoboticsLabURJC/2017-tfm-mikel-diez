@@ -10,7 +10,7 @@ from Vision.Components.Visualization.visualization import VisionViewer
 from Vision.Components.Visualization.visualization_server import VisualServer
 from Vision.Services.GetCameraRepresentationWithRotationAndTranslationService import \
     GetCameraRepresentationWithRotationAndTranslationService
-from Vision.Services.Matching.MatchInterestPointsWithOrb import MatchInterestPointsWithOrb as GetMatchedPointsService
+from Vision.Services.Matching.MatchInterestPointsWithBrisk import MatchInterestPointsWithBrisk as GetMatchedPointsService
 
 
 class ReconstructionFromImages:
@@ -38,16 +38,12 @@ class ReconstructionFromImages:
                 cameraACalibrationData = yaml.load(cameraACalibration, Loader=yaml.UnsafeLoader)
                 cameraBCalibrationData = yaml.load(cameraBCalibration, Loader=yaml.UnsafeLoader)
 
-                print(cameraBCalibrationData['rotationMatrix'])
-                print(stereoCalibrationData['T'])
-
                 get_matched_interest_points_from_images_service = GetMatchedPointsService(
                     stereoCalibrationData
                 )
 
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
                 left_points, right_points = get_matched_interest_points_from_images_service.execute(image1, image2)
-                print(left_points)
                 reconstructor = Reconstructor3D(stereoCalibrationData, image1, image2)
 
 
