@@ -5,22 +5,24 @@ import cv2
 import jderobot
 import numpy as np
 import yaml
+
 from Vision.Components.Reconstruction.Reconstructor3D import Reconstructor3D
 from Vision.Components.Visualization.visualization import VisionViewer
 from Vision.Components.Visualization.visualization_server import VisualServer
 from Vision.Services.GetCameraRepresentationWithRotationAndTranslationService import \
     GetCameraRepresentationWithRotationAndTranslationService
-from Vision.Services.Matching.MatchInterestPointsWithBrisk import MatchInterestPointsWithBrisk as GetMatchedPointsService
+from Vision.Services.Matching.MatchInterestPointsWithBRIEF import MatchInterestPointsWithBRIEF as GetMatchedPointsService
+from Vision.Factories.MatcherFactory import FeatureDetectorFactory
 
 
 class ReconstructionFromImages:
-    def __init__(self, image01, image02, stereoCalibration, cameraACalibration, cameraBCalibration, gui):
+    def __init__(self, image01, image02, stereo_calibration, camera_a_calibration, camera_b_Calibration, gui):
         self.gui = gui
         self.image01 = image01
         self.image02 = image02
-        self.calibration = stereoCalibration
-        self.cameraACalibration = cameraACalibration
-        self.cameraBCalibration = cameraBCalibration
+        self.calibration = stereo_calibration
+        self.camera_a_calibration = camera_a_calibration
+        self.camera_b_calibration = camera_b_Calibration
         self.segments = []
         self.points = []
         self.distance = 900
@@ -28,50 +30,33 @@ class ReconstructionFromImages:
         logging.getLogger().setLevel(logging.INFO)
 
     def run(self):
-        with open(self.calibration, 'r') as stereoCalibration, open(self.cameraACalibration, 'r') as cameraACalibration, open(self.cameraBCalibration, 'r') as cameraBCalibration:
+        with open(self.calibration, 'r') as stereoCalibration:
             try:
                 initial_time = datetime.now()
                 logging.info('[{}] Load Images'.format(datetime.now().time()))
                 image1 = cv2.imread(self.image01)
                 image2 = cv2.imread(self.image02)
-                stereoCalibrationData = yaml.load(stereoCalibration, Loader=yaml.UnsafeLoader)
-                cameraACalibrationData = yaml.load(cameraACalibration, Loader=yaml.UnsafeLoader)
-                cameraBCalibrationData = yaml.load(cameraBCalibration, Loader=yaml.UnsafeLoader)
+                stereo_calibration_data = yaml.load(stereoCalibration, Loader=yaml.UnsafeLoader)
 
-                get_matched_interest_points_from_images_service = GetMatchedPointsService(
-                    stereoCalibrationData
+                matcher_factory = FeatureDetectorFactory()
+
+                get_matched_interest_points_from_images_service = matcher_factory.build_matcher(
+                    stereo_calibration_data,
+                    'freak',
+                    65
                 )
 
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
+                # image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2HSV)
+                # image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV)
                 left_points, right_points = get_matched_interest_points_from_images_service.execute(image1, image2)
-                reconstructor = Reconstructor3D(stereoCalibrationData, image1, image2)
-
-
+                reconstructor = Reconstructor3D(stereo_calibration_data, image1, image2)
 
                 self.points = reconstructor.execute(left_points, right_points)
 
                 logging.info('[{}] End Match Points'.format(datetime.now().time()))
 
-                logging.info('[{}] Setting Points and Segments'.format(datetime.now().time()))
-                # self.print_cameras()
-                camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
-                self.segments += camera_generator.execute(
-                    np.array(stereoCalibrationData['cameraMatrix2']),
-                    np.array(stereoCalibrationData['distCoeffs2']),
-                    np.array(stereoCalibrationData['r2']),
-                    np.array(stereoCalibrationData['p2']),
-                    np.array(stereoCalibrationData['R']),
-                    np.array(stereoCalibrationData['T'])
-                )
-                camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
-                self.segments += camera_generator.execute(
-                    np.array(stereoCalibrationData['cameraMatrix1']),
-                    np.array(stereoCalibrationData['distCoeffs1']),
-                    np.array(stereoCalibrationData['r1']),
-                    np.array(stereoCalibrationData['p1']),
-                    np.identity(3),
-                    np.array([.0, .0, .0])
-                )
+                self.generate_cameras(stereo_calibration_data)
                 self.print_coordinates_reference()
                 self.print_reference_plane()
 
@@ -87,6 +72,26 @@ class ReconstructionFromImages:
 
             except yaml.YAMLError as exc:
                 print(exc)
+
+    def generate_cameras(self, stereoCalibrationData):
+        camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
+        self.segments += camera_generator.execute(
+            np.array(stereoCalibrationData['cameraMatrix2']),
+            np.array(stereoCalibrationData['distCoeffs2']),
+            np.array(stereoCalibrationData['r2']),
+            np.array(stereoCalibrationData['p2']),
+            np.array(stereoCalibrationData['R']),
+            np.array(stereoCalibrationData['T'])
+        )
+        camera_generator = GetCameraRepresentationWithRotationAndTranslationService()
+        self.segments += camera_generator.execute(
+            np.array(stereoCalibrationData['cameraMatrix1']),
+            np.array(stereoCalibrationData['distCoeffs1']),
+            np.array(stereoCalibrationData['r1']),
+            np.array(stereoCalibrationData['p1']),
+            np.identity(3),
+            np.array([.0, .0, .0])
+        )
 
     def print_coordinates_reference(self):
         self.segments.append(jderobot.RGBSegment(

@@ -5,10 +5,10 @@ import cProfile
 from Vision.ValueObjects.InterestPointsValueObject import InterestPointsValueObject
 
 
-class MatchInterestPointsWithBrisk:
+class MatchInterestPointsWithFREAK:
     def __init__(self, stereo_calibration, threshold):
         self.stereo_calibration = stereo_calibration
-        self.feature_detector = cv2.BRISK_create()
+        self.feature_detector = cv2.xfeatures2d.FREAK_create()
         self.threshold = threshold
 
     def execute(self, image_a, image_b):
