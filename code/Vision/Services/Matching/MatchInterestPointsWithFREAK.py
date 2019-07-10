@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import cProfile
 
 from Vision.ValueObjects.InterestPointsValueObject import InterestPointsValueObject
 
@@ -8,7 +7,7 @@ from Vision.ValueObjects.InterestPointsValueObject import InterestPointsValueObj
 class MatchInterestPointsWithFREAK:
     def __init__(self, stereo_calibration, threshold):
         self.stereo_calibration = stereo_calibration
-        self.feature_detector = cv2.xfeatures2d.FREAK_create()
+        self.feature_detector = cv2.xfeatures2d.FREAK_create(patternScale=24.0)
         self.threshold = threshold
 
     def execute(self, image_a, image_b):
@@ -18,8 +17,6 @@ class MatchInterestPointsWithFREAK:
         epilines_a = cv2.computeCorrespondEpilines(image_a_points_of_interest.get_interest_points(), 1, self.stereo_calibration['F'])
         epilines_a = epilines_a.reshape(-1, 3)
 
-        pr = cProfile.Profile()
-        pr.enable()
         points_left, points_right = self.__get_matched_points_by_epiline(
             image_a_points_of_interest.get_interest_points(),
             image_b_points_of_interest,
@@ -27,9 +24,6 @@ class MatchInterestPointsWithFREAK:
             image_a,
             image_b
         )
-
-        pr.disable()
-        pr.print_stats()
 
         return points_left, points_right
 

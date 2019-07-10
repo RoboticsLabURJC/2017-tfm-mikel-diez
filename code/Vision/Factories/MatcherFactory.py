@@ -16,32 +16,31 @@ class FeatureDetectorFactory:
         'freak': 'build_freak_matcher'
     }
 
-    def build_matcher(self, calibrationData, type='brisk', threshold=400):
+    def build_matcher(self, calibration_data, type='brisk', threshold=400):
         method_name = self.matchers[type]
         matcher = getattr(self, method_name, lambda: 'Invalid')
-        return matcher(calibrationData, threshold)
+        return matcher(calibration_data, threshold)
 
     @staticmethod
-    def build_brisk_matcher(calibrationData, threshold):
-        return MatchInterestPointsWithBrisk(calibrationData, threshold)
+    def build_brisk_matcher(calibration_data, threshold):
+        return MatchInterestPointsWithBrisk(calibration_data, threshold)
 
     @staticmethod
-    def build_brief_matcher(calibrationData, threshold):
-        return MatchInterestPointsWithBRIEF(calibrationData)
+    def build_brief_matcher(calibration_data, threshold):
+        return MatchInterestPointsWithBRIEF(calibration_data)
 
     @staticmethod
-    def build_orb_matcher(calibrationData, threshold):
-        return MatchInterestPointsWithOrb(calibrationData)
+    def build_orb_matcher(calibration_data, threshold):
+        return MatchInterestPointsWithOrb(calibration_data)
 
     @staticmethod
-    def build_surf_matcher(calibrationData, threshold):
-        return MatchInterestPointsWithSurf(calibrationData)
+    def build_surf_matcher(calibration_data, threshold):
+        return MatchInterestPointsWithSurf(calibration_data)
 
     @staticmethod
-    def build_surf_matcher(calibrationData, threshold):
-        return MatchInterestPointsWithSift(calibrationData)
-
+    def build_surf_matcher(calibration_data, threshold):
+        return MatchInterestPointsWithSift(calibration_data)
 
     @staticmethod
-    def build_freak_matcher(calibrationData, threshold):
-        return MatchInterestPointsWithFREAK(calibrationData, threshold)
+    def build_freak_matcher(calibration_data, threshold):
+        return MatchInterestPointsWithFREAK(calibration_data, threshold)

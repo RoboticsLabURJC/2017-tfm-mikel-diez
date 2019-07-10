@@ -12,8 +12,8 @@ from Vision.Components.Visualization.visualization_server import VisualServer
 from Vision.Services.GetCameraRepresentationWithRotationAndTranslationService import \
     GetCameraRepresentationWithRotationAndTranslationService
 from Vision.Services.Matching.MatchInterestPointsWithBRIEF import MatchInterestPointsWithBRIEF as GetMatchedPointsService
+from Vision.Services.Presentation.Transform3DPointsToDepthImageService import Transform3DPointsToDepthImageService
 from Vision.Factories.MatcherFactory import FeatureDetectorFactory
-
 
 class ReconstructionFromImages:
     def __init__(self, image01, image02, stereo_calibration, camera_a_calibration, camera_b_Calibration, gui):
@@ -30,13 +30,14 @@ class ReconstructionFromImages:
         logging.getLogger().setLevel(logging.INFO)
 
     def run(self):
-        with open(self.calibration, 'r') as stereoCalibration:
+        with open(self.calibration, 'r') as stereoCalibration, open(self.camera_a_calibration, 'r') as camera_a_calibration:
             try:
                 initial_time = datetime.now()
                 logging.info('[{}] Load Images'.format(datetime.now().time()))
                 image1 = cv2.imread(self.image01)
                 image2 = cv2.imread(self.image02)
                 stereo_calibration_data = yaml.load(stereoCalibration, Loader=yaml.UnsafeLoader)
+                camera_a_calibration_data = yaml.load(camera_a_calibration, Loader=yaml.UnsafeLoader)
 
                 matcher_factory = FeatureDetectorFactory()
 
@@ -47,8 +48,6 @@ class ReconstructionFromImages:
                 )
 
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
-                # image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2HSV)
-                # image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV)
                 left_points, right_points = get_matched_interest_points_from_images_service.execute(image1, image2)
                 reconstructor = Reconstructor3D(stereo_calibration_data, image1, image2)
 
@@ -60,18 +59,25 @@ class ReconstructionFromImages:
                 self.print_coordinates_reference()
                 self.print_reference_plane()
 
-                vision_viewer = VisionViewer()
-                vision_viewer.set_points(self.points)
-                vision_viewer.set_segments(self.segments)
-                vision_server = VisualServer(vision_viewer)
-                logging.info('[{}] Run vision server'.format(datetime.now().time()))
-                vision_server.run()
 
-                end_time = datetime.now()
-                logging.info('Total time: {}'.format(end_time - initial_time))
+                logging.info('[{}] Serve Points'.format(datetime.now().time()))
+                logging.info('Total time: {}'.format(datetime.now() - initial_time))
+
+                # self.run_vision_server()
+
+                imager = Transform3DPointsToDepthImageService()
+                imager.execute(self.points,left_points, image1)
+
 
             except yaml.YAMLError as exc:
                 print(exc)
+
+    def run_vision_server(self):
+        vision_viewer = VisionViewer()
+        vision_viewer.set_points(self.points)
+        vision_viewer.set_segments(self.segments)
+        vision_server = VisualServer(vision_viewer)
+        vision_server.run()
 
     def generate_cameras(self, stereoCalibrationData):
         camera_generator = GetCameraRepresentationWithRotationAndTranslationService()

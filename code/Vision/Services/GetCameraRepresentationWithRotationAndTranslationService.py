@@ -20,8 +20,7 @@ class GetCameraRepresentationWithRotationAndTranslationService:
 
     def execute(self, camera_matrix, dist_coeffs, r, p, rotation_matrix, translation_vector, scale=10):
         euler_angles, _, _, Qx, Qy, Qz = cv2.RQDecomp3x3(rotation_matrix)
-        print(euler_angles)
-        self.top_left_corner, self.top_right_corner, self.bottom_left_corner, self.bottom_right_corner = self.calculate_camera_points_from_matrix(camera_matrix, dist_coeffs, r, p)
+        self.top_left_corner, self.top_right_corner, self.bottom_left_corner, self.bottom_right_corner = self.calculate_camera_points_from_matrix(camera_matrix)
 
         self.rotate_points(rotation_matrix)
         self.translate_points(translation_vector.reshape(3) / scale)
@@ -86,7 +85,7 @@ class GetCameraRepresentationWithRotationAndTranslationService:
         self.bottom_right_corner = self.REAL_WORLD_TRANSFORMATION.dot(self.bottom_right_corner)
 
     @staticmethod
-    def calculate_camera_points_from_matrix(camera_matrix, dist_coeffs, r, p, depth=-2):
+    def calculate_camera_points_from_matrix(camera_matrix, depth=-2):
         points_2d = np.array([
             [[0, 0]],
             [[0, 719]],
