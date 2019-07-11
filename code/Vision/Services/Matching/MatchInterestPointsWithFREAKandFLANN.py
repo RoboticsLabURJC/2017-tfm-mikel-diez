@@ -4,10 +4,10 @@ import numpy as np
 from Vision.ValueObjects.InterestPointsValueObject import InterestPointsValueObject
 
 
-class MatchInterestPointsWithFREAK:
+class MatchInterestPointsWithFREAKandFLANN:
     def __init__(self, stereo_calibration, threshold):
         self.stereo_calibration = stereo_calibration
-        self.feature_detector = cv2.xfeatures2d.FREAK_create(patternScale=64.0)
+        self.feature_detector = cv2.xfeatures2d.FREAK_create(patternScale=24.0)
         self.threshold = threshold
 
     def execute(self, image_a, image_b):
@@ -49,7 +49,10 @@ class MatchInterestPointsWithFREAK:
                     matches = bf.match(descriptors_1, descriptors_2)
                     matches = sorted(matches, key=lambda x: x.distance)
 
-                    if matches[0].distance < self.threshold:
+                    print(matches)
+                    print(matches[0])
+
+                    if matches[0].distance < self.threshold and matches[0].distance * 1.05 < matches[1].distance:
                         points_left.append(np.array([[key_point_1[0].pt[0], key_point_1[0].pt[1]]]))
                         points_right.append(np.array([[key_points_2[matches[0].trainIdx].pt[0], key_points_2[matches[0].trainIdx].pt[1]]]))
 

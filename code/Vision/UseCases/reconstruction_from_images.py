@@ -44,7 +44,7 @@ class ReconstructionFromImages:
                 get_matched_interest_points_from_images_service = matcher_factory.build_matcher(
                     stereo_calibration_data,
                     'freak',
-                    65
+                    80
                 )
 
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
@@ -63,11 +63,10 @@ class ReconstructionFromImages:
                 logging.info('[{}] Serve Points'.format(datetime.now().time()))
                 logging.info('Total time: {}'.format(datetime.now() - initial_time))
 
-                # self.run_vision_server()
+                self.run_vision_server()
 
-                imager = Transform3DPointsToDepthImageService()
-                imager.execute(self.points,left_points, image1)
-
+                # imager = Transform3DPointsToDepthImageService()
+                # imager.execute(self.points,left_points, image1)
 
             except yaml.YAMLError as exc:
                 print(exc)
@@ -179,72 +178,3 @@ class ReconstructionFromImages:
         self.segments.append(jderobot.RGBSegment(
             jderobot.Segment(jderobot.Point(-40.0, distance, 50.0), jderobot.Point(-40.0, distance, -50.0)),
             jderobot.Color(1.0, 0.0, 0.0)))
-
-    def print_cameras(self):
-        self.points.append(jderobot.RGBPoint(-3.44965908, 1.22125194e-17, 0.0, 0.0, 0.0, 0.0))
-        self.points.append(jderobot.RGBPoint(0.0, 0.0, 0.0, 0.0, 0.0, 0.0))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(-3.44965908, 1.22125194e-17, 0.0),
-                             jderobot.Point(-3.44965908 - 0.75, 1.5, 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(-3.44965908, 1.22125194e-17, 0.0),
-                             jderobot.Point(-3.44965908 + 0.75, 1.5, 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(-3.44965908, 1.22125194e-17, 0.0),
-                             jderobot.Point(-3.44965908 - 0.75, 1.5, -0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(-3.44965908, 1.22125194e-17, 0.0),
-                             jderobot.Point(-3.44965908 + 0.75, 1.5, -0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(-3.44965908 - 0.75, 1.5, - 0.75),
-                             jderobot.Point(-3.44965908 - 0.75, 1.5, 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(-3.44965908 + 0.75, 1.5, - 0.75),
-                             jderobot.Point(-3.44965908 + 0.75, 1.5, 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(-3.44965908 + 0.75, 1.5, - 0.75),
-                             jderobot.Point(-3.44965908 - 0.75, 1.5, - 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(-3.44965908 + 0.75, 1.5,  0.75),
-                             jderobot.Point(-3.44965908 - 0.75, 1.5,  0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(0.0, 1.22125194e-17, 0.0),
-                             jderobot.Point(- 0.75, 1.5, 0.75)),
-            jderobot.Color(1.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(0.0, 1.22125194e-17, 0.0),
-                             jderobot.Point(0.75, 1.5, 0.75)),
-            jderobot.Color(0.0, 1.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(0.0, 1.22125194e-17, 0.0),
-                             jderobot.Point(- 0.75, 1.5, -0.75)),
-            jderobot.Color(0.0, 0.0, 1.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(0.0, 1.22125194e-17, 0.0),
-                             jderobot.Point(0.75, 1.5, -0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(- 0.75, 1.5, - 0.75),
-                             jderobot.Point(- 0.75, 1.5, 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(0.75, 1.5, - 0.75),
-                             jderobot.Point(0.75, 1.5, 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(0.75, 1.5, - 0.75),
-                             jderobot.Point(- 0.75, 1.5, - 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
-        self.segments.append(jderobot.RGBSegment(
-            jderobot.Segment(jderobot.Point(0.75, 1.5, 0.75),
-                             jderobot.Point(- 0.75, 1.5, 0.75)),
-            jderobot.Color(0.0, 0.0, 0.0)))
