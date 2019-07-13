@@ -1,5 +1,5 @@
 # Staff to do
-- Interface for the visualization (3d viz or images)
+- ~~Interface for the visualization (3d viz or images)~~
 - Investigate about outdoors images
 - Integration between GUI and code (both directions)
 - Take More outdoor images
