@@ -81,6 +81,22 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+I tried to take some fotos outside but my cameras seem to handle badly when there is a lot of light. I'll try again.
+
+![old_algorithm](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/14_07_2019/left_image_1.png)
+
+In my test for a feature detector I found the FREAK detector which is the fastest (5 to 7 seconds) and more precise:
+
+[![Watch the video](https://img.youtube.com/vi/YRAGprVl0aU/hqdefault.jpg)](https://youtu.be/YRAGprVl0aU)
+
+Also created an image with the "distance" the dark color means that is close and bright read for "far" objects
+
+![old_algorithm](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/14_07_2019/circles.png)
+
+
+
+### 2018 - 2019
+#### 29/05/2019 - 17/06/2019
 ##### Week Scope
 * [x] Refine different descriptors usage and reconstruction
 * [ ] Quantitative analysis of the degrees change toleration
@@ -147,7 +163,6 @@ Canonical (BRISK)
 ###### To Review
 FLANN based Matcher is regarded as faster than brute force for "large data-sets" It might apply here.
 
-### 2018 - 2019
 #### 29/05/2019 - 17/06/2019
 Image of the features in an epiline
 ![canonical](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/features_epiline.png)
