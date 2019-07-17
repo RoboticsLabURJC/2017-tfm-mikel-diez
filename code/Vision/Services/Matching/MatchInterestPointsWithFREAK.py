@@ -12,6 +12,8 @@ class MatchInterestPointsWithFREAK:
 
     def execute(self, image_a, image_b):
         image_a_points_of_interest = InterestPointsValueObject(image_a, 10)
+        self.number_of_points_to_match = image_a_points_of_interest.interest_points.shape[0]
+        print(self.number_of_points_to_match)
         image_b_points_of_interest = InterestPointsValueObject(image_b)
 
         epilines_a = cv2.computeCorrespondEpilines(image_a_points_of_interest.get_interest_points(), 1, self.stereo_calibration['F'])

@@ -34,13 +34,19 @@ class ReconstructionFromImages:
                     80
                 )
 
+
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
                 left_points, right_points = get_matched_interest_points_from_images_service.execute(image1, image2)
-                reconstructor = Reconstructor3D(stereo_calibration_data, image1, image2)
+                logging.info('[{}] End Match Points'.format(datetime.now().time()))
 
+                self.gui.matching_information_points_to_match_label.setText('Points to match:  %s' % get_matched_interest_points_from_images_service.number_of_points_to_match)
+                self.gui.matching_information_points_matched_label.setText('Points matched: %s' % len(left_points))
+                self.gui.matching_information_seconds_per_point_label.setText('Seconds per Point: %ss' % ((datetime.now() - initial_time) / get_matched_interest_points_from_images_service.number_of_points_to_match).total_seconds())
+                self.gui.matching_information_total_matching_seconds_label.setText('Matching time (s): %ss' % (datetime.now() - initial_time).total_seconds())
+
+                reconstructor = Reconstructor3D(stereo_calibration_data, image1, image2)
                 points = reconstructor.execute(left_points, right_points)
 
-                logging.info('[{}] End Match Points'.format(datetime.now().time()))
                 logging.info('[{}] Serve Points'.format(datetime.now().time()))
                 logging.info('Total time: {}'.format(datetime.now() - initial_time))
 
