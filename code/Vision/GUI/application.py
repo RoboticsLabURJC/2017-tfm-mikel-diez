@@ -5,6 +5,7 @@ from PyQt5 import QtWidgets
 from Vision.UseCases.reconstruction_from_video import ReconstructionFromVideo
 from Vision.UseCases.reconstruction_from_images import ReconstructionFromImages
 from Vision.UseCases.stereo_calibration_from_chessboard import StereoCalibrationFromChessboard
+from Vision.UseCases.reconstruction_cameras_from_calibration import RecontructCameras
 
 import os
 import cv2
@@ -38,6 +39,7 @@ class Application(QtWidgets.QWidget):
         self.create_matching_options_group()
         self.create_options_tabs()
         self.create_information_tabs()
+        self.create_build_cameras_button()
 
         self.video_recorder_1 = None
         self.video_recorder_2 = None
@@ -80,6 +82,12 @@ class Application(QtWidgets.QWidget):
         self.reconstruction_button.move(1090, 200)
         self.reconstruction_button.resize(150, 40)
         self.reconstruction_button.clicked.connect(self.reconstruct_from_video)
+
+    def create_build_cameras_button(self):
+        self.build_cameras_button = QtWidgets.QPushButton('Show Cameras', self)
+        self.build_cameras_button.move(1090, 250)
+        self.build_cameras_button.resize(150, 40)
+        self.build_cameras_button.clicked.connect(self.show_cameras)
 
     def create_calibrate_cameras_button(self):
         self.calibrate_button = QtWidgets.QPushButton('Calibrate Cameras', self)
@@ -358,3 +366,7 @@ class Application(QtWidgets.QWidget):
     def create_new_set(self):
         if not os.path.exists('bin/sets/' + self.textbox.text()):
             os.makedirs('bin/sets/' + self.textbox.text())
+
+    def show_cameras(self):
+        reconstructor = RecontructCameras('bin/sets/' + self.combobox_selector.currentText() + '/calibrated_camera.yml')
+        reconstructor.run()

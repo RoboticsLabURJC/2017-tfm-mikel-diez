@@ -28,12 +28,12 @@ if __name__ == '__main__':
         # jdrc = comm.init(right_camera_config, 'Cameraview')
         # proxy = jdrc.getCameraClient('Cameraview.Camera')
         # camera_right = Camera(proxy)
-        camera_right = openCvCamera(0)
+        camera_right = openCvCamera(2)
 
         # jdrc = comm.init(left_camera_config, 'Cameraview')
         # proxy = jdrc.getCameraClient('Cameraview.Camera')
         # camera_left = Camera(proxy)
-        camera_left = openCvCamera(2)
+        camera_left = openCvCamera(4)
 
         # Cameras configuration
         myGUI = Application()
