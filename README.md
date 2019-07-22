@@ -81,6 +81,19 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+I had some problems with my computer (yes my new computer) and managed to fix them. Then did some test:
+A different scenario:
+
+[![Watch the video](https://img.youtube.com/vi/Q4AoQxImApM/hqdefault.jpg)](https://youtu.be/Q4AoQxImApM)
+
+I also tested how the algorithm behaved with HSV but did not work correctly, I'm still testing this to see what went wrong.
+
+![old_algorithm](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/22_07_2019/bad_hsv.png)
+
+Unfortunately couldn't test in outdor images as the problems with the computer prevented me to do so.
+
+### 2018 - 2019
+#### 17/07/2019 - 20/07/2019
 I tried to take some fotos outside but my cameras seem to handle badly when there is a lot of light. I'll try again.
 
 ![old_algorithm](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/14_07_2019/left_image_1.png)
@@ -93,9 +106,6 @@ Also created an image with the "distance" the dark color means that is close and
 
 ![old_algorithm](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/14_07_2019/circles.png)
 
-
-
-### 2018 - 2019
 #### 29/05/2019 - 17/06/2019
 ##### Week Scope
 * [x] Refine different descriptors usage and reconstruction

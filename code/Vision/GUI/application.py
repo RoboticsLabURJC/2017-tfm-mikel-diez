@@ -121,6 +121,14 @@ class Application(QtWidgets.QWidget):
         self.combobox_selector.resize(150, 40)
         self.combobox_selector.addItems(output)
 
+    def update_combo_selector(self, new_item):
+        sets = [dI for dI in os.listdir('bin/sets') if os.path.isdir(os.path.join('bin/sets', dI))]
+        index = self.combobox_selector.findText(new_item, QtCore.Qt.MatchFixedString)
+        self.combobox_selector.clear()
+        self.combobox_selector.addItems(sets)
+        if index >= 0:
+            self.combobox_selector.setCurrentIndex(index)
+
     def create_right_image(self):
         self.im_right_label = QtWidgets.QLabel(self)
         self.im_right_label.resize(400, 300)
@@ -366,6 +374,8 @@ class Application(QtWidgets.QWidget):
     def create_new_set(self):
         if not os.path.exists('bin/sets/' + self.textbox.text()):
             os.makedirs('bin/sets/' + self.textbox.text())
+            self.update_combo_selector(self.textbox.text())
+
 
     def show_cameras(self):
         reconstructor = RecontructCameras('bin/sets/' + self.combobox_selector.currentText() + '/calibrated_camera.yml')
