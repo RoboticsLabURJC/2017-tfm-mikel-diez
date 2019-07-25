@@ -19,9 +19,6 @@ class MatchInterestPointsWithFREAK:
         epilines_a = cv2.computeCorrespondEpilines(image_a_points_of_interest.get_interest_points(), 1, self.stereo_calibration['F'])
         epilines_a = epilines_a.reshape(-1, 3)
 
-        image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2HSV)
-        image_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2HSV)
-
         points_left, points_right = self.__get_matched_points_by_epiline(
             image_a_points_of_interest.get_interest_points(),
             image_b_points_of_interest,

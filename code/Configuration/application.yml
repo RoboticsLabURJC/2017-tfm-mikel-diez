@@ -1,0 +1,3 @@
+parameters:
+  output: 'file'
+  matcher: 'freak'

@@ -24,6 +24,7 @@ class Application(QtWidgets.QWidget):
 
         self.create_main_window(parent)
 
+        self.create_input_textbox()
         self.create_left_image()
         self.create_right_image()
         self.create_take_photo_button()
@@ -31,7 +32,6 @@ class Application(QtWidgets.QWidget):
         self.create_calibrate_cameras_button()
         self.create_reconstruction_button()
         self.create_reconstruction_from_video_button()
-        self.create_input_textbox()
         self.create_new_folder_button()
         self.create_image_counter_text()
         self.create_video_record_button()
@@ -72,13 +72,18 @@ class Application(QtWidgets.QWidget):
         self.new_folder_button.clicked.connect(self.create_new_set)
 
     def create_reconstruction_button(self):
-        self.reconstruction_button = QtWidgets.QPushButton('Reconst. from Image', self)
+        self.reconstruction_button = QtWidgets.QPushButton('Rec. Image', self)
         self.reconstruction_button.move(925, 200)
-        self.reconstruction_button.resize(150, 40)
+        self.reconstruction_button.resize(100, 40)
         self.reconstruction_button.clicked.connect(self.reconstruct_from_images)
+        images = [str(number) for number in range(6)]
+        self.reconstruction_image_selector = QtWidgets.QComboBox(self)
+        self.reconstruction_image_selector.move(1025, 200)
+        self.reconstruction_image_selector.resize(50, 40)
+        self.reconstruction_image_selector.addItems(images)
 
     def create_reconstruction_from_video_button(self):
-        self.reconstruction_button = QtWidgets.QPushButton('Reconst. from Video', self)
+        self.reconstruction_button = QtWidgets.QPushButton('Rec. Video', self)
         self.reconstruction_button.move(1090, 200)
         self.reconstruction_button.resize(150, 40)
         self.reconstruction_button.clicked.connect(self.reconstruct_from_video)
@@ -362,8 +367,8 @@ class Application(QtWidgets.QWidget):
 
     def reconstruct_from_images(self):
         images_reconstructor = ReconstructionFromImages(
-            'bin/sets/' + self.combobox_selector.currentText() + '/images/left_image_1.png',
-            'bin/sets/' + self.combobox_selector.currentText() + '/images/right_image_1.png',
+            'bin/sets/' + self.combobox_selector.currentText() + '/images/left_image_' + self.reconstruction_image_selector.currentText() + '.png',
+            'bin/sets/' + self.combobox_selector.currentText() + '/images/right_image_' + self.reconstruction_image_selector.currentText() + '.png',
             'bin/sets/' + self.combobox_selector.currentText() + '/calibrated_camera.yml',
             'bin/sets/' + self.combobox_selector.currentText() + '/camera_A_calibration.yml',
             'bin/sets/' + self.combobox_selector.currentText() + '/camera_B_calibration.yml',

@@ -81,6 +81,9 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+New video with outdoor reconstructions
+[![Watch the video](https://img.youtube.com/vi/3POzY_SLLOs/hqdefault.jpg)](https://youtu.be/3POzY_SLLOs)
+
 I had some problems with my computer (yes my new computer) and managed to fix them. Then did some test:
 A different scenario:
 

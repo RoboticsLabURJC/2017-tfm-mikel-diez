@@ -4,6 +4,7 @@ import jderobot
 from Vision.Components.Visualization.visualization import VisionViewer
 from Vision.Components.Visualization.visualization_server import VisualServer
 from Vision.Services.Presentation.Transform3DPointsToDepthImageService import Transform3DPointsToDepthImageService
+from Vision.Services.Presentation.Transform3DPointsToDepthFileService import Transform3DPointsToDepthFileService
 
 from Vision.Services.GetCameraRepresentationWithRotationAndTranslationService import \
     GetCameraRepresentationWithRotationAndTranslationService
@@ -13,6 +14,7 @@ class PresentationFactory:
     presentation = {
         'd3': 'build_3d_server',
         'image': 'build_depth_image',
+        'file': 'build_depth_file'
     }
 
     def build_presentation(self, points_3d, points_2d, image, calibration_data, presentation_type='d3'):
@@ -35,6 +37,10 @@ class PresentationFactory:
     def build_depth_image(points_3d, points_2d, image, calibration_data):
         imager = Transform3DPointsToDepthImageService()
         imager.execute(points_3d, points_2d, image)
+
+    def build_depth_file(self, points_3d, points_2d, image, calibration_data):
+        imager = Transform3DPointsToDepthFileService()
+        imager.execute(points_3d, points_2d, calibration_data)
 
     @staticmethod
     def generate_cameras(stereo_calibration_data, segments):
