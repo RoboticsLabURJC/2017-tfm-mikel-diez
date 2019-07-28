@@ -89,7 +89,11 @@ class StereoCalibrationFromChessboard:
                     'p2': p2,
                     'q': q,
                     'roi1': roi1,
-                    'roi2': roi2
+                    'roi2': roi2,
+                    'rvecs1': rvecs1,
+                    'rvecs2': rvecs2,
+                    'tvecs1': tvecs1,
+                    'tvecs2': tvecs2
                 },
                 outfile,
                 default_flow_style=False)

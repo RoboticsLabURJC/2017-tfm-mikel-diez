@@ -51,7 +51,7 @@ class ReconstructionFromImages:
                 logging.info('Total time: {}'.format(datetime.now() - initial_time))
 
                 presentation = PresentationFactory()
-                presentation.build_presentation(points, left_points, image1, stereo_calibration_data, 'd3')
+                presentation.build_presentation(points, left_points, image1, stereo_calibration_data, 'imageD')
 
             except yaml.YAMLError as exc:
                 print(exc)
