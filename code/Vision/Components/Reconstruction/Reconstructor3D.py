@@ -54,7 +54,7 @@ class Reconstructor3D:
 
         for index in range(0, a_points.shape[0] - 0):
             transformed_point = np.array([float(points4d[0][index] / points4d[3][index]), float(points4d[1][index] / points4d[3][index]), float(points4d[2][index] / points4d[3][index])])
-            transformed_point = self.REAL_WORLD_TRANSFORMATION.dot(transformed_point) / 10.0
+            transformed_point = self.REAL_WORLD_TRANSFORMATION.dot(transformed_point) / 100.0
             red = float(self.image_a[int(a_points[index][0][1])][int(a_points[index][0][0])][2]/255.0)
             green = float(self.image_a[int(a_points[index][0][1])][int(a_points[index][0][0])][1]/255.0)
             blue = float(self.image_a[int(a_points[index][0][1])][int(a_points[index][0][0])][0]/255.0)

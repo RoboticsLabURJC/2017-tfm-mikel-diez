@@ -81,6 +81,44 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+##### Week Scope
+* [x] Depth Image to file
+* [ ] Check rasbperry pi and h264 video streaming
+* [x] Use a bigger baseline
+* [ ] Use a d-max restriction
+* [ ] Fish-eye
+##### Week Log
+###### Depth Image To file
+I've created a class and a file that creates and reads a list of points with their depths:
+```
+# points (x, y, depth)
+794.0 66.0 25.7565359078
+835.0 67.0 107.103449649
+840.0 67.0 75.9568031612
+845.0 67.0 56.2796129371
+850.0 67.0 19.6973447612
+817.0 68.0 395.814651194
+863.0 68.0 23.155889435
+868.0 68.0 20.5708455968
+788.0 69.0 16.1893999973
+799.0 69.0 13.2290620964
+804.0 69.0 13.3564450507
+```
+
+###### Check raspberry with video streaming
+I didn't have time to test the streaming (at least right now) because I had some problem with the sd card or my raspberry (it was corrupted) but I have it now installed and ready,
+
+![raspberry](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/29_07_2019/raspberry.jpg)
+
+
+###### Bigger baseline
+With a new baseline of around 170mm we are ready for some new reconstructions
+
+![raspberry](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/29_07_2019/more_separation.jpg)
+
+
+### 2018 - 2019
+#### 21/07/2019 - 25/07/2019
 New video with outdoor reconstructions
 [![Watch the video](https://img.youtube.com/vi/3POzY_SLLOs/hqdefault.jpg)](https://youtu.be/3POzY_SLLOs)
 
@@ -95,7 +133,6 @@ I also tested how the algorithm behaved with HSV but did not work correctly, I'm
 
 Unfortunately couldn't test in outdor images as the problems with the computer prevented me to do so.
 
-### 2018 - 2019
 #### 17/07/2019 - 20/07/2019
 I tried to take some fotos outside but my cameras seem to handle badly when there is a lot of light. I'll try again.
 

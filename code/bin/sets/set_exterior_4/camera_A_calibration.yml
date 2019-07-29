@@ -25,7 +25,7 @@ cameraMatrix: !!python/object/apply:numpy.core.multiarray._reconstruct
     - 0
   - false
   - !!binary |
-    nBciSpIDkEAAAAAAAAAAAAAAACzIWG5AAAAAAAAAAACcFyJKkgOQQAAAAFgpn3VAAAAAAAAAAAAA
+    7HobxY+gi0AAAAAAAAAAAAAAgO05HZBAAAAAAAAAAADsehvFj6CLQAAAAJBGTnRAAAAAAAAAAAAA
     AAAAAAAAAAAAAAAAAPA/
 eulerAngles: !!python/object/apply:numpy.core.multiarray._reconstruct
   args:
@@ -40,7 +40,8 @@ eulerAngles: !!python/object/apply:numpy.core.multiarray._reconstruct
     - 1
   - *id002
   - false
-  - "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+  - !!binary |
+    AAAAAAAAAAAAAAAAAAAAAPjBYxrcpaw+
 rotMatrixX: !!python/object/apply:numpy.core.multiarray._reconstruct
   args:
   - *id001
@@ -87,7 +88,7 @@ rotMatrixZ: !!python/object/apply:numpy.core.multiarray._reconstruct
   - *id002
   - false
   - !!binary |
-    AAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAADwPwAAAAAAAAAAAAAAAAAAAAAA
+    ////////7z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID////////vPwAAAAAAAAAAAAAAAAAAAAAA
     AAAAAAAAAAAAAAAAAPA/
 rotationMatrix: !!python/object/apply:numpy.core.multiarray._reconstruct
   args:
@@ -103,7 +104,7 @@ rotationMatrix: !!python/object/apply:numpy.core.multiarray._reconstruct
   - *id002
   - false
   - !!binary |
-    AAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAAAAAA
+    ////////7z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////vPwAAAAAAAAAAAAAAAAAAAAAA
     AAAAAAAAAAAAAAAAAPA/
 translationVector: !!python/object/apply:numpy.core.multiarray._reconstruct
   args:
