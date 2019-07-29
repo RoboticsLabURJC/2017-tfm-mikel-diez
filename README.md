@@ -116,6 +116,8 @@ With a new baseline of around 170mm we are ready for some new reconstructions
 
 ![raspberry](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/29_07_2019/more_separation.jpg)
 
+###### Problem with 3DViz
+For outdoors the points are very far from camera and I can see them, I'm still searching for a way to make the scale smaller.
 
 ### 2018 - 2019
 #### 21/07/2019 - 25/07/2019
