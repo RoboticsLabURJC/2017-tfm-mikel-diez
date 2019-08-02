@@ -83,7 +83,7 @@ Now everything should be ready.
 #### Current Week
 ##### Week Scope
 * [x] Check raspberry pi and h264 video streaming
-* [ ] Better file for distance image
+* [X] Better file for distance image
 * [ ] Use a d-max restriction
 * [ ] Fish-eye
 

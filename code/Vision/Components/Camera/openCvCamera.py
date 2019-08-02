@@ -8,6 +8,7 @@ class openCvCamera:
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         self.video_capture.set(cv2.CAP_PROP_FPS, 25)
+        self.video_capture.set(cv2.CAP_PROP_BRIGHTNESS, .25)
         self.lock = threading.Lock()
         self.image = None
 
