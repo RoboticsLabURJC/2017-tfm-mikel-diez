@@ -82,6 +82,32 @@ Now everything should be ready.
 ## Work Log
 #### Current Week
 ##### Week Scope
+* [x] Check raspberry pi and h264 video streaming
+* [ ] Better file for distance image
+* [ ] Use a d-max restriction
+* [ ] Fish-eye
+
+##### Week Log
+###### Test with raspberry
+I took some videos but they all have some kind of reed filter over them (I'll try to improve that)
+Video Streaming with VLC
+
+[![Watch the video](https://img.youtube.com/vi/WQZNz-QZlVc/hqdefault.jpg)](https://youtu.be/WQZNz-QZlVc)
+
+Video Streaming using an MJPEG software to web
+
+[![Watch the video](https://img.youtube.com/vi/eCC5sMZ9JYI/hqdefault.jpg)](https://youtu.be/eCC5sMZ9JYI)
+
+Video Streaming using a sofware and a h264 video
+
+[![Watch the video](https://img.youtube.com/vi/gO2A5LXeHHs/hqdefault.jpg)](https://youtu.be/gO2A5LXeHHs)
+
+Unfortunately I'm using a USB camera without native h264 support, hence no video in h264 can be extracted from there and I cannot do further test unless I use the native camera module for raspberry. 
+
+
+### 2018 - 2019
+#### 26/07/2019 - 02/08/2019
+##### Week Scope
 * [x] Depth Image to file
 * [ ] Check rasbperry pi and h264 video streaming
 * [x] Use a bigger baseline
