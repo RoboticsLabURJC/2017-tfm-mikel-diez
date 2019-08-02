@@ -119,6 +119,16 @@ One of the things to do was to create a file where not only the distance points 
 142 122 0.0
 ```
 This is in milimeters so the floating coma could and mybe should be truncated.
+
+With this we can create this images for example. The first one is a image with circles on different intensities (darker the closer)
+
+![closer_dark](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/02_08_2019/closer_dark.png)
+
+This one is the points with distances but the viewer can't interpret it correctly.
+
+![cloud_points](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/02_08_2019/cloud_points.png)
+
+
 ### 2018 - 2019
 #### 26/07/2019 - 02/08/2019
 ##### Week Scope
