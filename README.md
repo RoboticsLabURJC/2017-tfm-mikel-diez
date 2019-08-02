@@ -104,7 +104,21 @@ Video Streaming using a sofware and a h264 video
 
 Unfortunately I'm using a USB camera without native h264 support, hence no video in h264 can be extracted from there and I cannot do further test unless I use the native camera module for raspberry. 
 
-
+###### Distance map with more precision
+One of the things to do was to create a file where not only the distance points were ther but also the unknown ones.
+```
+(x, y, depth)
+134 122 0.0
+135 122 0.0
+136 122 0.0
+137 122 0.0
+138 122 31.333560841383093
+139 122 0.0
+140 122 0.0
+141 122 0.0
+142 122 0.0
+```
+This is in milimeters so the floating coma could and mybe should be truncated.
 ### 2018 - 2019
 #### 26/07/2019 - 02/08/2019
 ##### Week Scope

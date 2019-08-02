@@ -47,7 +47,7 @@ class PresentationFactory:
 
     def build_depth_file(self, points_3d, points_2d, image, calibration_data):
         imager = Transform3DPointsToDepthFileService()
-        imager.execute(points_3d, points_2d, calibration_data)
+        imager.execute(points_3d, points_2d, calibration_data, image)
 
     @staticmethod
     def generate_cameras(stereo_calibration_data, segments):
