@@ -7,6 +7,11 @@ from src.vision.reconstruction.use_cases.reconstruction_from_images import Recon
 from src.vision.calibration.use_cases.stereo_calibration_from_chessboard import StereoCalibrationFromChessboard
 from src.vision.reconstruction.use_cases.reconstruction_cameras_from_calibration import RecontructCameras
 
+from src.vision.presentation.user_interface.partials.optionsTabs import OptionsTabs
+from src.vision.presentation.user_interface.partials.actionTabs import ActionTabs
+from src.vision.presentation.value_objects.configuration_value_object import ConfigurationValueObject
+
+
 import os
 import cv2
 
@@ -19,33 +24,17 @@ class Application(QtWidgets.QWidget):
     counter = 0
 
     def __init__(self, parent=None):
+        self.configuration = ConfigurationValueObject.build_configuration_from_file('Configuration/application.yml')
         self.cameras = None
 
         self.create_main_window(parent)
 
-        self.create_input_textbox()
-        self.create_left_image()
-        self.create_right_image()
-        self.create_take_photo_button()
-        self.create_calibration_images_button()
-        self.create_calibrate_cameras_button()
-        self.create_reconstruction_button()
-        self.create_reconstruction_from_video_button()
-        self.create_new_folder_button()
-        self.create_image_counter_text()
-        self.create_video_record_button()
-        self.create_combobox_selector()
-        self.create_matching_options_group()
-        self.create_options_tabs()
-        self.create_information_tabs()
-        self.create_build_cameras_button()
+        self.create_set_control_widget()
+        self.create_cameras_widget()
 
-        self.video_recorder_1 = None
-        self.video_recorder_2 = None
-        self.should_record_video = False
-
-        self.video_capture1 = cv2.VideoCapture(1)
-        self.video_capture2 = cv2.VideoCapture(2)
+        self.action_tabs = ActionTabs(self)
+        self.options_tabs = OptionsTabs(self)
+        #self.create_information_tabs()
 
     def create_image_counter_text(self):
         self.images_counter = QtWidgets.QLabel(self)
@@ -69,54 +58,6 @@ class Application(QtWidgets.QWidget):
         self.new_folder_button.setIcon(self.new_folder_button_icon)
         self.new_folder_button.setIconSize(QtCore.QSize(24, 24))
         self.new_folder_button.clicked.connect(self.create_new_set)
-
-    def create_reconstruction_button(self):
-        self.reconstruction_button = QtWidgets.QPushButton('Rec. Image', self)
-        self.reconstruction_button.move(925, 200)
-        self.reconstruction_button.resize(100, 40)
-        self.reconstruction_button.clicked.connect(self.reconstruct_from_images)
-        images = [str(number) for number in range(6)]
-        self.reconstruction_image_selector = QtWidgets.QComboBox(self)
-        self.reconstruction_image_selector.move(1025, 200)
-        self.reconstruction_image_selector.resize(50, 40)
-        self.reconstruction_image_selector.addItems(images)
-
-    def create_reconstruction_from_video_button(self):
-        self.reconstruction_button = QtWidgets.QPushButton('Rec. Video', self)
-        self.reconstruction_button.move(1090, 200)
-        self.reconstruction_button.resize(150, 40)
-        self.reconstruction_button.clicked.connect(self.reconstruct_from_video)
-
-    def create_build_cameras_button(self):
-        self.build_cameras_button = QtWidgets.QPushButton('Show Cameras', self)
-        self.build_cameras_button.move(1090, 250)
-        self.build_cameras_button.resize(150, 40)
-        self.build_cameras_button.clicked.connect(self.show_cameras)
-
-    def create_calibrate_cameras_button(self):
-        self.calibrate_button = QtWidgets.QPushButton('Calibrate Cameras', self)
-        self.calibrate_button.move(1090, 100)
-        self.calibrate_button.resize(150, 40)
-        self.calibrate_button.clicked.connect(self.calibrate_set)
-
-    def create_calibration_images_button(self):
-        self.take_calibration_images = QtWidgets.QPushButton('Get Calibration Set', self)
-        self.take_calibration_images.setCheckable(True)
-        self.take_calibration_images.move(925, 100)
-        self.take_calibration_images.resize(150, 40)
-
-    def create_take_photo_button(self):
-        self.take_photo_button = QtWidgets.QPushButton('Take Photo', self)
-        self.take_photo_button.move(925, 150)
-        self.take_photo_button.resize(150, 40)
-        self.take_photo_button.clicked.connect(self.take_photo)
-
-    def create_video_record_button(self):
-        self.record_video_button = QtWidgets.QPushButton('Record Video', self)
-        self.record_video_button.setCheckable(True)
-        self.record_video_button.move(1090, 150)
-        self.record_video_button.resize(150, 40)
-        self.record_video_button.clicked.connect(self.record_video)
 
     def create_combobox_selector(self):
         output = [dI for dI in os.listdir('bin/sets') if os.path.isdir(os.path.join('bin/sets', dI))]
@@ -157,62 +98,6 @@ class Application(QtWidgets.QWidget):
         self.im_left_txt.setText('Image A')
         self.im_left_txt.show()
 
-    def create_matching_options_group(self):
-        self.matching_options_group = QtWidgets.QGroupBox('Matching Options', self)
-        self.matching_options_group.move(50, 375)
-        self.vertical_layout = QtWidgets.QVBoxLayout()
-        self.vertical_layout.addWidget(QtWidgets.QRadioButton('Radio test'))
-        self.vertical_layout.addWidget(QtWidgets.QRadioButton('Radio test2'))
-        self.matching_options_group.setLayout(self.vertical_layout)
-
-    def create_options_tabs(self):
-        self.options_tabs = QtWidgets.QTabWidget(self)
-        self.options_tabs.resize(850, 250)
-        self.options_tabs.move(50, 375)
-        self.matching_options_widget = QtWidgets.QWidget()
-        self.image_preprocessing_options_widget = QtWidgets.QWidget()
-        self.options_tabs.addTab(self.matching_options_widget, 'Matching Options')
-        self.options_tabs.addTab(self.image_preprocessing_options_widget, 'Pre Options')
-
-        self.matching_options_widget.layout = QtWidgets.QHBoxLayout()
-
-        self.color_spaces_group = QtWidgets.QGroupBox('Color Space')
-        self.color_spaces_vertical_layour = QtWidgets.QVBoxLayout()
-        self.bgr_color_space_radio_button = QtWidgets.QRadioButton('BGR')
-        self.hsv_color_space_radio_button = QtWidgets.QRadioButton('HSV')
-        self.grays_color_space_radio_button = QtWidgets.QRadioButton('Grays')
-        self.hsv_color_space_radio_button.setChecked(True)
-        self.color_spaces_vertical_layour.addWidget(self.bgr_color_space_radio_button)
-        self.color_spaces_vertical_layour.addWidget(self.hsv_color_space_radio_button)
-        self.color_spaces_vertical_layour.addWidget(self.grays_color_space_radio_button)
-        self.color_spaces_group.setLayout(self.color_spaces_vertical_layour)
-
-        self.image_size_group = QtWidgets.QGroupBox('Image Size')
-        self.image_size_vertical_layour = QtWidgets.QVBoxLayout()
-        self.image_size_1280_720_radio_button = QtWidgets.QRadioButton('1280x720')
-        self.image_size_960_540_radio_button = QtWidgets.QRadioButton('960x540')
-        self.image_size_640_480_radio_button = QtWidgets.QRadioButton('640x480')
-        self.image_size_960_540_radio_button.setChecked(True)
-        self.image_size_vertical_layour.addWidget(self.image_size_1280_720_radio_button)
-        self.image_size_vertical_layour.addWidget(self.image_size_960_540_radio_button)
-        self.image_size_vertical_layour.addWidget(self.image_size_640_480_radio_button)
-        self.image_size_group.setLayout(self.image_size_vertical_layour)
-
-        self.epipolar_range_group = QtWidgets.QGroupBox('Ranges')
-        self.epipolar_range_vertical_layout = QtWidgets.QVBoxLayout()
-        self.epiline_range_combobox_selector = QtWidgets.QComboBox()
-        self.epiline_range_combobox_selector.addItems(['Epiline Range', '1', '2', '3', '4', '5'])
-        self.patch_size_combobox_selector = QtWidgets.QComboBox()
-        self.patch_size_combobox_selector.addItems(['Patch Size', '5', '10', '20', '30', '40'])
-        self.epipolar_range_vertical_layout.addWidget(self.epiline_range_combobox_selector)
-        self.epipolar_range_vertical_layout.addWidget(self.patch_size_combobox_selector)
-        self.epipolar_range_group.setLayout(self.epipolar_range_vertical_layout)
-
-        self.matching_options_widget.layout.addWidget(self.color_spaces_group)
-        self.matching_options_widget.layout.addWidget(self.image_size_group)
-        self.matching_options_widget.layout.addWidget(self.epipolar_range_group)
-        self.matching_options_widget.setLayout(self.matching_options_widget.layout)
-
     def create_information_tabs(self):
         self.information_tabs = QtWidgets.QTabWidget(self)
         self.information_tabs.resize(300, 250)
@@ -243,12 +128,29 @@ class Application(QtWidgets.QWidget):
         self.move(150, 50)
         self.updGUI.connect(self.update)
 
+    def create_set_control_widget(self):
+        self.create_input_textbox()
+        self.create_new_folder_button()
+        self.create_image_counter_text()
+        self.create_combobox_selector()
+
+    def create_cameras_widget(self):
+        self.create_left_image()
+        self.create_right_image()
+
+        self.video_recorder_1 = None
+        self.video_recorder_2 = None
+        self.should_record_video = False
+
+        self.video_capture1 = cv2.VideoCapture(1)
+        self.video_capture2 = cv2.VideoCapture(2)
+
     def set_cameras(self, cameras):
         self.cameras = cameras
 
     def update(self):
         if self.cameras is not None:
-            if self.take_calibration_images.isChecked():
+            if self.should_take_calibration_images():
                 self.frames += 1
                 if self.frames == 100:
                     self.take_calibration_image()
@@ -384,3 +286,6 @@ class Application(QtWidgets.QWidget):
     def show_cameras(self):
         reconstructor = RecontructCameras('bin/sets/' + self.combobox_selector.currentText() + '/calibrated_camera.yml')
         reconstructor.run()
+
+    def should_take_calibration_images(self):
+        return self.action_tabs.is_take_calibration_images_checked()

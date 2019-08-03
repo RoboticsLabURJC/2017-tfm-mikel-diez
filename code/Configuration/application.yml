@@ -1,3 +1,15 @@
 parameters:
-  output: 'file'
-  matcher: 'freak'
+  general:
+    sets_folder: 'bin/sets/'
+
+  calibration:
+    type: 'pinhole'
+
+  matching:
+    type: 'freak'
+
+  reconstruction:
+    type: 'pinhole'
+
+  presentation:
+    type: 'd3'
