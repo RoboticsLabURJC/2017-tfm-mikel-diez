@@ -9,9 +9,13 @@ from src.vision.reconstruction.use_cases.reconstruction_from_images import Recon
 from src.vision.calibration.use_cases.stereo_calibration_from_chessboard import StereoCalibrationFromChessboard
 from src.vision.reconstruction.use_cases.reconstruction_cameras_from_calibration import RecontructCameras
 
+from src.vision.presentation.user_interface.partials.calibration_information import CalibrationInformation
 
-class ActionTabs(QtWidgets.QTabWidget):
+
+class Actions(QtWidgets.QTabWidget):
     take_calibration_images = False
+    calibration_images_taken = 0
+    frames_between_calibration_images = 0
 
     def __init__(self, parent=None):
         super(QtWidgets.QTabWidget, self).__init__(parent)
@@ -24,28 +28,25 @@ class ActionTabs(QtWidgets.QTabWidget):
         self.addTab(self.create_reconstruction_widget(), 'Reconstruction')
 
     def create_calibration_widget(self):
-        calibration_actions = QtWidgets.QGroupBox('Actions')
-        calibration_actions_layout = QtWidgets.QVBoxLayout()
-        calibration_actions_layout.setAlignment(QtCore.Qt.AlignTop)
-        calibration_actions_layout.addWidget(self.create_calibrate_cameras_button())
-        calibration_actions_layout.addWidget(self.create_calibration_images_button())
-        calibration_actions_layout.addWidget(self.create_build_cameras_button())
+        self.calibration_actions = QtWidgets.QGroupBox('Actions')
+        self.calibration_actions_layout = QtWidgets.QVBoxLayout()
+        self.calibration_actions_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.calibration_actions_layout.addWidget(self.create_calibration_images_button())
+        self.calibration_actions_layout.addWidget(self.create_calibrate_cameras_button())
+        self.calibration_actions_layout.addWidget(self.create_build_cameras_button())
 
-        calibration_information = QtWidgets.QGroupBox('Information')
-        calibration_information_layout = QtWidgets.QVBoxLayout()
-        calibration_information_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.calibration_actions.setLayout(self.calibration_actions_layout)
 
-        calibration_actions.setLayout(calibration_actions_layout)
-        calibration_information.setLayout(calibration_information_layout)
+        self.calibration_information = CalibrationInformation()
 
-        calibration_widget = QtWidgets.QWidget()
-        calibration_widget_layout = QtWidgets.QVBoxLayout()
-        calibration_widget_layout.addWidget(calibration_actions)
-        calibration_widget_layout.addWidget(calibration_information)
+        self.calibration_widget = QtWidgets.QWidget()
+        self.calibration_widget_layout = QtWidgets.QVBoxLayout()
+        self.calibration_widget_layout.addWidget(self.calibration_actions)
+        self.calibration_widget_layout.addWidget(self.calibration_information)
 
-        calibration_widget.setLayout(calibration_widget_layout)
+        self.calibration_widget.setLayout(self.calibration_widget_layout)
 
-        return calibration_widget
+        return self.calibration_widget
 
     def create_reconstruction_widget(self):
         reconstruction_actions = QtWidgets.QGroupBox('Actions')
@@ -59,14 +60,14 @@ class ActionTabs(QtWidgets.QTabWidget):
         reconstruction_information = QtWidgets.QGroupBox('Information')
         reconstruction_information_layout = QtWidgets.QVBoxLayout()
 
-        self.matching_information_points_to_match_label = QtWidgets.QLabel('Points to match: %s' % 0)
-        self.matching_information_points_matched_label = QtWidgets.QLabel('Points matched: %s' % 0)
+        self.set_path_label = QtWidgets.QLabel('Points to match: %s' % 0)
+        self.calibration_images_taken_label = QtWidgets.QLabel('Points matched: %s' % 0)
         self.matching_information_seconds_per_point_label = QtWidgets.QLabel('Seconds per Point: %s' % 0)
         self.matching_information_total_matching_seconds_label = QtWidgets.QLabel('Matching time (s): %s' % 0)
 
 
-        reconstruction_information_layout.addWidget(self.matching_information_points_to_match_label)
-        reconstruction_information_layout.addWidget(self.matching_information_points_matched_label)
+        reconstruction_information_layout.addWidget(self.set_path_label)
+        reconstruction_information_layout.addWidget(self.calibration_images_taken_label)
         reconstruction_information_layout.addWidget(self.matching_information_seconds_per_point_label)
         reconstruction_information_layout.addWidget(self.matching_information_total_matching_seconds_label)
 
@@ -117,9 +118,10 @@ class ActionTabs(QtWidgets.QTabWidget):
         reconstructor.run()
 
     def toggle_take_calibration_images(self):
+        self.calibration_images_taken = 0
         self.take_calibration_images = not self.take_calibration_images
 
-    def is_take_calibration_images_checked(self):
+    def should_take_calibration_images(self):
         return self.take_calibration_images
 
     def create_reconstruction_button(self):
@@ -163,6 +165,31 @@ class ActionTabs(QtWidgets.QTabWidget):
         record_video_button.clicked.connect(self.record_video)
 
         return record_video_button
+
+    def take_calibration_image(self):
+        self.frames_between_calibration_images += 1
+        if self.frames_between_calibration_images == 100:
+            if not os.path.exists('bin/sets/' + self.parent.combobox_selector.currentText() + '/calibration_images'):
+                os.makedirs('bin/sets/' + self.parent.combobox_selector.currentText() + '/calibration_images')
+
+
+            print('Take Dual Image ' + str(self.calibration_images_taken))
+
+            print('::Write Left Image::')
+            im_left = self.parent.cameras[0].get_image_hd()
+            cv2.imwrite('bin/sets/' + self.parent.combobox_selector.currentText() + '/calibration_images/left_image_' + str(self.calibration_images_taken) + '.png',
+                        im_left)
+
+            print('::Write Right Image::')
+            im_right = self.parent.cameras[1].get_image_hd()
+            cv2.imwrite('bin/sets/' + self.parent.combobox_selector.currentText() + '/calibration_images/right_image_' + str(self.calibration_images_taken) + '.png',
+                        im_right)
+            self.frames_between_calibration_images = 0
+            self.update_calibration_images_amount()
+
+    def update_calibration_images_amount(self):
+        self.calibration_images_taken += 1
+        self.calibration_information.set_calibration_images_taken(self.calibration_images_taken)
 
     def record_video(self):
         if not os.path.exists('bin/Videos/' + self.textbox.text() + '_video'):

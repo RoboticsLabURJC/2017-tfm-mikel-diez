@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 
 
-class OptionsTabs(QtWidgets.QTabWidget):
+class Options(QtWidgets.QTabWidget):
     def __init__(self, parent=None):
         super(QtWidgets.QTabWidget, self).__init__(parent)
         self.parent = parent
