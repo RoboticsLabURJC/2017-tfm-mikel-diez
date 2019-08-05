@@ -191,6 +191,9 @@ class StereoCalibrationFromChessboard:
             cv2.drawChessboardCorners(img_left, self.pattern_size, left_corners, left_found)
             cv2.drawChessboardCorners(img_right, self.pattern_size, right_corners, right_found)
 
+            cv2.imshow('image_a', img_left)
+            cv2.waitKey(0)
+
             x = int(math.floor(index / self.matrix_width))
             y = int(index - (self.matrix_width * x))
 

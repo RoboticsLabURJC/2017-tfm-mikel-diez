@@ -2,33 +2,42 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 
 
-class CalibrationInformation(QtWidgets.QGroupBox):
-    sets_folder = None
-    calibration_images_taken = None
-
+class ReconstructionInformation(QtWidgets.QGroupBox):
     def __init__(self, parent=None):
         super(QtWidgets.QGroupBox, self).__init__(parent)
         self.setTitle('Information')
         self.parent = parent
-        self.calibration_information_layout = QtWidgets.QVBoxLayout()
-        self.calibration_information_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.reconstruction_information_layout = QtWidgets.QVBoxLayout()
+        self.reconstruction_information_layout.setAlignment(QtCore.Qt.AlignTop)
 
-        self.set_path_label = QtWidgets.QLabel('Path: %s' % self.sets_folder)
-        self.calibration_images_taken_label = QtWidgets.QLabel('Images Taken: %s' % self.calibration_images_taken)
+        self.points_to_match_label = QtWidgets.QLabel('Points to match: %s' % 0)
+        self.points_matched_label = QtWidgets.QLabel('Points matched: %s' % 0)
+        self.matching_information_seconds_per_point_label = QtWidgets.QLabel('Seconds per Point: %s' % 0)
+        self.matching_information_total_matching_seconds_label = QtWidgets.QLabel('Matching time (s): %s' % 0)
 
-        self.calibration_information_layout.addWidget(self.set_path_label)
-        self.calibration_information_layout.addWidget(self.calibration_images_taken_label)
+        self.reconstruction_information_layout.addWidget(self.points_to_match_label)
+        self.reconstruction_information_layout.addWidget(self.points_matched_label)
+        self.reconstruction_information_layout.addWidget(self.matching_information_seconds_per_point_label)
+        self.reconstruction_information_layout.addWidget(self.matching_information_total_matching_seconds_label)
 
-        self.setLayout(self.calibration_information_layout)
+        self.setLayout(self.reconstruction_information_layout)
 
-    def set_calibration_images_taken(self, value):
-        self.calibration_images_taken = value
-        self.calibration_images_taken_label.setText(
-            'Images Taken: %s' % self.calibration_images_taken
+    def set_points_to_match(self, value):
+        self.points_to_match_label.setText(
+            'Points to match: %s' % value
         )
 
-    def set_current_folder(self, path):
-        self.sets_folder = path
-        self.set_path_label.setText(
-            'Path: %s' % self.sets_folder
+    def set_points_matched(self, value):
+        self.points_matched_label.setText(
+            'Points matched: %s' % value
+        )
+
+    def set_seconds_per_point(self, value):
+        self.matching_information_seconds_per_point_label.setText(
+            'Seconds per Point: %s' % value
+        )
+
+    def set_matching_time(self, value):
+        self.matching_information_total_matching_seconds_label.setText(
+            'Matching time (s): %s' % value
         )

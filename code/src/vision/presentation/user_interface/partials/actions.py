@@ -10,6 +10,7 @@ from src.vision.calibration.use_cases.stereo_calibration_from_chessboard import 
 from src.vision.reconstruction.use_cases.reconstruction_cameras_from_calibration import RecontructCameras
 
 from src.vision.presentation.user_interface.partials.calibration_information import CalibrationInformation
+from src.vision.presentation.user_interface.partials.reconstruction_information import ReconstructionInformation
 
 
 class Actions(QtWidgets.QTabWidget):
@@ -57,29 +58,13 @@ class Actions(QtWidgets.QTabWidget):
         reconstruction_actions_layout.addWidget(self.create_reconstruction_button())
         reconstruction_actions_layout.addWidget(self.create_reconstruction_from_video_button())
 
-        reconstruction_information = QtWidgets.QGroupBox('Information')
-        reconstruction_information_layout = QtWidgets.QVBoxLayout()
-
-        self.set_path_label = QtWidgets.QLabel('Points to match: %s' % 0)
-        self.calibration_images_taken_label = QtWidgets.QLabel('Points matched: %s' % 0)
-        self.matching_information_seconds_per_point_label = QtWidgets.QLabel('Seconds per Point: %s' % 0)
-        self.matching_information_total_matching_seconds_label = QtWidgets.QLabel('Matching time (s): %s' % 0)
-
-
-        reconstruction_information_layout.addWidget(self.set_path_label)
-        reconstruction_information_layout.addWidget(self.calibration_images_taken_label)
-        reconstruction_information_layout.addWidget(self.matching_information_seconds_per_point_label)
-        reconstruction_information_layout.addWidget(self.matching_information_total_matching_seconds_label)
-
+        self.reconstruction_information = ReconstructionInformation()
 
         reconstruction_actions.setLayout(reconstruction_actions_layout)
-        reconstruction_information.setLayout(reconstruction_information_layout)
-
-
         reconstruction_actions_widget = QtWidgets.QWidget()
         reconstruction_widget_layout = QtWidgets.QVBoxLayout()
         reconstruction_widget_layout.addWidget(reconstruction_actions)
-        reconstruction_widget_layout.addWidget(reconstruction_information)
+        reconstruction_widget_layout.addWidget(self.reconstruction_information)
 
         reconstruction_actions_widget.setLayout(reconstruction_widget_layout)
 
