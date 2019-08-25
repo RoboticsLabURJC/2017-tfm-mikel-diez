@@ -3,7 +3,7 @@ import numpy as np
 import jderobot
 
 
-class Reconstructor3D:
+class Reconstruct3DPointsUsingOpenCVService:
     REAL_WORLD_TRANSFORMATION = np.array([
             np.array([1., .0, .0]),
             np.array([.0, .0, -1.]),
