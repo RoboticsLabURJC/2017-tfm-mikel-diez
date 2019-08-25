@@ -3,9 +3,12 @@ from datetime import datetime
 
 import cv2
 import yaml
-from src.vision.reconstruction.services.Reconstructor3D import Reconstructor3D
+from src.vision.reconstruction.services.Reconstruct3DPointsUsingOpenCVService import Reconstruct3DPointsUsingOpenCVService
 from src.vision.matching.factories.MatcherFactory import FeatureDetectorFactory
 from src.vision.presentation.factories.PresentationFactory import PresentationFactory
+
+from src.vision.matching.services.RemoveUnwantedResultsFromMatchedPointsService import RemoveUnwantedResultsFromMatchedPointsService
+
 
 class ReconstructionFromImages:
     def __init__(self, image01, image02, stereo_calibration, camera_a_calibration, camera_b_Calibration, gui):
@@ -34,24 +37,33 @@ class ReconstructionFromImages:
                     80
                 )
 
+                get_filtered_points_service = RemoveUnwantedResultsFromMatchedPointsService(stereo_calibration_data)
+
 
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
-                left_points, right_points = get_matched_interest_points_from_images_service.execute(image1, image2)
+                points_a, points_b = get_matched_interest_points_from_images_service.execute(image1, image2)
+                print(points_a.shape)
+                print(points_b.shape)
+
+                points_a, points_b = get_filtered_points_service.execute(points_a, points_b, image1, image2)
+
+                print(points_a.shape)
+                print(points_b.shape)
                 logging.info('[{}] End Match Points'.format(datetime.now().time()))
 
                 self.gui.reconstruction_information.set_points_to_match(get_matched_interest_points_from_images_service.number_of_points_to_match)
-                self.gui.reconstruction_information.set_points_matched(len(left_points))
+                self.gui.reconstruction_information.set_points_matched(len(points_a))
                 self.gui.reconstruction_information.set_seconds_per_point(((datetime.now() - initial_time) / get_matched_interest_points_from_images_service.number_of_points_to_match).total_seconds())
                 self.gui.reconstruction_information.set_matching_time((datetime.now() - initial_time).total_seconds())
 
-                reconstructor = Reconstructor3D(stereo_calibration_data, image1, image2)
-                points = reconstructor.execute(left_points, right_points)
+                reconstructor = Reconstruct3DPointsUsingOpenCVService(stereo_calibration_data, image1, image2)
+                points = reconstructor.execute(points_a, points_b)
 
                 logging.info('[{}] Serve Points'.format(datetime.now().time()))
                 logging.info('Total time: {}'.format(datetime.now() - initial_time))
 
                 presentation = PresentationFactory()
-                presentation.build_presentation(points, left_points, image1, stereo_calibration_data, 'image')
+                presentation.build_presentation(points, points_a, image1, stereo_calibration_data, 'd3')
 
             except yaml.YAMLError as exc:
                 print(exc)
