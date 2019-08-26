@@ -45,7 +45,7 @@ class ReconstructionFromImages:
                 print(points_a.shape)
                 print(points_b.shape)
 
-                points_a, points_b = get_filtered_points_service.execute(points_a, points_b, image1, image2)
+                #points_a, points_b = get_filtered_points_service.execute(points_a, points_b, image1, image2)
 
                 print(points_a.shape)
                 print(points_b.shape)
@@ -63,7 +63,7 @@ class ReconstructionFromImages:
                 logging.info('Total time: {}'.format(datetime.now() - initial_time))
 
                 presentation = PresentationFactory()
-                presentation.build_presentation(points, points_a, image1, stereo_calibration_data, 'd3')
+                presentation.build_presentation(points, points_a, image1, stereo_calibration_data, 'image')
 
             except yaml.YAMLError as exc:
                 print(exc)
