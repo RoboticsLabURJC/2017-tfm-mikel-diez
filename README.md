@@ -81,6 +81,29 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+##### Week Log
+###### Filter points that are not in epipolar line
+
+In order to create a more real reconstruction I check back that the opoint in image a is also in the epipolar of the point in b (and viceversa)
+
+Correct match
+
+![correct_match](https://raw.githubusercontent.com/RoboticsLabURJC/2017-tfm-mikel-diez/master/docs/images/26_08_2019/correct_match_in_epiline.png)
+
+Wrong match
+
+![wrong_match](https://raw.githubusercontent.com/RoboticsLabURJC/2017-tfm-mikel-diez/master/docs/images/26_08_2019/wrong_match_in_epiline.png)
+
+###### Create logarithmic function to show image distance
+
+It goes from 255 to 0 where 255 is the closest and 0 the oposite.
+
+![wrong_match](https://raw.githubusercontent.com/RoboticsLabURJC/2017-tfm-mikel-diez/master/docs/images/26_08_2019/logarthmic_image.png)
+
+
+
+
+#### 03/08/2019 - 09/08/2019
 ##### Week Scope
 * [x] Check raspberry pi and h264 video streaming
 * [X] Better file for distance image
@@ -129,7 +152,6 @@ This one is the points with distances but the viewer can't interpret it correctl
 ![cloud_points](https://roboticsurjc-students.github.io/2017-tfm-mikel-diez/images/02_08_2019/cloud_points.png)
 
 
-### 2018 - 2019
 #### 26/07/2019 - 02/08/2019
 ##### Week Scope
 * [x] Depth Image to file
