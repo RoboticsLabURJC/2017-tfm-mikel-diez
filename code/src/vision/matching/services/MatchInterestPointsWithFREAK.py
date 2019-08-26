@@ -7,7 +7,7 @@ from src.vision.matching.value_objects.interest_points_value_object import Inter
 class MatchInterestPointsWithFREAK:
     def __init__(self, stereo_calibration, threshold):
         self.stereo_calibration = stereo_calibration
-        self.feature_detector = cv2.xfeatures2d.FREAK_create(patternScale=64.0)
+        self.feature_detector = cv2.xfeatures2d.FREAK_create(orientationNormalized=False, patternScale=64.0)
         self.threshold = threshold
 
     def execute(self, image_a, image_b):

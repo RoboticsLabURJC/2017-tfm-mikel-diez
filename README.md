@@ -98,8 +98,14 @@ Wrong match
 
 It goes from 255 to 0 where 255 is the closest and 0 the oposite.
 
-![wrong_match](https://raw.githubusercontent.com/RoboticsLabURJC/2017-tfm-mikel-diez/master/docs/images/26_08_2019/logarthmic_image.png)
+![wrong_match](https://raw.githubusercontent.com/RoboticsLabURJC/2017-tfm-mikel-diez/master/docs/images/26_08_2019/logarithmic_image.png)
 
+
+###### Fix wrong detections
+
+I saw that the algorithm is so orientation invariant that some matches are 180º rotated which should never happen, if I change this I get the following distance image. The main difference is the image is that the left line I had that seemed closer than it really was.
+
+![wrong_match](https://raw.githubusercontent.com/RoboticsLabURJC/2017-tfm-mikel-diez/master/docs/images/26_08_2019/logarithmic_image_freak_no_normalize_orientation.png)
 
 
 
