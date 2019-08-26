@@ -1,0 +1,15 @@
+version: '3'
+services:
+  jderobot:
+    working_dir: /home/TFM
+    image: mikeldb/tfm:latest
+    command: tail -F anything
+    volumes:
+        - "./code/:/home/TFM/:delegated"
+        - "/tmp/.X11-unix:/tmp/.X11-unix"
+    ports:
+      - "5000:5000"
+      - "11000:11000"
+      - "9957:9957"
+    environment:
+      - DISPLAY=${IP}:0

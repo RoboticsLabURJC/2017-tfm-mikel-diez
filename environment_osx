@@ -1,0 +1,6 @@
+#!/bin/bash
+export IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}') source
+source ~/.zshrc
+
+xhost + $IP
+docker-compose -f docker-compose.osx.yml up --force-recreate
