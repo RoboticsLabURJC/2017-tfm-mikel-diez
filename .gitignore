@@ -2,3 +2,4 @@
 *.avi
 code/bin/
 code/Externals/
+.DS_Store
