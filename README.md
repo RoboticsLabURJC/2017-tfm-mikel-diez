@@ -98,7 +98,7 @@ Wrong match
 
 It goes from 255 to 0 where 255 is the closest and 0 the oposite.
 
-![wrong_match](https://raw.githubusercontent.com/RoboticsLabURJC/2017-tfm-mikel-diez/master/docs/images/26_08_2019/logarthmic_image.png)
+![wrong_match](https://raw.githubusercontent.com/RoboticsLabURJC/2017-tfm-mikel-diez/master/docs/images/26_08_2019/logarithmic_image.png)
 
 
 
