@@ -25,7 +25,6 @@ class GetCameraRepresentationWithRotationAndTranslationService:
         self.rotate_points(rotation_matrix)
         self.translate_points(translation_vector.reshape(3) / scale)
         self.transform_points_to_real_world()
-
         self.generate_camera_segments()
 
         return self.segments
@@ -37,11 +36,14 @@ class GetCameraRepresentationWithRotationAndTranslationService:
         self.bottom_right_corner = np.dot(rotation_matrix, self.bottom_right_corner.T)
 
     def translate_points(self, translation_vector):
-        self.camera_center -= translation_vector
-        self.top_left_corner -= translation_vector
-        self.top_right_corner -= translation_vector
-        self.bottom_left_corner -= translation_vector
-        self.bottom_right_corner -= translation_vector
+        print(self.camera_center)
+        self.camera_center = self.camera_center - translation_vector
+        print(translation_vector)
+        print(self.camera_center)
+        self.top_left_corner = self.top_left_corner - translation_vector
+        self.top_right_corner = self.top_right_corner - translation_vector
+        self.bottom_left_corner = self.bottom_left_corner - translation_vector
+        self.bottom_right_corner = self.bottom_right_corner - translation_vector
 
     def generate_camera_segments(self):
         self.segments.append(jderobot.RGBSegment(
