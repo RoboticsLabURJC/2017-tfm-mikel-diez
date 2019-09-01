@@ -1,5 +1,5 @@
 .idea
 *.avi
 code/bin/
-code/Externals/
+code/Externals
 .DS_Store
