@@ -141,6 +141,9 @@ K_b (matrix of camera b)= [[1.43850152e+03 0.00000000e+00 6.23111868e+02]
  
 ```
 
+This is the script I'm using:
+[https://github.com/RoboticsLabURJC/2017-tfm-mikel-diez/blob/ae79751925625b3394b641975758f79614e9f3a3/code/apps/TestCommands/TestEpipolar.py](https://github.com/RoboticsLabURJC/2017-tfm-mikel-diez/blob/ae79751925625b3394b641975758f79614e9f3a3/code/apps/TestCommands/TestEpipolar.py)
+
 ###### Cleaning the code
 As part of the need of the project I'm also creating a reduced version of the software in order to be able to put it in the raspberry pi. There are certain things that won't be needed there (jderobot, 3dviz....) so everything should be useful in that version.
 
