@@ -95,7 +95,7 @@ class Actions(QtWidgets.QTabWidget):
         return build_cameras_button
 
     def calibrate_set(self):
-        stereo_calibrator = StereoCalibrationFromChessboard()
+        stereo_calibrator = CalibrateStereoCamerasFromChessboard()
         stereo_calibrator.execute(self.parent.combobox_selector.currentText())
 
     def show_cameras(self):

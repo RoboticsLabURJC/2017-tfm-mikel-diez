@@ -14,11 +14,8 @@ REAL_WORLD_TRANSFORMATION = np.array([
 
 
 def backproject2(point2d, K, R, T):
-    print(R)
-    print(T)
     RT = np.hstack((R, T))
     RT = np.vstack((RT, [0, 0, 0, 1]))
-    print(RT)
     iK = np.linalg.inv(K)
     Pi = np.array([point2d[0], point2d[1], 1.0], dtype=np.double).reshape(3, 1)
     a = np.dot(iK, Pi)
@@ -54,8 +51,10 @@ if __name__ == '__main__':
         try:
             stereoCalibrationData = yaml.load(stereoCalibration, Loader=yaml.UnsafeLoader)
 
-            print(stereoCalibrationData['cameraMatrix1'])
-            print(stereoCalibrationData['cameraMatrix2'])
+            print('k1', stereoCalibrationData['cameraMatrix1'])
+            print('k2', stereoCalibrationData['cameraMatrix2'])
+            print('R', stereoCalibrationData['R'])
+            print('T', stereoCalibrationData['T'])
 
             point_a = [872, 72]
             point_b = [833, 206]
@@ -114,7 +113,7 @@ if __name__ == '__main__':
             )
 
             left_3d_point = backproject2(
-                point_b,
+                point_a,
                 stereoCalibrationData['cameraMatrix1'],
                 np.identity(3),
                 np.array([[.0], [.0], [.0]])
@@ -127,7 +126,7 @@ if __name__ == '__main__':
             left_3d_point = transform_points_to_real_world(left_3d_point)
             right_3d_point = transform_points_to_real_world(right_3d_point)
 
-            left_3d_point = left_3d_point * -1000
+            left_3d_point = left_3d_point * -10000
 
             center_a = np.array([.0, .0, .0])
 
@@ -141,7 +140,7 @@ if __name__ == '__main__':
             #center_b = rotate_points(center_b, stereoCalibrationData['R'])
             center_b = transform_points_to_real_world(center_b)
 
-            print(center_b)
+            print('center', center_b)
 
             right_3d_point[0] = center_b[0] + (right_3d_point[0] - center_b[0]) * -10000
             right_3d_point[1] = center_b[1] + (right_3d_point[1] - center_b[1]) * -10000

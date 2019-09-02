@@ -148,6 +148,10 @@ This is the script I'm using:
 As part of the need of the project I'm also creating a reduced version of the software in order to be able to put it in the raspberry pi. There are certain things that won't be needed there (jderobot, 3dviz....) so everything should be useful in that version.
 
 
+###### Finally epiline 
+
+[![Watch the video](https://img.youtube.com/vi/WMbEQ0uUFVQ/hqdefault.jpg)](https://youtu.be/WMbEQ0uUFVQ)
+
 #### 03/08/2019 - 09/08/2019
 ##### Week Log
 ###### Filter points that are not in epipolar line
