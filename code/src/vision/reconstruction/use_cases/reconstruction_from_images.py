@@ -7,7 +7,7 @@ from src.vision.reconstruction.services.Reconstruct3DPointsUsingOpenCVService im
 from src.vision.matching.factories.MatcherFactory import FeatureDetectorFactory
 from src.vision.presentation.factories.PresentationFactory import PresentationFactory
 
-from src.vision.matching.services.RemoveUnwantedResultsFromMatchedPointsService import RemoveUnwantedResultsFromMatchedPointsService
+from src.vision.matching.services.FilterUnwantedResultsService import FilterUnwantedResultsService
 
 
 class ReconstructionFromImages:
@@ -37,7 +37,7 @@ class ReconstructionFromImages:
                     80
                 )
 
-                get_filtered_points_service = RemoveUnwantedResultsFromMatchedPointsService(stereo_calibration_data)
+                get_filtered_points_service = FilterUnwantedResultsService(stereo_calibration_data)
 
 
                 logging.info('[{}] Start Match Points'.format(datetime.now().time()))
@@ -45,7 +45,7 @@ class ReconstructionFromImages:
                 print(points_a.shape)
                 print(points_b.shape)
 
-                #points_a, points_b = get_filtered_points_service.execute(points_a, points_b, image1, image2)
+                points_a, points_b = get_filtered_points_service.execute(points_a, points_b)
 
                 print(points_a.shape)
                 print(points_b.shape)

@@ -6,6 +6,10 @@ from src.vision.presentation.servers.visualization_server import VisualServer
 from src.vision.presentation.services.GetCameraRepresentationWithRotationAndTranslationService import \
     GetCameraRepresentationWithRotationAndTranslationService
 
+from src.vision.matching.services.CalculateDistanceBetweenTwoPixelProjectionsService import CalculateDistanceBetweenTwoPixelProjectionsService
+
+import math
+
 REAL_WORLD_TRANSFORMATION = np.array([
         np.array([1., .0, .0]),
         np.array([.0, .0, -1.]),
@@ -34,6 +38,35 @@ def backproject2(point2d, K, R, T):
     outPoint = np.array([b[0] / b[3], b[1] / b[3], b[2] / b[3], 1])
     return outPoint
 
+def shortest_distance_between_lines(p1_a, p2_a, p1_b, p2_b):
+    SMALL_NUM = 0.00000001
+
+    u = p1_a - p2_a
+    v = p1_b - p2_b
+    w = p1_a - p1_b
+
+    a = (u[0] * u[0] + u[1] * u[1] + u[2] * u[2])
+    b = (u[0] * v[0] + u[1] * v[1] + u[2] * v[2])
+    c = (v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+    d = (u[0] * w[0] + u[1] * w[1] + u[2] * w[2])
+    e = (v[0] * w[0] + v[1] * w[1] + v[2] * w[2])
+    D = (a * c) - (b * b)
+
+    sc = 0.0
+    tc = 0.0
+
+    if D < SMALL_NUM:
+        sc = 0.0
+        tc = d/b if b>c else e/c
+    else:
+        sc = (b*e - c*d) / D
+        tc = (a*e - b*d) / D
+
+    dP = w + (sc * u) - (tc * v)
+
+    return math.sqrt((dP[0] * dP[0] + dP[1] * dP[1] + dP[2] * dP[2]))
+
+
 def rotate_points(point, rotation_matrix):
     return np.dot(rotation_matrix, point.T)
 
@@ -41,8 +74,10 @@ def rotate_points(point, rotation_matrix):
 def translate_points(point, translation_vector):
     return point + translation_vector
 
+
 def transform_points_to_real_world(point):
-       return REAL_WORLD_TRANSFORMATION.dot(point)
+    return REAL_WORLD_TRANSFORMATION.dot(point)
+
 
 if __name__ == '__main__':
     images_set = 'set_canonical'
@@ -51,13 +86,15 @@ if __name__ == '__main__':
         try:
             stereoCalibrationData = yaml.load(stereoCalibration, Loader=yaml.UnsafeLoader)
 
+            calculateDistanceBetweenTwoPixelProjectionsService = CalculateDistanceBetweenTwoPixelProjectionsService(stereoCalibrationData)
+
             print('k1', stereoCalibrationData['cameraMatrix1'])
             print('k2', stereoCalibrationData['cameraMatrix2'])
             print('R', stereoCalibrationData['R'])
             print('T', stereoCalibrationData['T'])
 
-            point_a = [872, 72]
-            point_b = [833, 206]
+            point_a = [325, 154]
+            point_b = [1000, 700]
 
             segments = []
             points = []
@@ -80,31 +117,6 @@ if __name__ == '__main__':
                 np.array([.0, .0, .0])
             )
 
-            camera_matrix = stereoCalibrationData['cameraMatrix1']
-            left_3d_point = np.array(
-                [
-                    ((point_a[0] - camera_matrix[0, 2]) * -2) / camera_matrix[0, 0],
-                    ((point_a[1] - camera_matrix[1, 2]) * -2) / camera_matrix[1, 1],
-                    -2
-                ]
-            )
-
-            camera_matrix = stereoCalibrationData['cameraMatrix2']
-            right_3d_point = np.array(
-                [
-                    ((point_b[0] - camera_matrix[0, 2]) * -2) / camera_matrix[0, 0],
-                    ((point_b[1] - camera_matrix[1, 2]) * -2) / camera_matrix[1, 1],
-                    -2
-                ]
-            )
-
-            #left_3d_point = left_3d_point / (np.linalg.norm(left_3d_point) / 2)
-            #right_3d_point = right_3d_point / (np.linalg.norm(right_3d_point) / 2)
-
-            right_3d_point = translate_points(right_3d_point, stereoCalibrationData['T'].reshape(3) / 10)
-
-            right_3d_point = rotate_points(right_3d_point, stereoCalibrationData['R'])
-
             right_3d_point = backproject2(
                 point_b,
                 stereoCalibrationData['cameraMatrix2'],
@@ -118,7 +130,6 @@ if __name__ == '__main__':
                 np.identity(3),
                 np.array([[.0], [.0], [.0]])
             )
-
 
             right_3d_point = right_3d_point[:3] / 10
             left_3d_point = left_3d_point[:3] / 10
@@ -136,8 +147,8 @@ if __name__ == '__main__':
                              jderobot.Point(left_3d_point[0], left_3d_point[1], left_3d_point[2])),
             camera_color)]
 
-            center_b = translate_points(center_a, stereoCalibrationData['T'].reshape(3) / 10)
-            #center_b = rotate_points(center_b, stereoCalibrationData['R'])
+            center_b = rotate_points(center_a, stereoCalibrationData['R'])
+            center_b = translate_points(center_b, stereoCalibrationData['T'].reshape(3) / 10)
             center_b = transform_points_to_real_world(center_b)
 
             print('center', center_b)
@@ -152,6 +163,11 @@ if __name__ == '__main__':
                 jderobot.Segment(jderobot.Point(center_b[0], center_b[1], center_b[2]),
                                  jderobot.Point(right_3d_point[0], right_3d_point[1], right_3d_point[2])),
                 camera_color)]
+
+            distance = shortest_distance_between_lines(center_a, left_3d_point, center_b, right_3d_point)
+            print('distance: ', distance)
+
+            calculateDistanceBetweenTwoPixelProjectionsService.execute(point_a, point_b)
 
             vision_viewer = VisionViewer()
             vision_viewer.set_points(points)

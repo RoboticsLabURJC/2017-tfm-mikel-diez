@@ -4,7 +4,6 @@ import cv2
 import glob
 import yaml
 import math
-import copy
 
 
 class CalibrateStereoCamerasFromChessboard:
