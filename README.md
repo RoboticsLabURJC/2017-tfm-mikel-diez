@@ -81,6 +81,13 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+Video of recontruction without projection restriction
+[![Watch the video](https://img.youtube.com/vi/TN7vTP62T3o/hqdefault.jpg)](https://youtu.be/TN7vTP62T3o)
+
+[![Watch the video](https://img.youtube.com/vi/eufoGKwmsbc/hqdefault.jpg)](https://youtu.be/eufoGKwmsbc)
+
+
+#### 17/09/2019 - 20/08/2019
 ##### Week log
 
 ###### H.264 streaming with node.js

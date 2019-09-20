@@ -57,6 +57,17 @@ class CalibrateStereoCamerasFromChessboard:
 
     def saveStereoCalibrationData(self, E, F, R, T, cameraMatrix1, cameraMatrix2, distCoeffs1, distCoeffs2, image_set,
                                   rvecs1, rvecs2, stereocalib_retval, tvecs1, tvecs2):
+        rectify_scale = 1  # 0=full crop, 1=no crop
+        r1, r2, p1, p2, q, roi1, roi2 = cv2.stereoRectify(
+            cameraMatrix1,
+            distCoeffs1,
+            cameraMatrix2,
+            distCoeffs2,
+            self.IMAGES_SHAPE[::-1],
+            R,
+            T,
+            alpha=rectify_scale
+        )
         # Save the calibration matrix in a yaml file.
         if not os.path.exists('bin/sets/' + image_set):
             os.makedirs('bin/sets/' + image_set)
@@ -75,7 +86,11 @@ class CalibrateStereoCamerasFromChessboard:
                     'rvecs1': rvecs1,
                     'rvecs2': rvecs2,
                     'tvecs1': tvecs1,
-                    'tvecs2': tvecs2
+                    'tvecs2': tvecs2,
+                    'r1': r1,
+                    'r2': r2,
+                    'p1': p1,
+                    'p2': p2
                 },
                 outfile,
                 default_flow_style=False)
