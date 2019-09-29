@@ -81,8 +81,20 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+Puron viewer with h.264 from video file streamed with node websocket.
+
+
+[![Watch the video](https://img.youtube.com/vi/BBAAa8VtY7M/hqdefault.jpg)](https://youtu.be/BBAAa8VtY7M)
+
+
+#### 25/09/2019 - 30/09/2019
+##### Week Log
 Video of recontruction without projection restriction
+
+
 [![Watch the video](https://img.youtube.com/vi/TN7vTP62T3o/hqdefault.jpg)](https://youtu.be/TN7vTP62T3o)
+
+Video with epipolar restriction
 
 [![Watch the video](https://img.youtube.com/vi/eufoGKwmsbc/hqdefault.jpg)](https://youtu.be/eufoGKwmsbc)
 
