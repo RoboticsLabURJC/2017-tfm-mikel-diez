@@ -81,6 +81,19 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+So I maid a major breakthrough in the H264 field and now I have a streaming from the cameras in the UAV directly to the browser. There is much to be done but this first step is already here.
+
+[![Watch the video](https://img.youtube.com/vi/SQngQfU0gmM/hqdefault.jpg)](https://youtu.be/SQngQfU0gmM)
+
+I also started making it so you can change between cameras:
+
+
+
+As a matter of fact we saw that the data traffic was of between 60 and 80 KB which is around 8 times smaller than with motion jpeg for a bigger image with more FPS.
+
+
+#### 31/09/2019 - 13/10/2019
+##### Week Log
 Puron viewer with h.264 from video file streamed with node websocket.
 
 
