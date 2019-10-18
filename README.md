@@ -81,6 +81,25 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+Some advances in the h264 viewer, now we can change between cameras without breaking them and also I've created a multi-camera viewer. Some more work in the styling is to be done but is some work to be done in the next iteration.
+
+[![Watch the video](https://img.youtube.com/vi/CFEKPrj33-k/hqdefault.jpg)](https://youtu.be/CFEKPrj33-k)
+
+I've made some analysis in how used are the cpu and the memory. The results are as follows.
+
+[![Watch the video](https://img.youtube.com/vi/0HdYoypgAlM/hqdefault.jpg)](https://youtu.be/0HdYoypgAlM)
+
+
+[![Watch the video](https://img.youtube.com/vi/t-jVgPFfGaM/hqdefault.jpg)](https://youtu.be/t-jVgPFfGaM)
+
+|FPS | CPU        | Memory           | Network  |
+|----| ---------- |:----------------:| --------:|
+| 25 | 50% - 20%  |            8%    | 400KB/s  |
+| 12 | 20% - 10%  | 5%               | 200KB/s  |
+
+
+#### 07/09/2019 - 13/10/2019
+##### Week Log
 So I maid a major breakthrough in the H264 field and now I have a streaming from the cameras in the UAV directly to the browser. There is much to be done but this first step is already here.
 
 [![Watch the video](https://img.youtube.com/vi/SQngQfU0gmM/hqdefault.jpg)](https://youtu.be/SQngQfU0gmM)
@@ -92,7 +111,7 @@ I also started making it so you can change between cameras:
 As a matter of fact we saw that the data traffic was of between 60 and 80 KB which is around 8 times smaller than with motion jpeg for a bigger image with more FPS.
 
 
-#### 31/09/2019 - 13/10/2019
+#### 31/09/2019 - 07/10/2019
 ##### Week Log
 Puron viewer with h.264 from video file streamed with node websocket.
 
