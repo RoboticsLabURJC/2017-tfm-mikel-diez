@@ -6,7 +6,6 @@ import cv2
 
 from src.vision.reconstruction.use_cases.reconstruction_from_video import ReconstructionFromVideo
 from src.vision.reconstruction.use_cases.reconstruction_from_images import ReconstructionFromImages
-from src.vision.calibration.use_cases.stereo_calibration_from_chessboard import StereoCalibrationFromChessboard
 from src.vision.calibration.use_cases.CalibrateStereoCamerasFromChessboard import CalibrateStereoCamerasFromChessboard
 from src.vision.reconstruction.use_cases.reconstruction_cameras_from_calibration import RecontructCameras
 
@@ -213,20 +212,18 @@ class Actions(QtWidgets.QTabWidget):
         if not os.path.exists('bin/sets/' + self.parent.combobox_selector.currentText() + '/images'):
             os.makedirs('bin/sets/' + self.parent.combobox_selector.currentText() + '/images')
 
-        self.photos_taken += 1
-        print('Take Dual Image ' + str(self.photos_taken))
+        #self.photos_taken += 1
+        #print('Take Dual Image ' + str(self.photos_taken))
 
         print('::Write Left Image::')
         im_left = self.parent.cameras[0].get_image_hd()
         # im_rgb_left = cv2.cvtColor(cv2.resize(im_left,(1280,720)), cv2.COLOR_BGR2RGB)
-        cv2.imwrite('bin/sets/' + self.parent.combobox_selector.currentText() + '/images/left_image_' + str(
-            self.photos_taken) + '.png', im_left)
+        cv2.imwrite('bin/sets/' + self.parent.combobox_selector.currentText() + '/images/left_image_2.png', im_left)
 
         print('::Write Right Image::')
         im_right = self.parent.cameras[1].get_image_hd()
         # im_rgb_right = cv2.cvtColor(cv2.resize(im_right,(1280,720)), cv2.COLOR_BGR2RGB)
-        cv2.imwrite('bin/sets/' + self.parent.combobox_selector.currentText() + '/images/right_image_' + str(
-            self.photos_taken) + '.png', im_right)
+        cv2.imwrite('bin/sets/' + self.parent.combobox_selector.currentText() + '/images/right_image_2.png', im_right)
 
         self.images_counter.setNum(self.photos_taken)
 
