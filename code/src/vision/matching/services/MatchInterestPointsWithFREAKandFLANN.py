@@ -45,15 +45,6 @@ class MatchInterestPointsWithFREAKandFLANN:
 
                 # Brute Force Matching
                 if descriptors_1 is not None and descriptors_2 is not None:
-                    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-                    matches = bf.match(descriptors_1, descriptors_2)
-                    matches = sorted(matches, key=lambda x: x.distance)
 
-                    print(matches)
-                    print(matches[0])
-
-                    if matches[0].distance < self.threshold and matches[0].distance * 1.05 < matches[1].distance:
-                        points_left.append(np.array([[key_point_1[0].pt[0], key_point_1[0].pt[1]]]))
-                        points_right.append(np.array([[key_points_2[matches[0].trainIdx].pt[0], key_points_2[matches[0].trainIdx].pt[1]]]))
 
         return np.array(points_left), np.array(points_right)

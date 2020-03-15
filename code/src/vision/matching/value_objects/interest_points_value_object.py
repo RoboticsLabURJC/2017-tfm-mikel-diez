@@ -29,9 +29,14 @@ class InterestPointsValueObject:
     def __calculate_interest_points_image(self, image, sampling):
         border_image = cv2.Canny(image, 100, 200)
 
+        cv2.imshow('image', border_image)
+        cv2.waitKey(0)
+
         if sampling is not None:
             border_image = self.__remove_points(border_image, sampling)
 
+        cv2.imshow('image', border_image)
+        cv2.waitKey(0)
         return border_image
 
     @staticmethod

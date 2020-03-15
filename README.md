@@ -81,6 +81,129 @@ Now everything should be ready.
 
 ## Work Log
 #### Current Week
+Some advances in the h264 viewer, now we can change between cameras without breaking them and also I've created a multi-camera viewer. Some more work in the styling is to be done but is some work to be done in the next iteration.
+
+[![Watch the video](https://img.youtube.com/vi/CFEKPrj33-k/hqdefault.jpg)](https://youtu.be/CFEKPrj33-k)
+
+I've made some analysis in how used are the cpu and the memory. The results are as follows.
+
+[![Watch the video](https://img.youtube.com/vi/0HdYoypgAlM/hqdefault.jpg)](https://youtu.be/0HdYoypgAlM)
+
+
+[![Watch the video](https://img.youtube.com/vi/t-jVgPFfGaM/hqdefault.jpg)](https://youtu.be/t-jVgPFfGaM)
+
+|FPS | CPU        | Memory           | Network  |
+|----| ---------- |:----------------:| --------:|
+| 25 | 50% - 20%  |            8%    | 400KB/s  |
+| 12 | 20% - 10%  | 5%               | 200KB/s  |
+
+
+#### 07/09/2019 - 13/10/2019
+##### Week Log
+So I maid a major breakthrough in the H264 field and now I have a streaming from the cameras in the UAV directly to the browser. There is much to be done but this first step is already here.
+
+[![Watch the video](https://img.youtube.com/vi/SQngQfU0gmM/hqdefault.jpg)](https://youtu.be/SQngQfU0gmM)
+
+I also started making it so you can change between cameras:
+
+
+
+As a matter of fact we saw that the data traffic was of between 60 and 80 KB which is around 8 times smaller than with motion jpeg for a bigger image with more FPS.
+
+
+#### 31/09/2019 - 07/10/2019
+##### Week Log
+Puron viewer with h.264 from video file streamed with node websocket.
+
+
+[![Watch the video](https://img.youtube.com/vi/BBAAa8VtY7M/hqdefault.jpg)](https://youtu.be/BBAAa8VtY7M)
+
+
+#### 25/09/2019 - 30/09/2019
+##### Week Log
+Video of recontruction without projection restriction
+
+
+[![Watch the video](https://img.youtube.com/vi/TN7vTP62T3o/hqdefault.jpg)](https://youtu.be/TN7vTP62T3o)
+
+Video with epipolar restriction
+
+[![Watch the video](https://img.youtube.com/vi/eufoGKwmsbc/hqdefault.jpg)](https://youtu.be/eufoGKwmsbc)
+
+
+#### 17/09/2019 - 20/08/2019
+##### Week log
+
+###### H.264 streaming with node.js
+I've been taking a look at https://github.com/131/h264-live-player which has several examples on h.264 video play in the browser. The main examples I'm interested in are:
+* streaming using raspivid from the node code
+* streaming using tcp from raspivid
+
+As far as my investigation in this matter goes, it seams that node.js is a pretty solid option to take into account, as it seams to promise latencies of around 150ms.
+
+The idea of all the solutions around this that I've found are based in having a websocket to stream de video.
+
+
+###### Epipolar max distance
+Working on this I've been having a lot of problems to be able to get que 3D ray of a pixel, this theoretically easy process is being impossible to achieve. After trying unsuccesfuly to 
+do it on my own I've tried using the progeo.py function to help me backproject the pixel:
+``` 
+def backproject2(point2d, K, R, T):
+    RT = np.hstack((R, T))
+    RT = np.vstack((RT, [0, 0, 0, 1]))
+    iK = np.linalg.inv(K)
+    Pi = np.array([point2d[0], point2d[1], 1.0], dtype=np.double).reshape(3, 1)
+    a = np.dot(iK, Pi)
+    aH = np.array([a[0], a[1], a[2], 1], dtype=np.double)
+    RT2 = RT.copy()
+    RT2[0, 3] = 0
+    RT2[1, 3] = 0
+    RT2[2, 3] = 0
+    RT2[3, 3] = 1
+    b = np.dot(np.transpose(RT2), aH)
+    translate = np.identity(4, dtype=np.double)
+    translate[0, 3] = RT[0, 3] / RT[3, 3]
+    translate[1, 3] = RT[1, 3] / RT[3, 3]
+    translate[2, 3] = RT[2, 3] / RT[3, 3]
+    b = np.dot(translate, b)
+    outPoint = np.array([b[0] / b[3], b[1] / b[3], b[2] / b[3], 1])
+    return outPoint
+```
+Not only my cameras are wrongly displayed but the lines don't cross each other:
+[![Watch the video](https://img.youtube.com/vi/JUmPRFMY1j0/hqdefault.jpg)](https://youtu.be/JUmPRFMY1j0)
+
+Having the following matrices and with a "correct" opencv reconstruction I should be able to have this right.
+```
+R = [[ 0.99898286  0.00558905 -0.04474376]
+ [-0.00356533  0.99897241  0.04518197]
+ [ 0.04495031 -0.04497648  0.99797624]]
+
+T = [[90.62655468]
+ [ 3.51641911]
+ [10.22665275]]
+
+K_a (matrix of camera a)= [[1.43958854e+03 0.00000000e+00 6.58021160e+02]
+ [0.00000000e+00 1.44238025e+03 2.76884781e+02]
+ [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
+
+K_b (matrix of camera b)= [[1.43850152e+03 0.00000000e+00 6.23111868e+02]
+ [0.00000000e+00 1.44075734e+03 3.44642276e+02]
+ [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
+ 
+```
+
+This is the script I'm using:
+[https://github.com/RoboticsLabURJC/2017-tfm-mikel-diez/blob/ae79751925625b3394b641975758f79614e9f3a3/code/apps/TestCommands/TestEpipolar.py](https://github.com/RoboticsLabURJC/2017-tfm-mikel-diez/blob/ae79751925625b3394b641975758f79614e9f3a3/code/apps/TestCommands/TestEpipolar.py)
+
+###### Cleaning the code
+As part of the need of the project I'm also creating a reduced version of the software in order to be able to put it in the raspberry pi. There are certain things that won't be needed there (jderobot, 3dviz....) so everything should be useful in that version.
+
+
+###### Finally epiline 
+
+[![Watch the video](https://img.youtube.com/vi/WMbEQ0uUFVQ/hqdefault.jpg)](https://youtu.be/WMbEQ0uUFVQ)
+
+#### 03/08/2019 - 09/08/2019
 ##### Week Log
 ###### Filter points that are not in epipolar line
 

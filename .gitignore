@@ -1,5 +1,5 @@
 .idea
 *.avi
-code/bin/
-code/Externals/
+backend/bin/
+code/Externals
 .DS_Store

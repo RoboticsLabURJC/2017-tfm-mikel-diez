@@ -1,0 +1,53 @@
+version: '3'
+services:
+  backend_api:
+    container_name: backend_api
+    working_dir: /home/code
+    build: ./backend
+    command: python server.py
+    networks:
+       - example
+    volumes:
+        - "./backend/:/home/code/:delegated"
+    ports:
+      - "5000:5000"
+      - "11000:11000"
+      - "9957:9957"
+
+  electron_web:
+    container_name: electron_web
+    working_dir: /home/code
+    build: ./frontend
+    volumes:
+        - "./frontend/:/home/code/:delegated"
+        - "/tmp/.X11-unix:/tmp/.X11-unix"
+    command: npm start
+    networks:
+       - example
+    environment:
+        - DISPLAY
+    devices:
+      - "/dev/dri:/dev/dri"
+    depends_on:
+      - backend_api
+  webviz:
+    container_name: webviz
+    working_dir: /home/code
+    image: mikeldb/tfm:latest
+    volumes:
+      - "./Externals/viz/3DVizWeb/:/home/code/:delegated"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    command: npm start
+    networks:
+      - example
+    environment:
+      - DISPLAY
+    devices:
+      - "/dev/dri:/dev/dri"
+    depends_on:
+      - backend_api
+
+networks:
+   example:
+    driver: bridge
+

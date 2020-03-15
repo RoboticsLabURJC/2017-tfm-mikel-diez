@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # For the widget we need to create an application object
     application = QtWidgets.QApplication(sys.argv)
 
-
+    print(sys.path)
     # TEST YML
     right_camera_config = config.load('Configuration/cameraview_right.yml')
     left_camera_config = config.load('Configuration/cameraview_left.yml')

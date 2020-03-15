@@ -1,0 +1,10 @@
+Server: "backend_api"
+Port: "12000"
+updatePoints: 10000 #miliseconds
+updateSegments: 1000 #miliseconds
+linewidth: 2 #width of the line
+pointsize: 8 #size of the point
+camera: #camera position
+  x: 50
+  y: 20
+  z: 100
